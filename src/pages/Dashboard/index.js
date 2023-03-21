@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@components/Layout";
 import AssetItem from "@components/AssetItem";
+import Loader from "@components/Loader";
 import { sweepFetch } from "@utils/contract";
 
 const Dashboard = () => {
   const [sweepInfo, setSweepInfo] = useState([]);
+  const [isLoad, setIsLoad] = useState(false);
 
   useEffect(() => {
     const initialHandler = async () => {
-      const info = await sweepFetch();
-      setSweepInfo(info);
+      setIsLoad(true);
+      setSweepInfo(await sweepFetch());
+      setIsLoad(false);
     }
 
     initialHandler();
@@ -30,13 +33,13 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 mt-6">
+        <div className="lg:col-span-1">
           <div className="bg-gray-900 opacity-75 w-full shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
             <h2 className="text-2xl xl:text-3xl text-center uppercase text-white">Sweep Coin</h2>
             <div className="flex flex-col gap-2 mt-6">
               <TextRow
                 title="Current Supply:"
-                value={sweepInfo?.total_supply}
+                value={sweepInfo?.total_supply?.toFixed(2)}
                 symbol=""
               />
               <TextRow
@@ -57,9 +60,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="lg:col-span-2 mt-6">
+        <div className="lg:col-span-2">
           <div className="bg-gray-900 opacity-75 w-full shadow-lg rounded-lg px-8 pt-6 pb-8 mb-10">
-            <h2 className="text-2xl xl:text-3xl text-center uppercase text-white">Minter List</h2>
+            <h2 className="text-2xl xl:text-3xl text-center uppercase text-white">Asset List</h2>
             <div className="flex flex-col gap-4 mt-6">
               {
                 sweepInfo?.minterList?.map((item, index) => (
@@ -73,6 +76,9 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      {
+        isLoad && <Loader />
+      }
     </Layout>
   )
 }

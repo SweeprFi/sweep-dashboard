@@ -41,13 +41,17 @@ export const sweepFetch = async () => {
   minterList = [...new Set(minterList)];
   */
  
-  Object.keys(assets).map((key) => {
-    minterList.push({
-      name: key,
-      value: assets[key][network.chain]
-    });
-  });
+  minterList = await Promise.all(
+    Object.keys(assets).map(async (key) => {
+      const info = {
+        name: key,
+        addr: assets[key][network.chain]
+      };
 
+      return await getAssetInfo(info);
+    })
+  )
+console.log(1)
   return {
     total_supply: totalSupply / 1e18,
     interest_rate: interest_rate / 1e4,
@@ -57,14 +61,37 @@ export const sweepFetch = async () => {
   }
 }
 
+const getAssetInfo = async (info) => {
+  const abi = getAssetAbi(info.name);
+  if (abi === null) return;
+  
+  const web3 = getWeb3();
+  const contract = new web3.eth.Contract(abi, info.addr);
+
+  const borrowed_amount = await contract.methods.sweep_borrowed().call();
+  const loan_limit = await contract.methods.loan_limit().call();
+  const is_defaulted = await contract.methods.isDefaulted().call();
+  const call_amount = await contract.methods.call_amount().call();
+
+  return {
+    name: info.name,
+    address: info.addr,
+    borrowed_amount: borrowed_amount / 1e18,
+    loan_limit: loan_limit / 1e18,
+    is_defaulted: is_defaulted,
+    is_marginCall: call_amount > 0
+  }
+}
+
 export const assetFetch = async (info) => {
   const abi = getAssetAbi(info.name);
-  if(abi === null) return;
+  if (abi === null) return;
 
   const web3 = getWeb3();
-  const contract = new web3.eth.Contract(abi, info.value);
+  const contract = new web3.eth.Contract(abi, info.addr);
 
   const link = await contract.methods.link().call();
+  const borrower = await contract.methods.borrower().call();
   const borrowed_amount = await contract.methods.sweep_borrowed().call();
   const min_equity_ratio = await contract.methods.min_equity_ratio().call();
   const current_value = await contract.methods.currentValue().call();
@@ -73,13 +100,14 @@ export const assetFetch = async (info) => {
   const call_time = await contract.methods.call_time().call();
   const call_delay = await contract.methods.call_delay().call();
   const call_amount = await contract.methods.call_amount().call();
-  
+
   return {
     name: info.name,
     link: link,
-    address: info.value,
+    address: info.addr,
+    borrower: borrower,
     borrowed_amount: borrowed_amount / 1e18,
-    min_equity_ratio: min_equity_ratio / 1e4, 
+    min_equity_ratio: min_equity_ratio / 1e4,
     current_value: current_value / 1e6,
     equity_ratio: equity_ratio / 1e6,
     is_defaulted: is_defaulted,
@@ -90,7 +118,7 @@ export const assetFetch = async (info) => {
 }
 
 const getAssetAbi = (name) => {
-  switch(name) {
+  switch (name) {
     case 'aave':
       return json_asset_aave;
     case 'off_chain':
