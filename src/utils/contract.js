@@ -51,7 +51,7 @@ export const sweepFetch = async () => {
       return await getAssetInfo(info);
     })
   )
-console.log(1)
+
   return {
     total_supply: totalSupply / 1e18,
     interest_rate: interest_rate / 1e4,
