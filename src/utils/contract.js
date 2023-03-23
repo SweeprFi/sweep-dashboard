@@ -61,28 +61,6 @@ export const sweepFetch = async () => {
   }
 }
 
-const getAssetInfo = async (info) => {
-  const abi = getAssetAbi(info.name);
-  if (abi === null) return;
-  
-  const web3 = getWeb3();
-  const contract = new web3.eth.Contract(abi, info.addr);
-
-  const borrowed_amount = await contract.methods.sweep_borrowed().call();
-  const loan_limit = await contract.methods.loan_limit().call();
-  const is_defaulted = await contract.methods.isDefaulted().call();
-  const call_amount = await contract.methods.call_amount().call();
-
-  return {
-    name: info.name,
-    address: info.addr,
-    borrowed_amount: borrowed_amount / 1e18,
-    loan_limit: loan_limit / 1e18,
-    is_defaulted: is_defaulted,
-    is_marginCall: call_amount > 0
-  }
-}
-
 export const assetFetch = async (info) => {
   const abi = getAssetAbi(info.name);
   if (abi === null) return;

@@ -93,7 +93,7 @@ const Dashboard = () => {
         Assets
       </h3>
       <div className="flex flex-col gap-4 w-full pb-12">
-        <div className="grid grid-cols-12 gap-2 px-6 font-bold uppercase">
+        <div className="lg:grid grid-cols-12 gap-2 px-6 font-bold uppercase hidden">
           <div className="col-span-2 flex items-end">
             Name
           </div>
@@ -122,14 +122,16 @@ const Dashboard = () => {
             Call Amount
           </div>
         </div>
-        {
-          sweepInfo?.minterList?.map((item, index) => (
-            <AssetItem
-              key={index}
-              data={item}
-            />
-          ))
-        }
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-4">
+          {
+            sweepInfo?.minterList?.map((item, index) => (
+              <AssetItem
+                key={index}
+                data={item}
+              />
+            ))
+          }
+        </div>
       </div>
       {
         isLoad && <Loader />
