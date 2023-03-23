@@ -48,7 +48,7 @@ export const sweepFetch = async () => {
         addr: assets[key][network.chain]
       };
 
-      return await getAssetInfo(info);
+      return await assetFetch(info);
     })
   )
 
@@ -93,6 +93,7 @@ export const assetFetch = async (info) => {
   const link = await contract.methods.link().call();
   const borrower = await contract.methods.borrower().call();
   const borrowed_amount = await contract.methods.sweep_borrowed().call();
+  const loan_limit = await contract.methods.loan_limit().call();
   const min_equity_ratio = await contract.methods.min_equity_ratio().call();
   const current_value = await contract.methods.currentValue().call();
   const equity_ratio = await contract.methods.getEquityRatio().call();
@@ -107,6 +108,7 @@ export const assetFetch = async (info) => {
     address: info.addr,
     borrower: borrower,
     borrowed_amount: borrowed_amount / 1e18,
+    loan_limit: loan_limit / 1e18,
     min_equity_ratio: min_equity_ratio / 1e4,
     current_value: current_value / 1e6,
     equity_ratio: equity_ratio / 1e6,

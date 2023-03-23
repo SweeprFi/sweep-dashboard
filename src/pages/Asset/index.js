@@ -4,7 +4,7 @@ import Layout from "@components/Layout";
 import { TextRow, LinkRow } from "@components/Row";
 import Loader from "@components/Loader";
 import { assetFetch } from "@utils/contract";
-import { network } from "@utils/address";
+import { assetName, shortAddress, scanLink } from "@utils/helper";
 
 const Asset = () => {
   const [assetInfo, setAssetInfo] = useState();
@@ -20,14 +20,6 @@ const Asset = () => {
 
     initialHandler();
   }, [params]);
-
-  const assetName = (name) => {
-    return name?.replace('_', ' ');
-  }
-
-  const shortAddress = (addr) => {
-    return addr?.slice(0, 8) + '...' + addr?.slice(-6)
-  }
 
   return (
     <Layout>
@@ -50,13 +42,13 @@ const Asset = () => {
             name="Borrower: "
             value={assetInfo?.borrower}
             mobileValue={shortAddress(assetInfo?.borrower)}
-            link={network.scan + assetInfo?.borrower}
+            link={scanLink(assetInfo?.borrower)}
           />
           <LinkRow
             name="Address: "
             value={assetInfo?.address}
             mobileValue={shortAddress(assetInfo?.address)}
-            link={network.scan + assetInfo?.address}
+            link={scanLink(assetInfo?.address)}
           />
           <TextRow
             name="Borrowed Amount: "

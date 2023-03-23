@@ -3,6 +3,9 @@ import Layout from "@components/Layout";
 import AssetItem from "@components/AssetItem";
 import Loader from "@components/Loader";
 import { sweepFetch } from "@utils/contract";
+import { buySweepLink } from "@utils/helper";
+import { ReactComponent as LogoSweep } from "@images/logo.svg";
+import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
 
 const Dashboard = () => {
   const [sweepInfo, setSweepInfo] = useState([]);
@@ -18,63 +21,115 @@ const Dashboard = () => {
     initialHandler();
   }, []);
 
-  const TextRow = (props) => {
-    return (
-      <div className="flex items-center">
-        <div className="w-28 text-right mr-2">
-          {props.title}
-        </div>
-        <div>{props.value}</div>
-        <div className="ml-1">{props.symbol}</div>
-      </div>
-    )
-  }
-
   return (
     <Layout>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
-          <div className="bg-gray-900 opacity-75 w-full shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
-            <h2 className="text-2xl xl:text-3xl text-center uppercase text-white">Sweep Coin</h2>
-            <div className="flex flex-col gap-2 mt-6">
-              <TextRow
-                title="Current Supply:"
-                value={sweepInfo?.total_supply?.toFixed(2)}
-                symbol=""
-              />
-              <TextRow
-                title="Interest Rate:"
-                value={sweepInfo?.interest_rate}
-                symbol="%"
-              />
-              <TextRow
-                title="Target Price:"
-                value={sweepInfo?.targe_price}
-                symbol="$"
-              />
-              <TextRow
-                title="AMM Price:"
-                value={sweepInfo?.amm_price}
-                symbol="$"
-              />
-            </div>
+      <h1 className="text-4xl font-bold">
+        Maxos builds open source software and financial structures for decentralized money markets.
+      </h1>
+      <div className="flex my-6">
+        <a
+          href={buySweepLink}
+          target="_blank"
+          rel="noreferrer" 
+          className="flex items-center border border-app-red rounded-md px-3 py-1 transform hover:scale-105 duration-300"
+        >
+          <LogoUniswap />
+          <span>
+            Buy Sweep on Uniswap
+          </span>
+        </a>
+      </div>
+      <h3 className="uppercase mb-3">
+        Protocol metrics
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-app-blue rounded-lg p-8 flex flex-col justify-center items-center">
+          <div className="flex items-center gap-4">
+            <LogoSweep className="" />
+            <h2 className="text-4xl">
+              {sweepInfo?.total_supply?.toFixed(2)}
+            </h2>
+          </div>
+          <h3 className="uppercase font-bold mt-2">
+            Current Supply
+          </h3>
+        </div>
+        <div className="bg-app-blue rounded-lg p-6 flex flex-col justify-center items-center">
+          <div className="flex items-center gap-4">
+            <h2 className="text-4xl">
+              {sweepInfo?.interest_rate}
+              %
+            </h2>
+          </div>
+          <h3 className="uppercase font-bold mt-2">
+            Interest Rate
+          </h3>
+        </div>
+        <div className="bg-app-blue rounded-lg p-6 flex flex-col justify-center items-center">
+          <div className="flex items-center gap-4">
+            <h2 className="text-4xl">
+              $
+              {sweepInfo?.targe_price}
+            </h2>
+          </div>
+          <h3 className="uppercase font-bold mt-2">
+            Target Price
+          </h3>
+        </div>
+        <div className="bg-app-blue rounded-lg p-6 flex flex-col justify-center items-center">
+          <div className="flex items-center gap-4">
+            <h2 className="text-4xl">
+              $
+              {sweepInfo?.amm_price}
+            </h2>
+          </div>
+          <h3 className="uppercase font-bold mt-2">
+            AMM Price
+          </h3>
+        </div>
+      </div>
+
+      <h3 className="uppercase mt-12 mb-6">
+        Assets
+      </h3>
+      <div className="flex flex-col gap-4 w-full pb-12">
+        <div className="grid grid-cols-12 gap-2 px-6 font-bold uppercase">
+          <div className="col-span-2 flex items-end">
+            Name
+          </div>
+          <div className="col-span-2 flex items-end">
+            Borrowed/Limit
+          </div>
+          <div className="col-span-1 flex items-end">
+            Value
+          </div>
+          <div className="col-span-2 flex items-end">
+            Min.Equity Ratio
+          </div>
+          <div className="col-span-1 flex items-end">
+            Equity Ratio
+          </div>
+          <div className="col-span-1 flex items-end">
+            Status
+          </div>
+          <div className="col-span-1 flex items-end">
+            Call Time
+          </div>
+          <div className="col-span-1 flex items-end">
+            Call Delay
+          </div>
+          <div className="col-span-1 flex items-end">
+            Call Amount
           </div>
         </div>
-        <div className="lg:col-span-2">
-          <div className="bg-gray-900 opacity-75 w-full shadow-lg rounded-lg px-8 pt-6 pb-8 mb-10">
-            <h2 className="text-2xl xl:text-3xl text-center uppercase text-white">Asset List</h2>
-            <div className="flex flex-col gap-4 mt-6">
-              {
-                sweepInfo?.minterList?.map((item, index) => (
-                  <AssetItem 
-                    key={index}
-                    data={item}
-                  />
-                ))
-              }
-            </div>
-          </div>
-        </div>
+        {
+          sweepInfo?.minterList?.map((item, index) => (
+            <AssetItem
+              key={index}
+              data={item}
+            />
+          ))
+        }
       </div>
       {
         isLoad && <Loader />
