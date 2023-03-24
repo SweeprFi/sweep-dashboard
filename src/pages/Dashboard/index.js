@@ -2,19 +2,21 @@ import React, { useEffect, useState } from "react";
 import Layout from "@components/Layout";
 import AssetItem from "@components/AssetItem";
 import Loader from "@components/Loader";
-import { sweepFetch } from "@utils/contract";
+import { sweepFetch, assetListFetch } from "@utils/contract";
 import { buySweepLink } from "@utils/helper";
 import { ReactComponent as LogoSweep } from "@images/logo.svg";
 import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
 
 const Dashboard = () => {
   const [sweepInfo, setSweepInfo] = useState([]);
+  const [assetInfo, setAssetInfo] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
 
   useEffect(() => {
     const initialHandler = async () => {
       setIsLoad(true);
       setSweepInfo(await sweepFetch());
+      setAssetInfo(await assetListFetch());
       setIsLoad(false);
     }
 
@@ -124,7 +126,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-4">
           {
-            sweepInfo?.minterList?.map((item, index) => (
+            assetInfo?.map((item, index) => (
               <AssetItem
                 key={index}
                 data={item}

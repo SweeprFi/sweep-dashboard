@@ -6,6 +6,7 @@ import json_asset_aave from "@abis/assets/aave.json";
 import json_asset_off_chain from "@abis/assets/off_chain.json";
 import json_asset_token from "@abis/assets/token.json";
 import json_asset_uniswap from "@abis/assets/uniswap.json";
+import { Multicall } from 'ethereum-multicall';
 
 const getWeb3 = () => {
   if (typeof window !== "undefined") {
@@ -19,82 +20,86 @@ const getWeb3 = () => {
 
 export const sweepFetch = async () => {
   const web3 = getWeb3();
-  const contract = new web3.eth.Contract(json_sweep, addresses.sweep);
-  const totalSupply = await contract.methods.totalSupply().call();
-  const interest_rate = await contract.methods.interest_rate().call();
-  const targe_price = await contract.methods.current_target_price().call();
-  const amm_price = await contract.methods.amm_price().call();
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
-  let minterList = [];
+  const callInfo = {
+    reference: 'sweep',
+    contractAddress: addresses.sweep,
+    abi: json_sweep,
+    calls: [
+      { reference: 'totalSupplyCall', methodName: 'totalSupply' },
+      { reference: 'interestRateCall', methodName: 'interest_rate' },
+      { reference: 'currentTargetPriceCall', methodName: 'current_target_price' },
+      { reference: 'ammPriceCall', methodName: 'amm_price' }
+    ]
+  }
 
-  // Get Minters from onChain
-  /*
-  const minterEvents = await contract.getPastEvents('MinterAdded', {
-    fromBlock: 0,
-    toBlock: 'latest'
-  });
-  await Promise.all(minterEvents.map(async (item) => {
-    const code = await web3.eth.getCode(item.returnValues.minter_address);
-    if(code != "0x")
-      minterList.push(item.returnValues.minter_address);
-  }));
-  minterList = [...new Set(minterList)];
-  */
- 
-  minterList = await Promise.all(
-    Object.keys(assets).map(async (key) => {
-      const info = {
-        name: key,
-        addr: assets[key][network.chain]
-      };
-
-      return await assetFetch(info);
-    })
-  )
+  let callResults = await multicall.call(callInfo);
+  const data = callResults.results['sweep']['callsReturnContext']
 
   return {
-    total_supply: totalSupply / 1e18,
-    interest_rate: interest_rate / 1e4,
-    targe_price: targe_price / 1e6,
-    amm_price: amm_price / 1e6,
-    minterList: minterList
+    total_supply: toInt(data[0]) / 1e18,
+    interest_rate: toInt(data[1]) / 1e4,
+    targe_price: toInt(data[2]) / 1e6,
+    amm_price: toInt(data[3]) / 1e6
   }
 }
 
-export const assetFetch = async (info) => {
-  const abi = getAssetAbi(info.name);
-  if (abi === null) return;
-
+export const assetListFetch = async () => {
   const web3 = getWeb3();
-  const contract = new web3.eth.Contract(abi, info.addr);
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
-  const link = await contract.methods.link().call();
-  const borrower = await contract.methods.borrower().call();
-  const borrowed_amount = await contract.methods.sweep_borrowed().call();
-  const loan_limit = await contract.methods.loan_limit().call();
-  const min_equity_ratio = await contract.methods.min_equity_ratio().call();
-  const current_value = await contract.methods.currentValue().call();
-  const equity_ratio = await contract.methods.getEquityRatio().call();
-  const is_defaulted = await contract.methods.isDefaulted().call();
-  const call_time = await contract.methods.call_time().call();
-  const call_delay = await contract.methods.call_delay().call();
-  const call_amount = await contract.methods.call_amount().call();
+  const callInfo = await Promise.all(
+    Object.keys(assets).map(async (key) => {
+      const info = {
+        reference: key,
+        contractAddress: assets[key][network.chain],
+        abi: getAssetAbi(key),
+        calls: [
+          { reference: 'borrowerCall', methodName: 'borrower' },
+          { reference: 'linkCall', methodName: 'link' },
+          { reference: 'sweepBorrowedCall', methodName: 'sweep_borrowed' },
+          { reference: 'loanLimitCall', methodName: 'loan_limit' },
+          { reference: 'currentValueCall', methodName: 'currentValue' },
+          { reference: 'equityRatioCall', methodName: 'getEquityRatio' },
+          { reference: 'minEquityRatioCall', methodName: 'min_equity_ratio' },
+          { reference: 'defaultedCall', methodName: 'isDefaulted' },
+          { reference: 'callTimeCall', methodName: 'call_time' },
+          { reference: 'callAmountCall', methodName: 'call_amount' },
+          { reference: 'callDelayCall', methodName: 'call_delay' }
+        ]
+      }
 
-  return {
-    name: info.name,
-    link: link,
-    address: info.addr,
-    borrower: borrower,
-    borrowed_amount: borrowed_amount / 1e18,
-    loan_limit: loan_limit / 1e18,
-    min_equity_ratio: min_equity_ratio / 1e4,
-    current_value: current_value / 1e6,
-    equity_ratio: equity_ratio / 1e6,
-    is_defaulted: is_defaulted,
-    call_amount: call_amount / 1e18,
-    call_time: call_time,
-    call_delay: call_delay
-  }
+      return info;
+    })
+  )
+  
+  const assetList = [];
+  let callResults = await multicall.call(callInfo);
+  callResults = callResults.results;
+
+  Object.keys(callResults).map(async (key) => {
+    const data = callResults[key]['callsReturnContext']
+    const info = {
+      name: key,
+      address: assets[key][network.chain],
+      borrower: data[0].returnValues[0],
+      link: data[1].returnValues[0],
+      borrowed_amount: toInt(data[2]) / 1e18,
+      loan_limit: toInt(data[3]) / 1e18,
+      current_value: toInt(data[4]) / 1e6,
+      equity_ratio: toInt(data[5]) / 1e6,
+      min_equity_ratio: toInt(data[6]) / 1e4,
+      is_defaulted: data[7].returnValues[0],
+      call_time: toInt(data[8]),
+      call_amount: toInt(data[9]) / 1e18,
+      call_delay: toInt(data[10])
+    }
+
+    assetList.push(info);
+  })
+
+  return assetList;
 }
 
 const getAssetAbi = (name) => {
@@ -112,4 +117,8 @@ const getAssetAbi = (name) => {
     default:
       return null;
   }
+}
+
+const toInt = (val) => {
+  return parseInt(val.returnValues[0].hex, 16);
 }

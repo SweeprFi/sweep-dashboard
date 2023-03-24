@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Layout from "@components/Layout";
 import { TextRow, LinkRow } from "@components/Row";
 import Loader from "@components/Loader";
-import { assetFetch } from "@utils/contract";
+// import { assetFetch } from "@utils/contract";
 import { assetName, shortAddress, scanLink } from "@utils/helper";
 
 const Asset = () => {
@@ -14,7 +14,7 @@ const Asset = () => {
   useEffect(() => {
     const initialHandler = async () => {
       setIsLoad(true);
-      setAssetInfo(await assetFetch(params));
+      // setAssetInfo(await assetFetch(params));
       setIsLoad(false);
     }
 
