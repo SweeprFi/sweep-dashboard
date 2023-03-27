@@ -197,74 +197,35 @@ const contracts = {
   }
 }
 
-const stabilizers = {
-  off_chain: {
-    1: '',
-    5: '0x464D64a24B56681022e4332EA047A03ebbdA5a26',
-    42161: '0xc27b18518943399648F83892Cd42c962030DEbE1'
-  },
-  aave: {
-    1: '',
-    5: '0xBFC2DEcdE652905fDC21A5f7E2a8bDEFfAe4ED01',
-    42161: '0xE9bb811a2b5A9b907f29983b2A4EC627fcD09d98',
-  },
-  comp: {
-    1: '',
-    5: '',
-    42161: '',
-  },
-  uniswap: {
-    1: '',
-    5: '',
-    42161: '0x803d4D63b863fcc881424251D75fbE58701Ce16a'
-  },
-  weth: {
-    1: '',
-    5: '',
-    42161: '0xae1dC22Bef2D111Bf98c73196300101d083b9F43'
-  },
-  wbtc: {
-    1: '',
-    5: '',
-    42161: '0xf5A6ed7202BA55d18b42f238a6DF0BAC635D4fd9'
-  }
-}
-
 const assets = {
   off_chain: {
     1: '',
     5: '0xb45EAAc6f139ebaF7c89115DbfFF316c3BCB4313',
+    // NEWER: '0x2dBf7A6D35bE22eADe0c4d4Df77937c8aBC18E80'
     42161: '0x7D009f68cc4323246cC563BF4Ec6db3d88A69384',
   },
   aave:{
     1: '',
     5: '0x56873F157202a5bD2ea798376CFae96Efd053011',
-    42161: '0x266E372c4445309349a3C98423F8DbBC5F258Dd0',
+    42161: '0x81635EcF627ff0bC0D9CF30Bc5A963b5aa2F30fE',
   },
   uniswap: {
     1: '',
     5: '0xE2EAd4044Dd87402e04D988fB0160ecCfB0e787B',
-    42161: '0x2207885bd552e83361f98E51e3B08C2116F96424',
+    42161: '0x843aCEBB52B2B91DE9818DEE873103466379CaA1',
   },
   weth: {
     1: '',
     5: '',
-    42161: '0xb8752C93f8555752FF0529e9BC8a40c558efB985',
+    42161: '0x1dd3D88699B69a04Ca2dd3AA45D667632B29E9BA',
   },
   wbtc: {
     1: '',
     5: '',
-    42161: '0xa1a983522a0b7FC08bC053c39Bac628eB2a84625',
+    42161: '0xF1d58bfBE3a0D9598061C1881f0b9bb9c390F1EB',
   }
 }
 
-const strategies = {
-  aave: {
-    1: '',
-    5: '',
-    42161: '0xB0035C667ACbB7AEFc4C12999E67B6F894e42d88'
-  },
-}
 
 module.exports = {
   networks,
@@ -275,7 +236,5 @@ module.exports = {
   libraries,
   contracts,
   chainlink_oracle,
-  stabilizers,
-  assets,
-  strategies
+  assets
 }
