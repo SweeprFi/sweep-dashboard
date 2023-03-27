@@ -88,7 +88,7 @@ export const assetListFetch = async () => {
       borrowed_amount: toInt(data[2]) / 1e18,
       loan_limit: toInt(data[3]) / 1e18,
       current_value: toInt(data[4]) / 1e6,
-      equity_ratio: toInt(data[5]) / 1e6,
+      equity_ratio: toInt(data[5]) / 1e4,
       min_equity_ratio: toInt(data[6]) / 1e4,
       is_defaulted: data[7].returnValues[0],
       call_time: toInt(data[8]),
