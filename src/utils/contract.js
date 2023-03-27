@@ -39,10 +39,10 @@ export const sweepFetch = async () => {
   const data = callResults.results['sweep']['callsReturnContext']
 
   return {
-    total_supply: pp(toInt(data[0]), 18),
-    interest_rate: pp(toInt(data[1]), 4),
-    targe_price: pp(toInt(data[2]), 6),
-    amm_price: pp(toInt(data[3]), 6),
+    total_supply: pp(toInt(data[0]), 18, 2),
+    interest_rate: pp(toInt(data[1]), 4, 2),
+    targe_price: pp(toInt(data[2]), 6, 4),
+    amm_price: pp(toInt(data[3]), 6, 4),
     mint_status: data[4].returnValues[0] ? "Minting" : "Repaying"
   }
 }
@@ -87,14 +87,14 @@ export const assetListFetch = async () => {
       address: assets[key][network.chain],
       borrower: data[0].returnValues[0],
       link: data[1].returnValues[0],
-      borrowed_amount: pp(toInt(data[2]), 18),
-      loan_limit: pp(toInt(data[3]), 18),
-      current_value: pp(toInt(data[4]), 6),
-      equity_ratio: pp(toInt(data[5]), 4),
-      min_equity_ratio: pp(toInt(data[6]), 4),
+      borrowed_amount: pp(toInt(data[2]), 18, 2),
+      loan_limit: pp(toInt(data[3]), 18, 2),
+      current_value: pp(toInt(data[4]), 6, 2),
+      equity_ratio: pp(toInt(data[5]), 4, 2),
+      min_equity_ratio: pp(toInt(data[6]), 4, 2),
       is_defaulted: data[7].returnValues[0],
       call_time: toInt(data[8]),
-      call_amount: pp(toInt(data[9]), 18),
+      call_amount: pp(toInt(data[9]), 18, 2),
       call_delay: toInt(data[10])
     };
     const status = getStatus(info);
@@ -146,6 +146,6 @@ const toInt = (val) => {
   return parseInt(val.returnValues[0].hex, 16);
 }
 
-const pp = (v, d) => {
-  return Number((v / (10 ** d)).toFixed(2));
+const pp = (v, d, p) => {
+  return Number((v / (10 ** d)).toFixed(p));
 }
