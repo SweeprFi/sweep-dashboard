@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import { addresses, network } from "@utils/address";
-import { assets } from "@utils/constants";
+import { assets, assetStatus } from "@utils/constants";
 import json_sweep from "@abis/sweep.json";
 import json_asset_aave from "@abis/assets/aave.json";
 import json_asset_off_chain from "@abis/assets/off_chain.json";
@@ -30,7 +30,8 @@ export const sweepFetch = async () => {
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
       { reference: 'interestRateCall', methodName: 'interest_rate' },
       { reference: 'currentTargetPriceCall', methodName: 'current_target_price' },
-      { reference: 'ammPriceCall', methodName: 'amm_price' }
+      { reference: 'ammPriceCall', methodName: 'amm_price' },
+      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed' }
     ]
   }
 
@@ -38,10 +39,11 @@ export const sweepFetch = async () => {
   const data = callResults.results['sweep']['callsReturnContext']
 
   return {
-    total_supply: toInt(data[0]) / 1e18,
-    interest_rate: toInt(data[1]) / 1e4,
-    targe_price: toInt(data[2]) / 1e6,
-    amm_price: toInt(data[3]) / 1e6
+    total_supply: pp(toInt(data[0]), 18),
+    interest_rate: pp(toInt(data[1]), 4),
+    targe_price: pp(toInt(data[2]), 6),
+    amm_price: pp(toInt(data[3]), 6),
+    mint_status: data[4].returnValues[0] ? "Minting" : "Repaying"
   }
 }
 
@@ -73,33 +75,54 @@ export const assetListFetch = async () => {
       return info;
     })
   )
-  
+
   const assetList = [];
   let callResults = await multicall.call(callInfo);
   callResults = callResults.results;
 
   Object.keys(callResults).map(async (key) => {
-    const data = callResults[key]['callsReturnContext']
+    const data = callResults[key]['callsReturnContext'];
     const info = {
       name: key,
       address: assets[key][network.chain],
       borrower: data[0].returnValues[0],
       link: data[1].returnValues[0],
-      borrowed_amount: toInt(data[2]) / 1e18,
-      loan_limit: toInt(data[3]) / 1e18,
-      current_value: toInt(data[4]) / 1e6,
-      equity_ratio: toInt(data[5]) / 1e4,
-      min_equity_ratio: toInt(data[6]) / 1e4,
+      borrowed_amount: pp(toInt(data[2]), 18),
+      loan_limit: pp(toInt(data[3]), 18),
+      current_value: pp(toInt(data[4]), 6),
+      equity_ratio: pp(toInt(data[5]), 4),
+      min_equity_ratio: pp(toInt(data[6]), 4),
       is_defaulted: data[7].returnValues[0],
       call_time: toInt(data[8]),
-      call_amount: toInt(data[9]) / 1e18,
+      call_amount: pp(toInt(data[9]), 18),
       call_delay: toInt(data[10])
-    }
+    };
+    const status = getStatus(info);
+    info.status = status;
 
     assetList.push(info);
   })
 
   return assetList;
+}
+
+const getStatus = (info) => {
+  if (info.borrowed_amount === 0 && info.loan_limit === 0)
+    return assetStatus.good;
+
+  if (info.is_defaulted)
+    return assetStatus.defaulted;
+
+  if (info.equity_ratio < info.min_equity_ratio)
+    return assetStatus.marginCall;
+
+  if(info.loan_limit === 0 && info.borrowed_amount > 0)
+    return assetStatus.deprecated;
+  
+  if(info.call_time > 0 && info.call_amount > 0)
+    return assetStatus.call;
+
+  return assetStatus.good;
 }
 
 const getAssetAbi = (name) => {
@@ -121,4 +144,8 @@ const getAssetAbi = (name) => {
 
 const toInt = (val) => {
   return parseInt(val.returnValues[0].hex, 16);
+}
+
+const pp = (v, d) => {
+  return Number((v / (10 ** d)).toFixed(2));
 }

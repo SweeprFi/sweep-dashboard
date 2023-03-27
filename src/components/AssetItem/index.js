@@ -13,14 +13,26 @@ const AssetItem = ({ data }) => {
         </span>
         <div className="uppercase flex items-center gap-2 text-xl font-medium">
           {
-            props.symbol && props.symbol
+            props.symbolLeft && props.symbolLeft
           }
           {props.value}
+          {
+            props.symbolRight && props.symbolRight
+          }
         </div>
         {
           props.badge && props.badge
         }
       </div>
+    )
+  }
+
+  const AssetLink = (props) => {
+    return (
+      <a href={props.link} className="flex items-center gap-2 hover:underline" target="_blank" rel="noreferrer">
+        {props.title}
+        <IconLink/>
+      </a>
     )
   }
 
@@ -37,19 +49,21 @@ const AssetItem = ({ data }) => {
             <LogoSweep className="w-6" />
             {data.borrowed_amount}/{data.loan_limit}
           </div>
-          <div className="col-span-1 flex items-center gap-2">
-            <LogoSweep className="w-6" />
+          <div className="col-span-2 flex items-center">
+            <span>$</span>
             {data.current_value}
           </div>
-          <div className="col-span-2 flex items-center">
+          <div className="col-span-1 flex items-center">
             {data.min_equity_ratio}
+            %
           </div>
           <div className="col-span-1 flex items-center">
             {data.equity_ratio}
+            %
           </div>
           <div className="col-span-1 flex items-center">
             <StatusBadge
-              isDefaulted={data.is_defaulted}
+              status={data.status}
             />
           </div>
           <div className="col-span-1 flex items-center">
@@ -58,7 +72,8 @@ const AssetItem = ({ data }) => {
           <div className="col-span-1 flex items-center">
             {data.call_delay}
           </div>
-          <div className="col-span-1 flex items-center">
+          <div className="col-span-1 flex items-center gap-2">
+            <LogoSweep className="w-6" />
             {data.call_amount}
           </div>
         </div>
@@ -73,30 +88,30 @@ const AssetItem = ({ data }) => {
         <Row
           title="Borrowed/Limit"
           value={data.borrowed_amount + '/' + data.loan_limit}
-          symbol={
+          symbolLeft={
             <LogoSweep className="w-6" />
           }
         />
         <Row
           title="Value"
           value={data.current_value}
-          symbol={
-            <LogoSweep className="w-6" />
-          }
+          symbolLeft="$"
         />
         <Row
-          title="Min. Equity Ratio"
+          title="Min.Equity"
           value={data.min_equity_ratio}
+          symbolRight="%"
         />
         <Row
-          title="Equity Ratio"
+          title="Equity"
           value={data.equity_ratio}
+          symbolRight="%"
         />
         <Row
           title="Status"
           badge={
             <StatusBadge
-              isDefaulted={data.is_defaulted}
+              status={data.status}
             />
           }
         />
@@ -111,6 +126,9 @@ const AssetItem = ({ data }) => {
         <Row
           title="Call Amount"
           value={data.call_amount}
+          symbolLeft={
+            <LogoSweep className="w-6" />
+          }
         />
       </div>
 
@@ -119,30 +137,24 @@ const AssetItem = ({ data }) => {
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-4 pb-8 lg:py-3 text-sm font-light">
         {
           data.link && (
-            <div className="flex items-center gap-2">
-              Visit Borrower Website
-              <a href={data.link} target="_blank" rel="noreferrer">
-                <IconLink className="transform hover:scale-105 duration-75" />
-              </a>
-            </div>
+            <AssetLink
+              title="Deal Page"
+              link={data.link}
+            />
           )
         }
         {
           data.borrower && (
-            <div className="flex items-center gap-2">
-              Borrower Activity
-              <a href={scanLink(data.borrower)} target="_blank" rel="noreferrer">
-                <IconLink className="transform hover:scale-105 duration-75" />
-              </a>
-            </div>
+            <AssetLink
+              title="Borrower Activity"
+              link={scanLink(data.borrower)}
+            />
           )
         }
-        <div className="flex items-center gap-2">
-          Stabilizer Contract
-          <a href={scanLink(data.address)} target="_blank" rel="noreferrer">
-            <IconLink className="transform hover:scale-105 duration-75" />
-          </a>
-        </div>
+        <AssetLink
+          title="Stabilizer Contract"
+          link={scanLink(data.address)}
+        />
       </div>
     </div>
   )

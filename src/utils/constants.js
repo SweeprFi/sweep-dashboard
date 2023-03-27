@@ -1,3 +1,7 @@
+import DocIcon from "@images/icon_doc.svg"
+import TwitterIcon from "@images/icon_twitter.svg"
+import DiscordIcon from "@images/icon_discord.svg"
+
 const networks = {
   1: 'mainnet',
   5: 'goerli',
@@ -14,6 +18,47 @@ const scans = {
   1: '',
   5: '',
   42161: `https://arbiscan.io/address/`
+}
+
+const socialLinks = [
+  {
+    name: 'doc',
+    link: 'https://docs.maxos.finance',
+    icon: DocIcon
+  },
+  {
+    name: 'twitter',
+    link: 'https://twitter.com/maxoslabs',
+    icon: TwitterIcon
+  },
+  {
+    name: 'discord',
+    link: 'https://github.com/MaxosLabs/',
+    icon: DiscordIcon
+  }
+]
+
+const assetStatus = {
+  good: {
+    name: 'Good',
+    class: 'bg-app-green text-black'
+  },
+  defaulted: {
+    name: 'Defaulted',
+    class: 'bg-red-500 text-white'
+  },
+  deprecated: {
+    name: 'Deprecated',
+    class: 'bg-app-gray text-white'
+  },
+  call: {
+    name: 'Call',
+    class: 'bg-app-yellow text-black'
+  },
+  marginCall: {
+    name: 'Margin Call',
+    class: 'bg-app-yellow text-black'
+  }
 }
 
 const wallets = {
@@ -226,8 +271,7 @@ const assets = {
   }
 }
 
-
-module.exports = {
+export {
   networks,
   hosts,
   scans,
@@ -236,5 +280,7 @@ module.exports = {
   libraries,
   contracts,
   chainlink_oracle,
-  assets
+  assets,
+  socialLinks,
+  assetStatus
 }

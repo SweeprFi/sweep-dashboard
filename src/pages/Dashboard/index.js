@@ -4,6 +4,7 @@ import AssetItem from "@components/AssetItem";
 import Loader from "@components/Loader";
 import { sweepFetch, assetListFetch } from "@utils/contract";
 import { buySweepLink } from "@utils/helper";
+import { network } from "@utils/address";
 import { ReactComponent as LogoSweep } from "@images/logo.svg";
 import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
 
@@ -26,30 +27,31 @@ const Dashboard = () => {
   return (
     <Layout>
       <h1 className="text-4xl font-bold">
-        Maxos builds open source software and financial structures for decentralized money markets.
+        Savings and credit with stablecoins.
       </h1>
       <div className="flex my-6">
         <a
           href={buySweepLink}
           target="_blank"
           rel="noreferrer" 
-          className="flex items-center border border-app-red rounded-md px-3 py-1 transform hover:scale-105 duration-300"
+          className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300"
         >
           <LogoUniswap />
           <span>
-            Buy Sweep on Uniswap
+            Sweep on Uniswap for 
+            <span className="capitalize"> {network.name}</span>
           </span>
         </a>
       </div>
       <h3 className="uppercase mb-3">
-        Protocol metrics
+        SWEEP metrics
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-app-blue rounded-lg p-8 flex flex-col justify-center items-center">
           <div className="flex items-center gap-4">
             <LogoSweep className="" />
             <h2 className="text-4xl">
-              {sweepInfo?.total_supply?.toFixed(2)}
+              {sweepInfo?.total_supply}
             </h2>
           </div>
           <h3 className="uppercase font-bold mt-2">
@@ -87,6 +89,9 @@ const Dashboard = () => {
           </div>
           <h3 className="uppercase font-bold mt-2">
             AMM Price
+            {
+              sweepInfo?.mint_status && ` - ${sweepInfo.mint_status}`
+            }
           </h3>
         </div>
       </div>
@@ -102,14 +107,14 @@ const Dashboard = () => {
           <div className="col-span-2 flex items-end">
             Borrowed/Limit
           </div>
-          <div className="col-span-1 flex items-end">
+          <div className="col-span-2 flex items-end">
             Value
           </div>
-          <div className="col-span-2 flex items-end">
-            Min.Equity Ratio
+          <div className="col-span-1 flex items-end">
+            Min.Equity
           </div>
           <div className="col-span-1 flex items-end">
-            Equity Ratio
+            Equity
           </div>
           <div className="col-span-1 flex items-end">
             Status
