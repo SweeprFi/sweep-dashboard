@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
 import { assets, assetStatus } from "@utils/constants";
 import json_sweep from "@abis/sweep.json";
@@ -6,7 +7,6 @@ import json_asset_aave from "@abis/assets/aave.json";
 import json_asset_off_chain from "@abis/assets/off_chain.json";
 import json_asset_token from "@abis/assets/token.json";
 import json_asset_uniswap from "@abis/assets/uniswap.json";
-import { Multicall } from 'ethereum-multicall';
 
 const getWeb3 = () => {
   if (typeof window !== "undefined") {
