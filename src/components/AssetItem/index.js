@@ -1,6 +1,7 @@
 import React from "react";
 import StatusBadge from "@components/StatusBadge";
 import { assetName, scanLink } from "@utils/helper";
+import { languages } from "@config/languages";
 import { ReactComponent as LogoSweep } from "@images/logo.svg";
 import { ReactComponent as IconLink } from "@images/icon_link.svg";
 
@@ -31,7 +32,7 @@ const AssetItem = ({ data }) => {
     return (
       <a href={props.link} className="flex items-center gap-2 hover:underline" target="_blank" rel="noreferrer">
         {props.title}
-        <IconLink/>
+        <IconLink />
       </a>
     )
   }
@@ -82,33 +83,33 @@ const AssetItem = ({ data }) => {
       {/* Mobile Design */}
       <div className="flex lg:hidden flex-col gap-2 p-6">
         <Row
-          title="Name"
+          title={languages.column_name}
           value={assetName(data.name)}
         />
         <Row
-          title="Borrowed/Limit"
+          title={languages.column_borrowed + '/' + languages.column_limit}
           value={data.borrowed_amount + '/' + data.loan_limit}
           symbolLeft={
             <LogoSweep className="w-6" />
           }
         />
         <Row
-          title="Value"
+          title={languages.column_value}
           value={data.current_value}
           symbolLeft="$"
         />
         <Row
-          title="Min.Equity"
+          title={languages.column_min_equity}
           value={data.min_equity_ratio}
           symbolRight="%"
         />
         <Row
-          title="Equity"
+          title={languages.column_equity}
           value={data.equity_ratio}
           symbolRight="%"
         />
         <Row
-          title="Status"
+          title={languages.column_status}
           badge={
             <StatusBadge
               status={data.status}
@@ -116,15 +117,15 @@ const AssetItem = ({ data }) => {
           }
         />
         <Row
-          title="Call Time"
+          title={languages.column_call_time}
           value={data.call_time}
         />
         <Row
-          title="Call Delay"
+          title={languages.column_call_delay}
           value={data.call_delay}
         />
         <Row
-          title="Call Amount"
+          title={languages.column_call_amount}
           value={data.call_amount}
           symbolLeft={
             <LogoSweep className="w-6" />
@@ -138,7 +139,7 @@ const AssetItem = ({ data }) => {
         {
           data.link && (
             <AssetLink
-              title="Deal Page"
+              title={languages.link_deal}
               link={data.link}
             />
           )
@@ -146,13 +147,13 @@ const AssetItem = ({ data }) => {
         {
           data.borrower && (
             <AssetLink
-              title="Borrower Activity"
+              title={languages.link_borrower}
               link={scanLink(data.borrower)}
             />
           )
         }
         <AssetLink
-          title="Stabilizer Contract"
+          title={languages.link_stabilizer}
           link={scanLink(data.address)}
         />
       </div>

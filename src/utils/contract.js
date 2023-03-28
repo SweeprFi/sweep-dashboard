@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
-import { assets, assetStatus } from "@utils/constants";
+import { assets, assetStatus } from "@config/constants";
 import json_sweep from "@abis/sweep.json";
 import json_asset_aave from "@abis/assets/aave.json";
 import json_asset_off_chain from "@abis/assets/off_chain.json";

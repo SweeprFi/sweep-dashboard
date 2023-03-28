@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { socialLinks } from "@utils/constants";
+import { socialLinks } from "@config/constants";
 import { ReactComponent as LogoIcon } from "@images/logo.svg"
 
 const Navbar = () => {

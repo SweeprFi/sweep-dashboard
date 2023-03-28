@@ -3,7 +3,7 @@ import {
   hosts,
   scans,
   tokens
-} from "./constants";
+} from "@config/constants";
 
 const chainId = process.env.REACT_APP_CHAIN_ID;
 
