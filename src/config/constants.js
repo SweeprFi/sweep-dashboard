@@ -58,6 +58,10 @@ const assetStatus = {
   marginCall: {
     name: 'Margin Call',
     class: 'bg-app-yellow text-black'
+  },
+  frozen: {
+    name: 'Paused',
+    class: 'bg-red-500 text-white'
   }
 }
 

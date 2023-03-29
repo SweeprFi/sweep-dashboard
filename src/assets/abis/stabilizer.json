@@ -13,16 +13,6 @@
       },
       {
         "internalType": "address",
-        "name": "_token_address",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_oracle_address",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_amm_address",
         "type": "address"
       },
@@ -192,6 +182,24 @@
       },
       {
         "indexed": false,
+        "internalType": "int256",
+        "name": "auto_invest_min_ratio",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "auto_invest_min_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "auto_invest",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "url_link",
         "type": "string"
@@ -270,11 +278,24 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "call_amount",
+        "name": "sweep_amount",
         "type": "uint256"
       }
     ],
     "name": "MarginCalled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "sweep_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "MarginInvested",
     "type": "event"
   },
   {
@@ -360,55 +381,6 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "current_value",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "int256",
-        "name": "equity_ratio",
-        "type": "int256"
-      },
-      {
-        "indexed": true,
-        "internalType": "int256",
-        "name": "min_equity_ratio",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "call_time",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "call_delay",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "call_amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "is_defaulted",
-        "type": "bool"
-      }
-    ],
-    "name": "StatusChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "token",
         "type": "address"
@@ -451,12 +423,38 @@
   },
   {
     "inputs": [],
-    "name": "assetValue",
+    "name": "auto_invest",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "auto_invest_min_amount",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "auto_invest_min_ratio",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
       }
     ],
     "stateMutability": "view",
@@ -501,7 +499,7 @@
         "type": "uint256"
       }
     ],
-    "name": "buy",
+    "name": "buySweepOnAMM",
     "outputs": [
       {
         "internalType": "uint256",
@@ -509,19 +507,6 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_usdx_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "buySWEEP",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -592,6 +577,21 @@
         "type": "uint256"
       },
       {
+        "internalType": "int256",
+        "name": "_auto_invest_min_ratio",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_auto_invest_min_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_auto_invest",
+        "type": "bool"
+      },
+      {
         "internalType": "string",
         "name": "_link",
         "type": "string"
@@ -613,19 +613,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_usdx_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "divest",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -694,19 +681,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_usdx_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "invest",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "isDefaulted",
     "outputs": [
@@ -730,13 +704,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "liquidate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -769,11 +736,24 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_usdx_call_amount",
+        "name": "_sweep_amount",
         "type": "uint256"
       }
     ],
     "name": "marginCall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sweep_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "marginInvest",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -786,19 +766,6 @@
         "internalType": "int256",
         "name": "",
         "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -851,7 +818,7 @@
         "type": "uint256"
       }
     ],
-    "name": "sell",
+    "name": "sellSweepOnAMM",
     "outputs": [
       {
         "internalType": "uint256",
@@ -859,19 +826,6 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "sellSWEEP",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -941,6 +895,32 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sweep_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "swapSweepToUsdc",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_usdx_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "swapUsdcToSweep",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "sweep",
     "outputs": [
@@ -961,19 +941,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "token",
-    "outputs": [
-      {
-        "internalType": "contract IERC20Metadata",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",

@@ -46,9 +46,6 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <h1 className="text-4xl font-bold">
-        {languages.text_title}
-      </h1>
       <div className="flex my-6">
         <a
           href={buySweepLink}

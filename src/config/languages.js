@@ -1,5 +1,4 @@
 export const languages = {
-    text_title: 'Savings and credit with stablecoins.',
     text_sweep_title: 'SWEEP Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
@@ -24,6 +23,6 @@ export const languages = {
     link_borrower: 'Borrower Activity',
     link_stabilizer: 'Stabilizer Contract',
     link_go_home: 'Go Home',
-    
+
     btn_link_uniswap: 'Sweep on Uniswap for'
 }

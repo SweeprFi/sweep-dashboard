@@ -3,10 +3,7 @@ import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
 import { assets, assetStatus } from "@config/constants";
 import json_sweep from "@abis/sweep.json";
-import json_asset_aave from "@abis/assets/aave.json";
-import json_asset_off_chain from "@abis/assets/off_chain.json";
-import json_asset_token from "@abis/assets/token.json";
-import json_asset_uniswap from "@abis/assets/uniswap.json";
+import json_stabilizer from "@abis/stabilizer.json";
 
 const getWeb3 = () => {
   if (typeof window !== "undefined") {
@@ -56,7 +53,7 @@ export const assetListFetch = async () => {
       const info = {
         reference: key,
         contractAddress: assets[key][network.chain],
-        abi: getAssetAbi(key),
+        abi: json_stabilizer,
         calls: [
           { reference: 'borrowerCall', methodName: 'borrower' },
           { reference: 'linkCall', methodName: 'link' },
@@ -68,7 +65,8 @@ export const assetListFetch = async () => {
           { reference: 'defaultedCall', methodName: 'isDefaulted' },
           { reference: 'callTimeCall', methodName: 'call_time' },
           { reference: 'callAmountCall', methodName: 'call_amount' },
-          { reference: 'callDelayCall', methodName: 'call_delay' }
+          { reference: 'callDelayCall', methodName: 'call_delay' },
+          { reference: 'frozenCall', methodName: 'frozen' }
         ]
       }
 
@@ -95,7 +93,8 @@ export const assetListFetch = async () => {
       is_defaulted: data[7].returnValues[0],
       call_time: toInt(data[8]),
       call_amount: pp(toInt(data[9]), 18, 2),
-      call_delay: toInt(data[10])
+      call_delay: toInt(data[10]),
+      isFrozen: data[11].returnValues[0]
     };
     const status = getStatus(info);
     info.status = status;
@@ -107,6 +106,9 @@ export const assetListFetch = async () => {
 }
 
 const getStatus = (info) => {
+  if(info.isFrozen)
+    return assetStatus.frozen;
+
   if (info.borrowed_amount === 0 && info.loan_limit === 0)
     return assetStatus.good;
 
@@ -123,23 +125,6 @@ const getStatus = (info) => {
     return assetStatus.call;
 
   return assetStatus.good;
-}
-
-const getAssetAbi = (name) => {
-  switch (name) {
-    case 'aave':
-      return json_asset_aave;
-    case 'off_chain':
-      return json_asset_off_chain;
-    case 'weth':
-      return json_asset_token;
-    case 'wbtc':
-      return json_asset_token;
-    case 'uniswap':
-      return json_asset_uniswap;
-    default:
-      return null;
-  }
 }
 
 const toInt = (val) => {
