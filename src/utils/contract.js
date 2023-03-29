@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
-import { assets, assetStatus } from "@config/constants";
+import { assetStatus } from "@config/constants";
 import json_sweep from "@abis/sweep.json";
 import json_stabilizer from "@abis/stabilizer.json";
 
@@ -28,7 +28,8 @@ export const sweepFetch = async () => {
       { reference: 'interestRateCall', methodName: 'interest_rate' },
       { reference: 'currentTargetPriceCall', methodName: 'current_target_price' },
       { reference: 'ammPriceCall', methodName: 'amm_price' },
-      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed' }
+      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed' },
+      { reference: 'getMintersCall', methodName: 'getMinters' }
     ]
   }
 
@@ -40,19 +41,20 @@ export const sweepFetch = async () => {
     interest_rate: pp(toInt(data[1]), 4, 2),
     targe_price: pp(toInt(data[2]), 6, 4),
     amm_price: pp(toInt(data[3]), 6, 4),
-    mint_status: data[4].returnValues[0] ? "Minting" : "Repaying"
+    mint_status: data[4].returnValues[0] ? "Minting" : "Repaying",
+    assets: data[5].returnValues
   }
 }
 
-export const assetListFetch = async () => {
+export const assetListFetch = async (assets) => {
   const web3 = getWeb3();
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = await Promise.all(
-    Object.keys(assets).map(async (key) => {
+    assets.map(async (asset) => {
       const info = {
-        reference: key,
-        contractAddress: assets[key][network.chain],
+        reference: asset,
+        contractAddress: asset,
         abi: json_stabilizer,
         calls: [
           { reference: 'borrowerCall', methodName: 'borrower' },
@@ -66,7 +68,8 @@ export const assetListFetch = async () => {
           { reference: 'callTimeCall', methodName: 'call_time' },
           { reference: 'callAmountCall', methodName: 'call_amount' },
           { reference: 'callDelayCall', methodName: 'call_delay' },
-          { reference: 'frozenCall', methodName: 'frozen' }
+          { reference: 'frozenCall', methodName: 'frozen' },
+          { reference: 'nameCall', methodName: 'name' },
         ]
       }
 
@@ -81,8 +84,6 @@ export const assetListFetch = async () => {
   Object.keys(callResults).map(async (key) => {
     const data = callResults[key]['callsReturnContext'];
     const info = {
-      name: key,
-      address: assets[key][network.chain],
       borrower: data[0].returnValues[0],
       link: data[1].returnValues[0],
       borrowed_amount: pp(toInt(data[2]), 18, 2),
@@ -94,7 +95,9 @@ export const assetListFetch = async () => {
       call_time: toInt(data[8]),
       call_amount: pp(toInt(data[9]), 18, 2),
       call_delay: toInt(data[10]),
-      isFrozen: data[11].returnValues[0]
+      isFrozen: data[11].returnValues[0],
+      name: data[12].returnValues[0],
+      address: key,
     };
     const status = getStatus(info);
     info.status = status;
@@ -108,18 +111,18 @@ export const assetListFetch = async () => {
 const getStatus = (info) => {
   if(info.isFrozen)
     return assetStatus.frozen;
+  
+  if(info.loan_limit === 0)
+    return assetStatus.deprecated;
 
-  if (info.borrowed_amount === 0 && info.loan_limit === 0)
+  if (info.borrowed_amount === 0)
     return assetStatus.good;
-
+  
   if (info.is_defaulted)
     return assetStatus.defaulted;
 
   if (info.equity_ratio < info.min_equity_ratio)
     return assetStatus.marginCall;
-
-  if(info.loan_limit === 0 && info.borrowed_amount > 0)
-    return assetStatus.deprecated;
   
   if(info.call_time > 0 && info.call_amount > 0)
     return assetStatus.call;

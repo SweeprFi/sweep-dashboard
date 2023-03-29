@@ -17,8 +17,9 @@ const Dashboard = () => {
   useEffect(() => {
     const initialHandler = async () => {
       setIsLoad(true);
-      setSweepInfo(await sweepFetch());
-      setAssetInfo(await assetListFetch());
+      const sweepData = await sweepFetch();
+      setSweepInfo(sweepData);
+      setAssetInfo(await assetListFetch(sweepData.assets));
       setIsLoad(false);
     }
 

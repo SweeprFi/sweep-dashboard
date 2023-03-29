@@ -78,41 +78,11 @@ const tokens = {
   }
 }
 
-const assets = {
-  off_chain: {
-    1: '',
-    5: '0xb45EAAc6f139ebaF7c89115DbfFF316c3BCB4313',
-    // NEWER: '0x2dBf7A6D35bE22eADe0c4d4Df77937c8aBC18E80'
-    42161: '0x7D009f68cc4323246cC563BF4Ec6db3d88A69384',
-  },
-  aave:{
-    1: '',
-    5: '0x56873F157202a5bD2ea798376CFae96Efd053011',
-    42161: '0x81635EcF627ff0bC0D9CF30Bc5A963b5aa2F30fE',
-  },
-  uniswap: {
-    1: '',
-    5: '0xE2EAd4044Dd87402e04D988fB0160ecCfB0e787B',
-    42161: '0x843aCEBB52B2B91DE9818DEE873103466379CaA1',
-  },
-  weth: {
-    1: '',
-    5: '',
-    42161: '0x1dd3D88699B69a04Ca2dd3AA45D667632B29E9BA',
-  },
-  wbtc: {
-    1: '',
-    5: '',
-    42161: '0xF1d58bfBE3a0D9598061C1881f0b9bb9c390F1EB',
-  }
-}
-
 export {
   networks,
   hosts,
   scans,
   tokens,
-  assets,
   socialLinks,
   assetStatus
 }
