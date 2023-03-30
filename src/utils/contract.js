@@ -28,7 +28,7 @@ export const sweepFetch = async () => {
       { reference: 'interestRateCall', methodName: 'interest_rate' },
       { reference: 'currentTargetPriceCall', methodName: 'current_target_price' },
       { reference: 'ammPriceCall', methodName: 'amm_price' },
-      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed' },
+      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed', methodParameters: [1] },
       { reference: 'getMintersCall', methodName: 'getMinters' }
     ]
   }

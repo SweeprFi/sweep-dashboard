@@ -835,7 +835,13 @@
         "type": "function"
     },
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_mint_amount",
+                "type": "uint256"
+            }
+        ],
         "name": "is_minting_allowed",
         "outputs": [
             {
