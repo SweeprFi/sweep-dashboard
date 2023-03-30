@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
 import { assetStatus } from "@config/constants";
+import { toInt, pp, toDate, toTime } from './helper';
 import json_sweep from "@abis/sweep.json";
 import json_stabilizer from "@abis/stabilizer.json";
 
@@ -92,9 +93,9 @@ export const assetListFetch = async (assets) => {
       equity_ratio: pp(toInt(data[5]), 4, 2),
       min_equity_ratio: pp(toInt(data[6]), 4, 2),
       is_defaulted: data[7].returnValues[0],
-      call_time: toInt(data[8]),
+      call_time: toDate(toInt(data[8])),
       call_amount: pp(toInt(data[9]), 18, 2),
-      call_delay: toInt(data[10]),
+      call_delay: toTime(toInt(data[10])),
       isFrozen: data[11].returnValues[0],
       name: data[12].returnValues[0],
       address: key,
@@ -128,12 +129,4 @@ const getStatus = (info) => {
     return assetStatus.call;
 
   return assetStatus.good;
-}
-
-const toInt = (val) => {
-  return parseInt(val.returnValues[0].hex, 16);
-}
-
-const pp = (v, d, p) => {
-  return Number((v / (10 ** d)).toFixed(p));
 }
