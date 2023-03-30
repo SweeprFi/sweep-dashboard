@@ -9,14 +9,14 @@ const networks = {
 }
 
 const hosts = {
-  1: '',
-  5: '',
+  1: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
+  5: `https://eth-goerli.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
   42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`
 }
 
 const scans = {
-  1: '',
-  5: '',
+  1: 'https://etherscan.io/address/',
+  5: 'https://goerli.etherscan.io/address/',
   42161: `https://arbiscan.io/address/`
 }
 
