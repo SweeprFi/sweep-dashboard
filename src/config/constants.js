@@ -23,7 +23,7 @@ const scans = {
 const socialLinks = [
   {
     name: 'doc',
-    link: 'https://docs.maxos.finance',
+    link: 'https://docs.sweepr.finance',
     icon: DocIcon
   },
   {
