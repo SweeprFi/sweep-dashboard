@@ -65,7 +65,7 @@ const BridgeModal = (props) => {
         if (!validConnect || Number(sendAmount) === 0 || isPending) return;
 
         await bridgeSweep(curtChain.chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
-    }, [curtChain, destChain, sendAmount, validConnect, walletAddress, setIsPending, displayNotify]);
+    }, [curtChain, destChain, sendAmount, validConnect, walletAddress, isPending, setIsPending, displayNotify]);
 
     const closeNotify = useCallback(async () => {
         setAlertState({
