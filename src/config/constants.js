@@ -30,12 +30,12 @@ const socialLinks = [
   },
   {
     name: 'twitter',
-    link: 'https://twitter.com/maxoslabs',
+    link: 'https://twitter.com/SweeprFi',
     icon: TwitterIcon
   },
   {
     name: 'discord',
-    link: 'https://github.com/MaxosLabs/',
+    link: 'https://github.com/SweeprFi',
     icon: DiscordIcon
   }
 ]

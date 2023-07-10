@@ -56,7 +56,7 @@ const Dashboard = () => {
           href={buySweepLink}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300"
+          className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300 h-10"
         >
           <LogoUniswap />
           <span>
@@ -68,7 +68,7 @@ const Dashboard = () => {
           connected && (
             <div
               onClick={() => setIsOpen(true)}
-              className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer"
+              className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
             >
               <img src={imgLogo} alt="logo" className="w-6 mr-2" />
               <span>
