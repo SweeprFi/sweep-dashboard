@@ -1,23 +1,16 @@
 import Web3 from 'web3'
+import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
 import { addresses, network } from "@utils/address";
-import { assetStatus } from "@config/constants";
+import { assetStatus, rpcLinks, tokens } from "@config/constants";
+import { languages } from "@config/languages";
 import { toInt, pp, toDate, toTime } from './helper';
+import { getWeb3 } from './walletHelper';
 import json_sweep from "@abis/sweep.json";
 import json_stabilizer from "@abis/stabilizer.json";
 
-const getWeb3 = () => {
-  if (typeof window !== "undefined") {
-    const web3 = new Web3(network.host);
-
-    return web3
-  } else {
-    return null
-  }
-}
-
 export const sweepFetch = async () => {
-  const web3 = getWeb3();
+  const web3 = new Web3(network.rpc);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = {
@@ -48,7 +41,7 @@ export const sweepFetch = async () => {
 }
 
 export const assetListFetch = async (assets) => {
-  const web3 = getWeb3();
+  const web3 = new Web3(network.rpc);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = await Promise.all(
@@ -107,6 +100,53 @@ export const assetListFetch = async (assets) => {
   })
 
   return assetList;
+}
+
+export const getSweepBalance = async (chainId, walletAddress) => {
+  if(walletAddress === '') return 0;
+
+  const rpc = rpcLinks[chainId];
+  const sweepAddress = tokens.sweep[chainId]
+  const web3 = new Web3(rpc);
+  const contract = new web3.eth.Contract(json_sweep, sweepAddress);
+  
+  return await contract.methods.balanceOf(walletAddress).call();
+}
+
+export const bridgeSweep = async (curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify) => {
+  const web3 = getWeb3();
+  const sweepAddress = tokens.sweep[curtChainId]
+  const contract = new web3.eth.Contract(json_sweep, sweepAddress);
+  const amount = (sendAmount * 1e18).toString();
+  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 200000])
+  const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
+  const gasFee = fees.nativeFee;
+  
+  try {
+    await contract.methods.sendFrom(
+      walletAddress,
+      destNetId,
+      walletAddress,
+      amount,
+      walletAddress,
+      '0x0000000000000000000000000000000000000000',
+      adapterParam
+    ).send({ from: walletAddress, value: gasFee })
+    .on('transactionHash', () => {
+      setIsPending(true);
+      displayNotify('info', languages.text_tx_process);
+    })
+    .on('receipt', () => {
+      setIsPending(false);
+      displayNotify('success', languages.text_tx_success);
+    })
+    .on('error', () => {
+      setIsPending(false);
+      displayNotify('error', languages.text_tx_error);
+    });
+  } catch (error) {
+    
+  }
 }
 
 const getStatus = (info) => {

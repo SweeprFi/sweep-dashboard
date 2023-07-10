@@ -7,7 +7,7 @@ export const assetName = (name) => {
 }
 
 export const shortAddress = (addr) => {
-  return addr?.slice(0, 8) + '...' + addr?.slice(-6)
+  return addr?.slice(0, 6) + '...' + addr?.slice(-4)
 }
 
 export const scanLink = (addr) => {
@@ -39,7 +39,11 @@ export const toTime = (val) => {
 }
 
 export const toInt = (val) => {
-  return parseInt(val.returnValues[0].hex, 16);
+  if(val.returnValues.length > 0) {
+    return parseInt(val.returnValues[0].hex, 16);
+  }
+
+  return 0;
 }
 
 export const pp = (v, d, p) => {

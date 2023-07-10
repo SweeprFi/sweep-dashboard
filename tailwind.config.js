@@ -9,6 +9,7 @@ module.exports = {
         app: {
           blue: {
             DEFAULT: "#1A2A76",
+            semiLight: "#b1c0fe",
             light: "#33407F",
             dark: "#1C2759"
           },

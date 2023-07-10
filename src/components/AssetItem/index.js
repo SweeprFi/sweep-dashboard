@@ -2,7 +2,7 @@ import React from "react";
 import StatusBadge from "@components/StatusBadge";
 import { assetName, scanLink } from "@utils/helper";
 import { languages } from "@config/languages";
-import { ReactComponent as LogoSweep } from "@images/logo.svg";
+import imgLogo from "@images/logo.png";
 import { ReactComponent as IconLink } from "@images/icon_link.svg";
 
 const AssetItem = ({ data }) => {
@@ -30,10 +30,16 @@ const AssetItem = ({ data }) => {
 
   const AssetLink = (props) => {
     return (
-      <a href={props.link} className="flex items-center gap-2 hover:underline" target="_blank" rel="noreferrer">
+      <a href={props.link} className="flex items-center font-archivo-light gap-2 hover:underline" target="_blank" rel="noreferrer">
         {props.title}
         <IconLink />
       </a>
+    )
+  }
+
+  const LogoSweep = (props) => {
+    return (
+      <img src={imgLogo} className={props.className} alt="logo" />
     )
   }
 

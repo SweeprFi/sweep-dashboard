@@ -1,6 +1,6 @@
 import {
   networks,
-  hosts,
+  rpcLinks,
   scans,
   tokens
 } from "@config/constants";
@@ -14,7 +14,7 @@ const addresses = {
 
 const network = {
   chain: chainId,
-  host: hosts[chainId],
+  rpc: rpcLinks[chainId],
   scan: scans[chainId],
   name: networks[chainId]
 }
