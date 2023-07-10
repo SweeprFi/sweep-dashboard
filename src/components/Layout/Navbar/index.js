@@ -3,7 +3,7 @@ import { socialLinks } from "@config/constants";
 import { languages } from "@config/languages";
 import { useWallet } from "@utils/walletHelper";
 import { shortAddress } from "@utils/helper";
-import imgLogo from "@images/logo_title.png"
+import imgLogo from "@images/logo.svg"
 
 const Navbar = () => {
   const { connected, connectHandler, walletAddress } = useWallet();
@@ -20,7 +20,7 @@ const Navbar = () => {
               <a
                 key={index}
                 href={item.link}
-                className="p-2 md:p-3 transform hover:scale-125 duration-300 ease-in-out"
+                className="p-2 md:p-3 transform hover:scale-125 duration-300 ease-in-out hidden sm:block"
                 target="_blank"
                 rel="noreferrer"
               >

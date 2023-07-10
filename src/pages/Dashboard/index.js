@@ -51,7 +51,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <div className="flex my-6 gap-6">
+      <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6">
         <a
           href={buySweepLink}
           target="_blank"

@@ -10,7 +10,8 @@ import injectedModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import { useConnectWallet, init, useSetChain } from '@web3-onboard/react'
 import { networks, rpcLinks } from '@config/constants'
-import walletLogo from '@images/logo_wallet.png'
+import walletMobileLogo from '@images/logo_mobile.svg'
+import walletLogo from "@images/logo.svg";
 
 const ChainID = parseInt(process.env.REACT_APP_CHAIN_ID)
 const ChainName = networks[ChainID]
@@ -44,6 +45,7 @@ const walletInfo = {
     injected,
     walletConnect
   ],
+  theme: 'dark',
   chains: [
     {
       id: '0x1',
@@ -77,11 +79,16 @@ const walletInfo = {
     }
   ],
   connect: {
-    showSidebar: true
+    showSidebar: true,
+    removeWhereIsMyWalletWarning: true
+  },
+  notify: {
+    enabled: false
   },
   appMetadata: {
     name: "Sweep",
-    icon: walletLogo,
+    icon: walletMobileLogo,
+    logo: walletLogo,
     description: "Wallet Connections"
   },
   accountCenter: {
