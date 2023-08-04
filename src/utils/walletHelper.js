@@ -6,8 +6,9 @@ import React, {
   useState,
 } from 'react'
 import Web3 from 'web3'
-import injectedModule, { ProviderLabel } from '@web3-onboard/injected-wallets'
+import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
+import coinbaseWalletModule from '@web3-onboard/coinbase'
 import { useConnectWallet, init, useSetChain } from '@web3-onboard/react'
 import { networks, rpcLinks } from '@config/constants'
 import walletMobileLogo from '@images/logo_mobile.svg'
@@ -16,33 +17,19 @@ import walletLogo from "@images/logo.svg";
 const ChainID = parseInt(process.env.REACT_APP_CHAIN_ID)
 const ChainName = networks[ChainID]
 const RPC_URL = rpcLinks[ChainID]
-const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 })
 
-const injected = injectedModule({
-  sort: (wallets) => {
-    const metaMask = wallets.find(({ label }) => label === ProviderLabel.MetaMask)
-
-    return (
-      [
-        metaMask,
-        ...wallets.filter(
-          ({ label }) => label !== ProviderLabel.MetaMask
-        )
-      ]
-        // remove undefined values
-        .filter((wallet) => wallet)
-    )
-  }
-})
+const injected = injectedModule()
+const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 
 const initOptions = {
-  projectId: 'sweep'
+  projectId: 'cd4a577bcbeff487bba452a9deeaeace'
 }
 const walletConnect = walletConnectModule(initOptions)
 
 const walletInfo = {
   wallets: [
     injected,
+    coinbaseWalletSdk,
     walletConnect
   ],
   theme: 'dark',
@@ -80,7 +67,8 @@ const walletInfo = {
   ],
   connect: {
     showSidebar: true,
-    removeWhereIsMyWalletWarning: true
+    removeWhereIsMyWalletWarning: true,
+    autoConnectAllPreviousWallet: true
   },
   notify: {
     enabled: false
@@ -105,26 +93,6 @@ const walletInfo = {
 
 init(walletInfo)
 
-const getWeb3 = () => {
-  if (typeof window !== "undefined") {
-    const web3 = new Web3(window.ethereum || httpProvider)
-
-    return web3
-  } else {
-    return null
-  }
-}
-
-const getProviderWeb3 = () => {
-  if (typeof window !== "undefined") {
-    const web3 = new Web3(httpProvider)
-
-    return web3
-  } else {
-    return null
-  }
-}
-
 const UseWalletContext = React.createContext(null)
 
 const useWallet = () => {
@@ -148,80 +116,80 @@ const UseWalletProvider = (props) => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet()
   const [, setChain] = useSetChain()
   const walletContext = useContext(UseWalletContext)
-  const web3 = getWeb3()
 
   if (walletContext !== null) {
     throw new Error('<UseWalletProvider /> has already been declared.')
   }
 
+  const [web3, setWeb3] = useState(undefined)
   const [connected, setConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
-  const [error, setError] = useState(null)
   const [chainId, setChainId] = useState(props.chainId)
   const [chainName, setChainName] = useState(props.chainName)
 
+  useEffect(() => {
+    const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 })
+    const _web3 = new Web3(wallet?.provider || httpProvider)
+    setWeb3(_web3)
+  }, [wallet, setWeb3])
+
   const walletInitialize = useCallback(async () => {
-    const _chainId = await web3.eth.getChainId()
-    const _address = await web3.eth.getAccounts()
-    if (_address[0] && _chainId === chainId) {
+    const _address = wallet?.accounts[0]?.address
+    const _chainId = wallet?.chains[0].id
+    if (_address) {
       setConnected(true)
-      setWalletAddress(_address[0])
+      setWalletAddress(_address)
+      setChainId(parseInt(_chainId))
     }
-  }, [web3, chainId]);
+  }, [wallet, setConnected, setWalletAddress]);
 
   const connectHandler = useCallback(async () => {
-    localStorage.setItem("disconnect", 'false');
-    connect()
+    await connect()
   }, [connect])
 
-  const disconnectHandler = useCallback(() => {
-    localStorage.setItem("disconnect", 'true');
+  const disconnectHandler = useCallback(async () => {
     if (wallet) {
-      disconnect(wallet)
+      await disconnect(wallet)
     }
     setConnected(false)
     setWalletAddress('')
-  }, [wallet, disconnect])
+    window.localStorage.removeItem('connectedWallets')
+  }, [wallet, disconnect, setConnected, setWalletAddress])
 
   const handleNetworkChange = useCallback(async (networkId) => {
     const _chainId = parseInt(networkId)
     setChainId(_chainId);
     setChainName(networks[_chainId]);
-    const _address = await web3.eth.getAccounts()
-    if (_address[0]) {
+    const _address = wallet?.accounts[0]?.address
+    if (_address) {
       setConnected(true)
-      setWalletAddress(_address[0])
+      setWalletAddress(_address)
     }
-  }, [web3])
+  }, [wallet])
 
   useEffect(() => {
-    if (wallet?.provider) {
-      if (connecting)
-        setChain({ chainId: parseInt(chainId) });
+    const initialHandler = async () => {
+      if (wallet?.provider) {
+        if (connecting)
+          setChain({ chainId: parseInt(chainId) });
 
-      let networkId = parseInt(wallet?.chains[0].id)
-      if (networkId !== parseInt(chainId)) {
-        setError(`You should choose ${chainName}!`)
-        disconnect(wallet)
-      } else {
         setWalletAddress(wallet?.accounts[0].address)
+        setConnected(true)
+      } else {
+        setWalletAddress('')
+        setConnected(false)
       }
-      setConnected(networkId === parseInt(chainId))
-    } else {
-      setWalletAddress('')
-      setConnected(false)
     }
-  }, [wallet, connecting, chainId, chainName, setChain, setConnected, disconnect])
+    initialHandler()
+  }, [wallet, connecting, chainId, chainName, setChain, setConnected, setWalletAddress, disconnect])
 
   useEffect(() => {
-    if (localStorage.getItem("disconnect") === 'false')
-      walletInitialize()
+    walletInitialize()
 
     if (typeof window !== "undefined") {
       if (window.ethereum) {
 
         window.ethereum.on('chainChanged', handleNetworkChange);
-        window.ethereum.on('disconnect', disconnectHandler);
         window.ethereum.on('accountsChanged', disconnectHandler);
       }
     }
@@ -230,22 +198,24 @@ const UseWalletProvider = (props) => {
 
   const walletData = useMemo(
     () => ({
+      web3,
       chainId,
       connected,
       connecting,
       walletAddress,
       connectHandler,
-      disconnectHandler,
-      error
+      setChain,
+      disconnectHandler
     }),
     [
+      web3,
       chainId,
       connected,
       connecting,
       walletAddress,
       connectHandler,
-      disconnectHandler,
-      error
+      setChain,
+      disconnectHandler
     ]
   )
 
@@ -267,8 +237,6 @@ UseWalletProvider.defaultProps = {
 
 export {
   ChainID,
-  getWeb3,
-  getProviderWeb3,
   UseWalletProvider,
   useWallet
 }

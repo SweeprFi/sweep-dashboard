@@ -1,4 +1,4 @@
-const InputBox = ({ title, value, minValue, maxValue, setValue, pending }) => {
+const InputBox = ({ className, title, value, minValue, maxValue, setValue, pending }) => {
     const changeHandler = (e) => {
         if(pending) return;
         
@@ -13,7 +13,7 @@ const InputBox = ({ title, value, minValue, maxValue, setValue, pending }) => {
             <div className="relative mt-2">
                 <input 
                     type="number" 
-                    className={`relative w-full rounded-md bg-white py-1.5 md:py-2 px-3 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none text-sm md:text-base leading-6 ${pending ? 'opacity-70 cursor-not-allowed' : 'cursor-default focus:ring-2 focus:ring-indigo-500'}`}
+                    className={`relative w-full rounded-md py-1.5 md:py-2 px-3 text-left text-black focus:outline-none leading-6 ${className} ${pending ? 'opacity-70 cursor-not-allowed' : 'cursor-default'}`}
                     value={value}
                     onChange={(e) => changeHandler(e)}
                 />

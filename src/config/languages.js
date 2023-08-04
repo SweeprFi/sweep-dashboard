@@ -4,7 +4,7 @@ export const languages = {
     text_page_not_found: 'Page Not Found',
     text_sweep_bridge: 'Sweep Bridge',
     text_change_network: 'You should change the network to the ',
-    text_tx_process: 'Transaction is processing...',
+    text_tx_process: 'Transaction is in progress.',
     text_tx_success: 'Success: Transaction is completed.',
     text_tx_error: 'Transaction cancelled by user.',
 
@@ -13,6 +13,8 @@ export const languages = {
     label_target_price: 'Target Price',
     label_amm_price: 'Amm Price',
     label_balance: 'Balance: ',
+    label_transfer_from: 'Transfer From: ',
+    label_transfer_to: 'Transfer To: ',
 
     column_name: 'Name',
     column_borrowed: 'Borrowed',
@@ -34,5 +36,6 @@ export const languages = {
     btn_sweep_bridge: 'Sweep Bridge',
     btn_send: 'Send',
     btn_pending: 'Pending ...',
-    btn_connect: 'Connect Wallet'
+    btn_connect: 'Connect Wallet',
+    btn_change_network: 'Change NetWork'
 }

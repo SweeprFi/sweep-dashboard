@@ -5,9 +5,9 @@ import { addresses, network } from "@utils/address";
 import { assetStatus, rpcLinks, tokens } from "@config/constants";
 import { languages } from "@config/languages";
 import { toInt, pp, toDate, toTime } from './helper';
-import { getWeb3 } from './walletHelper';
-import json_sweep from "@abis/sweep.json";
-import json_stabilizer from "@abis/stabilizer.json";
+import erc20ABI from "@abis/erc20.json";
+import sweepABI from "@abis/sweep.json";
+import stabilizerABI from "@abis/stabilizer.json";
 
 export const sweepFetch = async () => {
   const web3 = new Web3(network.rpc);
@@ -16,7 +16,7 @@ export const sweepFetch = async () => {
   const callInfo = {
     reference: 'sweep',
     contractAddress: addresses.sweep,
-    abi: json_sweep,
+    abi: sweepABI,
     calls: [
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
       { reference: 'interestRateCall', methodName: 'interest_rate' },
@@ -49,7 +49,7 @@ export const assetListFetch = async (assets) => {
       const info = {
         reference: asset,
         contractAddress: asset,
-        abi: json_stabilizer,
+        abi: stabilizerABI,
         calls: [
           { reference: 'borrowerCall', methodName: 'borrower' },
           { reference: 'linkCall', methodName: 'link' },
@@ -102,21 +102,35 @@ export const assetListFetch = async (assets) => {
   return assetList;
 }
 
-export const getSweepBalance = async (chainId, walletAddress) => {
-  if(walletAddress === '') return 0;
+export const getSweepBalance = async (tokenName, curtChainId, destChainId, walletAddress) => {
+  const curtRPC = rpcLinks[curtChainId];
+  const destRPC = rpcLinks[destChainId];
+  const key = Object.keys(tokens).filter((key) => key === tokenName);
+  const token = tokens[key];
 
-  const rpc = rpcLinks[chainId];
-  const sweepAddress = tokens.sweep[chainId]
-  const web3 = new Web3(rpc);
-  const contract = new web3.eth.Contract(json_sweep, sweepAddress);
+  // Get token balance of the source chain 
+  let tokenAddress = token[curtChainId];
+  let web3 = new Web3(curtRPC);
+  let contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+  const curtAmount = await contract.methods.balanceOf(walletAddress).call();
+
+  // Get token balance of the destination chain 
+  tokenAddress = token[destChainId];
+  web3 = new Web3(destRPC);
+  contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+  const destAmount = await contract.methods.balanceOf(walletAddress).call();
   
-  return await contract.methods.balanceOf(walletAddress).call();
+  return {
+    curt: curtAmount,
+    dest: destAmount
+  }
 }
 
-export const bridgeSweep = async (curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify) => {
-  const web3 = getWeb3();
-  const sweepAddress = tokens.sweep[curtChainId]
-  const contract = new web3.eth.Contract(json_sweep, sweepAddress);
+export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify) => {
+  const key = Object.keys(tokens).filter((key) => key === tokenName);
+  const token = tokens[key];
+  const tokenAddress = token[curtChainId]
+  const contract = new web3.eth.Contract(tokenABI, tokenAddress);
   const amount = (sendAmount * 1e18).toString();
   const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 200000])
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();

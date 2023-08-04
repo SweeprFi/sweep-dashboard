@@ -1,6 +1,10 @@
 import DocIcon from "@images/icon_doc.svg"
 import TwitterIcon from "@images/icon_twitter.svg"
 import DiscordIcon from "@images/icon_discord.svg"
+import SweepLogo from "@images/icon_sweep.svg"
+import SweeprLogo from "@images/icon_sweepr.png"
+import sweepABI from "@abis/sweep.json";
+import sweeprABI from "@abis/sweepr.json";
 
 const networks = {
   1: 'mainnet',
@@ -74,12 +78,31 @@ const tokens = {
     42161: '0x4F4219c9B851AEbB652DD182D944A99b0b68edcf',
     421613: '0xe5618312ac98a9DE15C287009a539F2E732aC5f2',
   },
+  sweepr: {
+    1: '',
+    5: '0xeE5d3F262b961A276802EB8bdC889BB3140447F4',
+    42161: '',
+    421613: '0xaE0a9399313b65995e64d65F5637281CC83ff30c',
+  },
   usdc: {
     1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     5: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
     42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   }
 }
+
+const tokenList = [
+  {
+    name: 'Sweep',
+    logo: SweepLogo,
+    abi: sweepABI
+  },
+  {
+    name: 'Sweepr',
+    logo: SweeprLogo,
+    abi: sweeprABI
+  }
+]
 
 const testChainList = [
   {
@@ -118,6 +141,7 @@ export {
   rpcLinks,
   scans,
   tokens,
+  tokenList,
   socialLinks,
   assetStatus,
   chainList

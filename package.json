@@ -6,7 +6,7 @@
     "@craco/craco": "^7.0.0",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
-    "@web3-onboard/coinbase": "^2.2.4",
+    "@web3-onboard/coinbase": "^2.2.5",
     "@web3-onboard/core": "^2.20.4",
     "@web3-onboard/injected-wallets": "^2.10.1",
     "@web3-onboard/react": "^2.8.9",
