@@ -7,7 +7,7 @@ export const languages = {
     text_tx_process: 'Transaction is in progress.',
     text_tx_success: 'Success: Transaction is completed.',
     text_tx_error: 'Transaction cancelled by user.',
-    text_empty_asset: 'There is no asset.',
+    text_empty_asset: 'No SWEEP assets on selected chain.',
 
     label_current_supply: 'Current Supply',
     label_interest_rate: 'Interest Rate',
