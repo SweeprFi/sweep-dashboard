@@ -136,7 +136,7 @@ const BridgeModal = (props) => {
                                     </div>
                                     <div className="rounded-lg bg-white px-4 pt-1 pb-16 relative">
                                         <InputBox
-                                            className='bg-transparent text-sm md:text-2xl'
+                                            className='bg-transparent text-2xl'
                                             title=""
                                             value={sendAmount}
                                             minValue={0}

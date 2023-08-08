@@ -23,10 +23,14 @@ const Dashboard = () => {
   useEffect(() => {
     const initialHandler = async () => {
       setIsLoad(true);
-      const sweepData = await sweepFetch(chainId);
-      setSweepInfo(sweepData);
-      if(sweepData.assets.length > 0)
-        setAssetInfo(await assetListFetch(chainId, sweepData.assets));
+      try {
+        const sweepData = await sweepFetch(chainId);
+        setSweepInfo(sweepData);
+        if(sweepData.assets.length > 0)
+          setAssetInfo(await assetListFetch(chainId, sweepData.assets));
+      } catch (error) {
+        console.log(error)        
+      }
       setIsLoad(false);
     }
 
