@@ -156,8 +156,7 @@ const mainChainList = [
   }
 ]
 
-// const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
-const chainList = testChainList;
+const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
 
 export {
   networks,

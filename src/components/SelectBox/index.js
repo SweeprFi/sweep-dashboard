@@ -7,8 +7,7 @@ const SelectBox = (props) => {
         return classes.filter(Boolean).join(' ')
     }
 
-    // const isDevMode = Number(process.env.REACT_APP_MODE) === 0;
-    const isDevMode = true;
+    const isDevMode = Number(process.env.REACT_APP_MODE) === 0;
 
     return (
         <Listbox value={props.val} onChange={props.setVal}>
