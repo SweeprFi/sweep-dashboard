@@ -5,30 +5,33 @@ import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import { useWallet } from "@utils/walletHelper";
 import { sweepFetch, assetListFetch } from "@utils/contract";
-import { buySweepLink } from "@utils/helper";
 import { network } from "@utils/address";
 import { languages } from "@config/languages"
 import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
-import imgLogo from "@images/logo.png";
+import SweepLogo from "@images/icon_sweep.svg"
+import SweeprLogo from "@images/icon_sweepr.png"
+import SweeprLogoWhite from "@images/icon_sweepr_white.png"
 
 const Dashboard = () => {
-  const { connected } = useWallet();
+  const { connected, chainId } = useWallet();
   const [sweepInfo, setSweepInfo] = useState([]);
   const [assetInfo, setAssetInfo] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedToken, setSelectedToken] = useState('');
 
   useEffect(() => {
     const initialHandler = async () => {
       setIsLoad(true);
-      const sweepData = await sweepFetch();
+      const sweepData = await sweepFetch(chainId);
       setSweepInfo(sweepData);
-      setAssetInfo(await assetListFetch(sweepData.assets));
+      if(sweepData.assets.length > 0)
+        setAssetInfo(await assetListFetch(chainId, sweepData.assets));
       setIsLoad(false);
     }
 
     initialHandler();
-  }, []);
+  }, [chainId]);
 
   const SweepItem = (props) => {
     return (
@@ -53,28 +56,39 @@ const Dashboard = () => {
     <Layout>
       <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6">
         <a
-          href={buySweepLink}
+          href={network.ammLink.link}
           target="_blank"
           rel="noreferrer"
           className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300 h-10"
         >
           <LogoUniswap />
           <span>
-            {languages.btn_link_uniswap}
-            <span className="capitalize"> {network.name}</span>
+            {network.ammLink.title}
           </span>
         </a>
         {
           connected && (
-            <div
-              onClick={() => setIsOpen(true)}
-              className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
-            >
-              <img src={imgLogo} alt="logo" className="w-6 mr-2" />
-              <span>
-                {languages.btn_sweep_bridge}
-              </span>
-            </div>
+            <>
+              <div
+                onClick={() => { setIsOpen(true); setSelectedToken('sweep'); }}
+                className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
+              >
+                <img src={SweepLogo} alt="logo" className="w-6 mr-2" />
+                <span>
+                  {languages.btn_sweep_bridge}
+                </span>
+              </div>
+              <div
+                onClick={() => { setIsOpen(true); setSelectedToken('sweepr'); }}
+                className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10 group"
+              >
+                <img src={SweeprLogoWhite} alt="logo" className="w-6 mr-2 group-hover:hidden" />
+                <img src={SweeprLogo} alt="logo" className="w-6 mr-2 hidden group-hover:block" />
+                <span>
+                  {languages.btn_sweepr_bridge}
+                </span>
+              </div>
+            </>
           )
         }
       </div>
@@ -86,7 +100,7 @@ const Dashboard = () => {
           label={languages.label_current_supply}
           value={sweepInfo?.total_supply}
           symbolLeft={
-            <img src={imgLogo} alt="logo" className="w-8" />
+            <img src={SweepLogo} alt="logo" className="w-8" />
           }
         />
         <SweepItem
@@ -101,7 +115,7 @@ const Dashboard = () => {
         />
         <SweepItem
           label={
-            languages.label_amm_price + 
+            languages.label_amm_price +
             (sweepInfo?.mint_status && ` - ${sweepInfo.mint_status}`)
           }
           value={sweepInfo?.amm_price}
@@ -112,53 +126,62 @@ const Dashboard = () => {
       <h3 className="uppercase mt-12 mb-6">
         {languages.text_assets_title}
       </h3>
-      <div className="flex flex-col gap-4 w-full pb-12">
-        <div className="lg:grid grid-cols-12 gap-2 px-6 font-archivo-semibold uppercase hidden">
-          <div className="col-span-2 flex items-end">
-            {languages.column_name}
+      {
+        assetInfo.length > 0 ? (
+          <div className="flex flex-col gap-4 w-full pb-12">
+            <div className="lg:grid grid-cols-12 gap-2 px-6 font-archivo-semibold uppercase hidden">
+              <div className="col-span-2 flex items-end">
+                {languages.column_name}
+              </div>
+              <div className="col-span-2 flex items-end">
+                {languages.column_borrowed}/{languages.column_limit}
+              </div>
+              <div className="col-span-2 flex items-end">
+                {languages.column_value}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_min_equity}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_equity}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_status}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_call_time}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_call_delay}
+              </div>
+              <div className="col-span-1 flex items-end">
+                {languages.column_call_amount}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-4">
+              {
+                assetInfo?.map((item, index) => (
+                  <AssetItem
+                    key={index}
+                    data={item}
+                  />
+                ))
+              }
+            </div>
           </div>
-          <div className="col-span-2 flex items-end">
-            {languages.column_borrowed}/{languages.column_limit}
+        ) : (
+          <div className="text-center">
+            {languages.text_empty_asset}
           </div>
-          <div className="col-span-2 flex items-end">
-            {languages.column_value}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_min_equity}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_equity}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_status}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_call_time}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_call_delay}
-          </div>
-          <div className="col-span-1 flex items-end">
-            {languages.column_call_amount}
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-4">
-          {
-            assetInfo?.map((item, index) => (
-              <AssetItem
-                key={index}
-                data={item}
-              />
-            ))
-          }
-        </div>
-      </div>
+        )
+      }
       {
         isLoad && <Loader />
       }
-      <BridgeModal 
+      <BridgeModal
         isOpen={isOpen}
         closeModal={setIsOpen}
+        selectedToken={selectedToken}
       />
     </Layout>
   )

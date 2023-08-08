@@ -1,6 +1,8 @@
 import DocIcon from "@images/icon_doc.svg"
 import TwitterIcon from "@images/icon_twitter.svg"
 import DiscordIcon from "@images/icon_discord.svg"
+import ethIcon from "@images/chains/ethereum.svg"
+import arbIcon from "@images/chains/arbitrum.svg"
 import SweepLogo from "@images/icon_sweep.svg"
 import SweeprLogo from "@images/icon_sweepr.png"
 import sweepABI from "@abis/sweep.json";
@@ -88,6 +90,26 @@ const tokens = {
     1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     5: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
     42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+    421613: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892'
+  }
+}
+
+const AMMLinks = {
+  1: {
+    title: 'Uniswap on Ethereum',
+    link: `https://app.uniswap.org/#/swap`
+  },
+  5: {
+    title: 'Uniswap on Ethereum',
+    link: `https://app.uniswap.org/#/swap`
+  },
+  42161: {
+    title: 'Uniswap on Arbitrum',
+    link: `https://app.uniswap.org/#/swap`
+  },
+  421613: {
+    title: 'Uniswap on Arbitrum',
+    link: `https://app.uniswap.org/#/swap`
   }
 }
 
@@ -109,13 +131,13 @@ const testChainList = [
     chainId: 5,
     netId: 10121,
     name: 'Ethereum Goerli',
-    logo: 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png'
+    logo: ethIcon
   },
   {
     chainId: 421613,
     netId: 10143,
     name: 'Arbitrum Goerli',
-    logo: 'https://assets.coingecko.com/coins/images/16547/thumb/photo_2023-03-29_21.47.00.jpeg'
+    logo: arbIcon
   }
 ]
 
@@ -124,17 +146,18 @@ const mainChainList = [
     chainId: 1,
     netId: 101,
     name: 'Ethereum',
-    logo: 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png'
+    logo: ethIcon
   },
   {
     chainId: 42161,
     netId: 110,
     name: 'Arbitrum',
-    logo: 'https://assets.coingecko.com/coins/images/16547/thumb/photo_2023-03-29_21.47.00.jpeg'
+    logo: arbIcon
   }
 ]
 
-const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
+// const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
+const chainList = testChainList;
 
 export {
   networks,
@@ -144,5 +167,6 @@ export {
   tokenList,
   socialLinks,
   assetStatus,
-  chainList
+  chainList,
+  AMMLinks
 }

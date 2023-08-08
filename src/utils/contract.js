@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
-import { addresses, network } from "@utils/address";
+import { addresses } from "@utils/address";
 import { assetStatus, rpcLinks, tokens } from "@config/constants";
 import { languages } from "@config/languages";
 import { toInt, pp, toDate, toTime } from './helper';
@@ -9,8 +9,9 @@ import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import stabilizerABI from "@abis/stabilizer.json";
 
-export const sweepFetch = async () => {
-  const web3 = new Web3(network.rpc);
+export const sweepFetch = async (chainId) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = {
@@ -40,8 +41,9 @@ export const sweepFetch = async () => {
   }
 }
 
-export const assetListFetch = async (assets) => {
-  const web3 = new Web3(network.rpc);
+export const assetListFetch = async (chainId, assets) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = await Promise.all(

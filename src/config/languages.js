@@ -2,11 +2,12 @@ export const languages = {
     text_sweep_title: 'SWEEP Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
-    text_sweep_bridge: 'Sweep Bridge',
+    text_bridge: 'Bridge',
     text_change_network: 'You should change the network to the ',
     text_tx_process: 'Transaction is in progress.',
     text_tx_success: 'Success: Transaction is completed.',
     text_tx_error: 'Transaction cancelled by user.',
+    text_empty_asset: 'There is no asset.',
 
     label_current_supply: 'Current Supply',
     label_interest_rate: 'Interest Rate',
@@ -34,6 +35,7 @@ export const languages = {
 
     btn_link_uniswap: 'Sweep on Uniswap for',
     btn_sweep_bridge: 'Sweep Bridge',
+    btn_sweepr_bridge: 'Sweepr Bridge',
     btn_send: 'Send',
     btn_pending: 'Pending ...',
     btn_connect: 'Connect Wallet',

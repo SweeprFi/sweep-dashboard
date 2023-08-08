@@ -1,6 +1,4 @@
-import { addresses, network } from "./address"
-
-export const buySweepLink = `https://app.uniswap.org/#/swap?inputCurrency=${addresses.usdc}&outputCurrency=${addresses.sweep}`
+import { network } from "./address"
 
 export const assetName = (name) => {
   return name ? name : 'Off Chain Asset';

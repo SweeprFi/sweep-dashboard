@@ -2,7 +2,8 @@ import {
   networks,
   rpcLinks,
   scans,
-  tokens
+  tokens,
+  AMMLinks
 } from "@config/constants";
 
 const chainId = process.env.REACT_APP_CHAIN_ID;
@@ -16,7 +17,8 @@ const network = {
   chain: chainId,
   rpc: rpcLinks[chainId],
   scan: scans[chainId],
-  name: networks[chainId]
+  name: networks[chainId],
+  ammLink: AMMLinks[chainId]
 }
 
 export {

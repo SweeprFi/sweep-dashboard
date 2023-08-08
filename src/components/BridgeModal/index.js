@@ -11,11 +11,10 @@ import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import icon_wallet from "@images/wallet.svg";
 
 const BridgeModal = (props) => {
-    const { web3, chainId, walletAddress, setChain } = useWallet();
+    const { web3, chainId, walletAddress } = useWallet();
     const [sendAmount, setSendAmount] = useState(0);
-    const [curtChain, setCurtChain] = useState(chainList[0]);
+    const [isLoading, setIsLoading] = useState(false)
     const [destChain, setDestChain] = useState(chainList[1]);
-    const [curtToken, setCurtToken] = useState(tokenList[0]);
     const [balances, setBalances] = useState({
         curt: 0,
         dest: 0
@@ -26,28 +25,29 @@ const BridgeModal = (props) => {
         message: "",
         severity: undefined,
     })
+    
+    const token = useMemo(() => {
+        return tokenList.filter((item) => item.name.toLowerCase() === props.selectedToken)[0] || tokenList[0];
+    }, [tokenList, props])
 
     const destChainList = useMemo(() => {
-        return chainList.filter((item) => item.chainId !== curtChain.chainId)
-    }, [curtChain]);
-
-    const validConnect = useMemo(() => {
-        return curtChain.chainId === chainId;
-    }, [curtChain, chainId]);
+        return chainList.filter((item) => item.chainId !== chainId)
+    }, [chainId]);
 
     useEffect(() => {
         const intialHandler = async () => {
-            if (walletAddress === "") return;
-
-            const bal = await getSweepBalance(curtToken.name.toLowerCase(), curtChain.chainId, destChain.chainId, walletAddress);
+            if (walletAddress === "" || props.selectedToken === "") return;
+            setIsLoading(true)
+            const bal = await getSweepBalance(props.selectedToken, chainId, destChain.chainId, walletAddress);
             setBalances(bal)
 
             const _bal = pp(bal.curt, 18, 2);
             if (sendAmount > _bal) setSendAmount(_bal);
+            setIsLoading(false)
         }
 
         intialHandler();
-    }, [walletAddress, curtToken, curtChain, destChain, sendAmount, setBalances, setSendAmount])
+    }, [walletAddress, props, chainId, destChain, setBalances, setSendAmount])
 
     useEffect(() => {
         if (destChainList.indexOf(destChain) < 0)
@@ -55,7 +55,7 @@ const BridgeModal = (props) => {
     }, [destChain, destChainList])
 
     const sweepBridgeHandler = useCallback(async () => {
-        if (!validConnect || Number(sendAmount) === 0 || isPending) return;
+        if (Number(sendAmount) === 0 || isPending) return;
 
         const displayNotify = async (type, content) => {
             setAlertState({
@@ -65,15 +65,15 @@ const BridgeModal = (props) => {
             });
 
             if (type === 'success') {
-                const bal = await getSweepBalance(curtToken.name.toLowerCase(), curtChain.chainId, destChain.chainId, walletAddress);
+                const bal = await getSweepBalance(props.selectedToken, chainId, destChain.chainId, walletAddress);
                 setBalances(bal);
                 setSendAmount(0);
             }
         }
 
         if (web3)
-            await bridgeSweep(web3, curtToken.name.toLowerCase(), curtToken.abi, curtChain.chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
-    }, [web3, curtToken, curtChain, destChain, sendAmount, validConnect, walletAddress, isPending, setIsPending]);
+            await bridgeSweep(web3, props.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
+    }, [web3, props, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending]);
 
     const closeNotify = useCallback(async () => {
         setAlertState({
@@ -87,10 +87,6 @@ const BridgeModal = (props) => {
         const _bal = pp(balances.curt, 18, 2);
         setSendAmount(_bal)
     }, [balances, setSendAmount])
-
-    const changeNetWorkHandler = useCallback(async () => {
-        await setChain({ chainId: curtChain.chainId });
-    }, [setChain, curtChain])
 
     return (
         <>
@@ -124,16 +120,9 @@ const BridgeModal = (props) => {
                                         as="h3"
                                         className="text-2xl md:text-3xl text-center uppercase text-bold text-white"
                                     >
-                                        {languages.text_sweep_bridge}
+                                        {props.selectedToken + ' ' + languages.text_bridge}
                                         <XMarkIcon className="h-8 w-8 text-white absolute right-4 top-3 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
                                     </Dialog.Title>
-                                    {
-                                        !validConnect && (
-                                            <div className="text-red-400 mt-4">
-                                                * {languages.text_change_network + curtChain.name}
-                                            </div>
-                                        )
-                                    }
                                     {
                                         alertState.open && (
                                             <div className={`${alertState.severity === 'info' ? 'bg-blue-400' : alertState.severity === 'success' ? 'bg-green-400' : 'bg-red-400'} text-white pl-6 pr-8 py-2 rounded-md w-full mt-4 relative`}>
@@ -156,29 +145,17 @@ const BridgeModal = (props) => {
                                             pending={isPending}
                                         />
                                         <div className="flex justify-center items-center text-black text-right text-sm mt-1 absolute left-4 bottom-4">
-                                            {languages.label_balance} {pp(balances.curt, 18, 2)}
+                                            {languages.label_balance} {isLoading ? 'Loading ...' : pp(balances.curt, 18, 2)}
                                             <div className="ml-2 cursor-pointer" onClick={setMaxAmount}>
                                                 <img src={icon_wallet} alt="wallet icon" className="h-5 w-5" />
                                             </div>
                                         </div>
-                                        <div className="absolute right-4 top-2 flex flex-col items-end">
-                                            <div>
-                                                <SelectBox
-                                                    title=""
-                                                    data={tokenList}
-                                                    val={curtToken}
-                                                    setVal={setCurtToken}
-                                                    pending={isPending}
-                                                />
-                                            </div>
-                                            <div>
-                                                <SelectBox
-                                                    title=""
-                                                    data={chainList}
-                                                    val={curtChain}
-                                                    setVal={setCurtChain}
-                                                    pending={isPending}
-                                                />
+                                        <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
+                                            <div className="">
+                                                <span className="flex items-center">
+                                                    <img src={token?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
+                                                    <span className="ml-3 block truncate">{token?.name}</span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -193,21 +170,16 @@ const BridgeModal = (props) => {
                                             {sendAmount}
                                         </div>
                                         <div className="text-black text-right text-sm mt-1 absolute left-4 bottom-4">
-                                            {languages.label_balance} {pp(balances.dest, 18, 2)}
+                                            {languages.label_balance} {isLoading ? 'Loading ...' : pp(balances.dest, 18, 2)}
                                         </div>
-                                        <div className="absolute right-4 top-2 flex flex-col items-end">
-                                            <div className="pt-4 pb-2 pr-10">
-                                                <span className="flex items-center">
-                                                    <img src={curtToken.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
-                                                    <span className="ml-3 block truncate">{curtToken.name}</span>
-                                                </span>
-                                            </div>
+                                        <div className="absolute right-4 top-4 flex justify-center items-center gap-4">
                                             <div>
                                                 <SelectBox
                                                     title=""
                                                     data={destChainList}
                                                     val={destChain}
                                                     setVal={setDestChain}
+                                                    onlyIcon={true}
                                                     pending={isPending}
                                                 />
                                             </div>
@@ -216,10 +188,10 @@ const BridgeModal = (props) => {
                                     <div className="mt-6 flex justify-end">
                                         <button
                                             type="button"
-                                            className={`inline-flex justify-center rounded-md px-4 py-2 text-sm md:text-base font-medium text-white bg-app-blue-light focus:bg-app-blue-dark hover:bg-app-blue-dark uppercase ${isPending || (validConnect && Number(sendAmount) === 0) ? 'opacity-70 cursor-not-allowed' : ''}`}
-                                            onClick={() => validConnect ? sweepBridgeHandler() : changeNetWorkHandler()}
+                                            className={`inline-flex justify-center rounded-md px-4 py-2 text-sm md:text-base font-medium text-white bg-app-blue-light focus:bg-app-blue-dark hover:bg-app-blue-dark uppercase ${isPending || Number(sendAmount) === 0 ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                            onClick={() => sweepBridgeHandler()}
                                         >
-                                            {isPending ? languages.btn_pending : !validConnect ? languages.btn_change_network : languages.btn_send}
+                                            {isPending ? languages.btn_pending : languages.btn_send}
                                         </button>
                                     </div>
                                 </Dialog.Panel>

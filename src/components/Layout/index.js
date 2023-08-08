@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
     <div className="relative bg-black text-white font-archivo-regular">
       <div className="h-full p-6 min-h-screen">
         <Navbar />
-        <div className="container pt-6 mx-auto">
+        <div className="container sm:pt-6 mx-auto">
           {children}
         </div>
         <div className="flex w-full justify-center content-center items-center gap-4">
@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
               <a
                 key={index}
                 href={item.link}
-                className="p-2 md:p-3 transform hover:scale-125 duration-300 ease-in-out sm:hidden"
+                className="p-2 md:p-3 transform hover:scale-125 duration-300 ease-in-out md:hidden"
                 target="_blank"
                 rel="noreferrer"
               >

@@ -10,13 +10,14 @@ import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
 import { useConnectWallet, init, useSetChain } from '@web3-onboard/react'
-import { networks, rpcLinks } from '@config/constants'
+import { networks, rpcLinks, chainList } from '@config/constants'
 import walletMobileLogo from '@images/logo_mobile.svg'
 import walletLogo from "@images/logo.svg";
 
-const ChainID = parseInt(process.env.REACT_APP_CHAIN_ID)
-const ChainName = networks[ChainID]
-const RPC_URL = rpcLinks[ChainID]
+const CHAIN_ID = chainList[0].chainId
+const CHAIN_IDS = chainList.map((item) => { return item.chainId } )
+const CHAIN_NAME = networks[CHAIN_ID]
+const RPC_URL = rpcLinks[CHAIN_ID]
 
 const injected = injectedModule()
 const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
@@ -125,7 +126,6 @@ const UseWalletProvider = (props) => {
   const [connected, setConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [chainId, setChainId] = useState(props.chainId)
-  const [chainName, setChainName] = useState(props.chainName)
 
   useEffect(() => {
     const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 })
@@ -135,13 +135,15 @@ const UseWalletProvider = (props) => {
 
   const walletInitialize = useCallback(async () => {
     const _address = wallet?.accounts[0]?.address
-    const _chainId = wallet?.chains[0].id
-    if (_address) {
+    const _chainId = parseInt(wallet?.chains[0].id)
+    if(_address && CHAIN_IDS.indexOf(_chainId) < 0) {
+      setChain({ chainId: parseInt(chainId) });
+    } else if (_address) {
       setConnected(true)
       setWalletAddress(_address)
-      setChainId(parseInt(_chainId))
+      setChainId(_chainId)
     }
-  }, [wallet, setConnected, setWalletAddress]);
+  }, [wallet, chainId, setChain, setConnected, setWalletAddress]);
 
   const connectHandler = useCallback(async () => {
     await connect()
@@ -158,30 +160,17 @@ const UseWalletProvider = (props) => {
 
   const handleNetworkChange = useCallback(async (networkId) => {
     const _chainId = parseInt(networkId)
-    setChainId(_chainId);
-    setChainName(networks[_chainId]);
-    const _address = wallet?.accounts[0]?.address
-    if (_address) {
-      setConnected(true)
-      setWalletAddress(_address)
-    }
-  }, [wallet])
-
-  useEffect(() => {
-    const initialHandler = async () => {
-      if (wallet?.provider) {
-        if (connecting)
-          setChain({ chainId: parseInt(chainId) });
-
-        setWalletAddress(wallet?.accounts[0].address)
+    if(CHAIN_IDS.indexOf(_chainId) < 0) {
+      setChain({ chainId: parseInt(chainId) });
+    } else {
+      setChainId(_chainId);
+      const _address = wallet?.accounts[0]?.address
+      if (_address) {
         setConnected(true)
-      } else {
-        setWalletAddress('')
-        setConnected(false)
+        setWalletAddress(_address)
       }
     }
-    initialHandler()
-  }, [wallet, connecting, chainId, chainName, setChain, setConnected, setWalletAddress, disconnect])
+  }, [wallet, chainId, setChain])
 
   useEffect(() => {
     walletInitialize()
@@ -231,12 +220,11 @@ const UseWalletProvider = (props) => {
 }
 
 UseWalletProvider.defaultProps = {
-  chainId: ChainID,
-  chainName: ChainName
+  chainId: CHAIN_ID,
+  chainName: CHAIN_NAME
 }
 
 export {
-  ChainID,
   UseWalletProvider,
   useWallet
 }
