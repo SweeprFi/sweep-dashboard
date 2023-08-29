@@ -5,7 +5,7 @@ import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import { useWallet } from "@utils/walletHelper";
 import { sweepFetch, assetListFetch } from "@utils/contract";
-import { network } from "@utils/address";
+import { AMMLinks } from "@config/constants";
 import { languages } from "@config/languages"
 import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
 import SweepLogo from "@images/icon_sweep.svg"
@@ -63,14 +63,14 @@ const Dashboard = () => {
     <Layout>
       <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6">
         <a
-          href={network.ammLink.link}
+          href={AMMLinks[chainId].link}
           target="_blank"
           rel="noreferrer"
           className="flex items-center border border-app-red rounded-md px-3 py-1 hover:bg-white hover:text-app-red transform duration-300 h-10"
         >
           <LogoUniswap />
           <span>
-            {network.ammLink.title}
+            {AMMLinks[chainId].title}
           </span>
         </a>
         {

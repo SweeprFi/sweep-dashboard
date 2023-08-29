@@ -4,7 +4,7 @@ import { Multicall } from 'ethereum-multicall';
 import { addresses } from "@utils/address";
 import { assetStatus, rpcLinks, tokens } from "@config/constants";
 import { languages } from "@config/languages";
-import { toInt, pp, toDate, toTime } from './helper';
+import { toInt, pp, toDate, toTime, annualRate } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import stabilizerABI from "@abis/stabilizer.json";
@@ -33,7 +33,7 @@ export const sweepFetch = async (chainId) => {
 
   return {
     total_supply: pp(toInt(data[0]), 18, 2),
-    interest_rate: pp(toInt(data[1]), 4, 2),
+    interest_rate: annualRate(toInt(data[1])),
     targe_price: pp(toInt(data[2]), 6, 4),
     amm_price: pp(toInt(data[3]), 6, 4),
     mint_status: data[4].returnValues[0] ? "Minting" : "Repaying",

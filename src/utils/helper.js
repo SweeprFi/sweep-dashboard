@@ -47,3 +47,9 @@ export const toInt = (val) => {
 export const pp = (v, d, p) => {
   return Number((v / (10 ** d)).toFixed(p));
 }
+
+export const annualRate = (dayRate = 0) => {
+  const PRECISION = 1e10;
+
+  return Number(((dayRate / PRECISION * 365) * 100).toFixed(2));
+}

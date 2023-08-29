@@ -30,6 +30,10 @@ const BridgeModal = (props) => {
         return tokenList.filter((item) => item.name.toLowerCase() === props.selectedToken)[0] || tokenList[0];
     }, [tokenList, props])
 
+    const curtChain = useMemo(() => {
+        return chainList.filter((item) => item.chainId === chainId)
+    }, [chainId]);
+
     const destChainList = useMemo(() => {
         return chainList.filter((item) => item.chainId !== chainId)
     }, [chainId]);
@@ -131,8 +135,9 @@ const BridgeModal = (props) => {
                                             </div>
                                         )
                                     }
-                                    <div className="mt-6 mb-2 text-xl text-white">
+                                    <div className="mt-6 mb-2 text-xl text-white flex items-center">
                                         {languages.label_transfer_from}
+                                        <img src={curtChain[0]?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full ml-2" />
                                     </div>
                                     <div className="rounded-lg bg-white px-4 pt-1 pb-16 relative">
                                         <InputBox
