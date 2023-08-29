@@ -1,5 +1,5 @@
 # Sweep Dashboard
-[Link](https://master--vermillion-griffin-84c088.netlify.app/) to Sweep Dashboard
+[Link](https://sweepr.netlify.app/) to Sweep Dashboard
 
 ![preview](src/assets/images/preview.png)
 
