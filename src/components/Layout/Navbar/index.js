@@ -42,16 +42,20 @@ const Navbar = () => {
             ))
           }
           <div className="ml-6 flex justify-center items-center gap-4">
-            <div>
-              <SelectBox
-                title=""
-                data={chainList}
-                val={curtChain}
-                setVal={(e) => chainChange(e)}
-                onlyIcon={true}
-                pending={false}
-              />
-            </div>
+            {
+              connected && (
+                <div>
+                  <SelectBox
+                    title=""
+                    data={chainList}
+                    val={curtChain}
+                    setVal={(e) => chainChange(e)}
+                    onlyIcon={true}
+                    pending={false}
+                  />
+                </div>
+              )
+            }
             {
               connected ? (
                 <div className="bg-white text-black py-1 px-4 rounded-md">

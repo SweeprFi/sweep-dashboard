@@ -67,7 +67,7 @@ const assetStatus = {
     name: 'Margin Call',
     class: 'bg-app-yellow text-black'
   },
-  frozen: {
+  paused: {
     name: 'Paused',
     class: 'bg-red-500 text-white'
   }
@@ -75,21 +75,21 @@ const assetStatus = {
 
 const tokens = {
   sweep: {
-    1: '',
+    1: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     5: '0x760389840E5B30919D881feb747C12054CBE671f',
-    42161: '0x4F4219c9B851AEbB652DD182D944A99b0b68edcf',
+    42161: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     421613: '0xe5618312ac98a9DE15C287009a539F2E732aC5f2',
   },
   sweepr: {
-    1: '',
+    1: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     5: '0x504C094E10DC89100803b1A69b619c69751Dc9Ae',
-    42161: '',
+    42161: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     421613: '0xfFDD225Ab8E6048DE7D45e765Ac9bCf7F8494BF2',
   },
   usdc: {
     1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     5: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
-    42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+    42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     421613: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892'
   }
 }

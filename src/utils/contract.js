@@ -20,10 +20,10 @@ export const sweepFetch = async (chainId) => {
     abi: sweepABI,
     calls: [
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
-      { reference: 'interestRateCall', methodName: 'interest_rate' },
-      { reference: 'currentTargetPriceCall', methodName: 'current_target_price' },
-      { reference: 'ammPriceCall', methodName: 'amm_price' },
-      { reference: 'mintingAllowedCall', methodName: 'is_minting_allowed', methodParameters: [1] },
+      { reference: 'interestRateCall', methodName: 'interestRate' },
+      { reference: 'currentTargetPriceCall', methodName: 'currentTargetPrice' },
+      { reference: 'ammPriceCall', methodName: 'ammPrice' },
+      { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed'},
       { reference: 'getMintersCall', methodName: 'getMinters' }
     ]
   }
@@ -55,16 +55,16 @@ export const assetListFetch = async (chainId, assets) => {
         calls: [
           { reference: 'borrowerCall', methodName: 'borrower' },
           { reference: 'linkCall', methodName: 'link' },
-          { reference: 'sweepBorrowedCall', methodName: 'sweep_borrowed' },
-          { reference: 'loanLimitCall', methodName: 'loan_limit' },
+          { reference: 'sweepBorrowedCall', methodName: 'sweepBorrowed' },
+          { reference: 'loanLimitCall', methodName: 'loanLimit' },
           { reference: 'currentValueCall', methodName: 'currentValue' },
           { reference: 'equityRatioCall', methodName: 'getEquityRatio' },
-          { reference: 'minEquityRatioCall', methodName: 'min_equity_ratio' },
+          { reference: 'minEquityRatioCall', methodName: 'minEquityRatio' },
           { reference: 'defaultedCall', methodName: 'isDefaulted' },
-          { reference: 'callTimeCall', methodName: 'call_time' },
-          { reference: 'callAmountCall', methodName: 'call_amount' },
-          { reference: 'callDelayCall', methodName: 'call_delay' },
-          { reference: 'frozenCall', methodName: 'frozen' },
+          { reference: 'callTimeCall', methodName: 'callTime' },
+          { reference: 'callAmountCall', methodName: 'callAmount' },
+          { reference: 'callDelayCall', methodName: 'callDelay' },
+          { reference: 'pauseCall', methodName: 'paused' },
           { reference: 'nameCall', methodName: 'name' },
         ]
       }
@@ -87,11 +87,11 @@ export const assetListFetch = async (chainId, assets) => {
       current_value: pp(toInt(data[4]), 6, 2),
       equity_ratio: pp(toInt(data[5]), 4, 2),
       min_equity_ratio: pp(toInt(data[6]), 4, 2),
-      is_defaulted: data[7].returnValues[0],
+      isDefaulted: data[7].returnValues[0],
       call_time: toDate(toInt(data[8])),
       call_amount: pp(toInt(data[9]), 18, 2),
       call_delay: toTime(toInt(data[10])),
-      isFrozen: data[11].returnValues[0],
+      isPaused: data[11].returnValues[0],
       name: data[12].returnValues[0],
       address: key,
     };
@@ -166,8 +166,8 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
 }
 
 const getStatus = (info) => {
-  if(info.isFrozen)
-    return assetStatus.frozen;
+  if(info.isPaused)
+    return assetStatus.paused;
   
   if(info.loan_limit === 0)
     return assetStatus.deprecated;
@@ -175,7 +175,7 @@ const getStatus = (info) => {
   if (info.borrowed_amount === 0)
     return assetStatus.good;
   
-  if (info.is_defaulted)
+  if (info.isDefaulted)
     return assetStatus.defaulted;
 
   if (info.equity_ratio < info.min_equity_ratio)

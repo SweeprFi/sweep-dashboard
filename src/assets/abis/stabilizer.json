@@ -2,18 +2,23 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
         "internalType": "address",
-        "name": "_sweep_address",
+        "name": "_sweep",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_usdx_address",
+        "name": "_usdx",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_amm_address",
+        "name": "_oracleUsdx",
         "type": "address"
       },
       {
@@ -42,6 +47,31 @@
   },
   {
     "inputs": [],
+    "name": "NotAutoInvest",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotAutoInvestMinAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotAutoInvestMinRatio",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotBalancer",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotBorrower",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NotDefaulted",
     "type": "error"
   },
@@ -52,22 +82,17 @@
   },
   {
     "inputs": [],
-    "name": "OnlyAdmin",
+    "name": "NotGovernance",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "OnlyBalancer",
+    "name": "NotMultisigOrGov",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "OnlyBorrower",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "OnlyBorrowerOrBalancer",
+    "name": "NotSweep",
     "type": "error"
   },
   {
@@ -87,7 +112,7 @@
   },
   {
     "inputs": [],
-    "name": "StabilizerFrozen",
+    "name": "WrongMinimumRatio",
     "type": "error"
   },
   {
@@ -96,12 +121,43 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "ZeroPrice",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "AutoCalled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "sweepAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "AutoInvested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -113,21 +169,8 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "borrower",
-        "type": "address"
-      }
-    ],
-    "name": "BorrowerChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -140,7 +183,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -152,111 +195,73 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "sweepAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "CallCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "int256",
-        "name": "min_equity_ratio",
+        "name": "minEquityRatio",
         "type": "int256"
       },
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "spread_fee",
+        "name": "spreadFee",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "loan_limit",
+        "name": "loanLimit",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "liquidator_discount",
+        "name": "liquidatorDiscount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "call_delay",
+        "name": "callDelay",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "int256",
-        "name": "auto_invest_min_ratio",
+        "name": "autoInvestMinRatio",
         "type": "int256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "auto_invest_min_amount",
+        "name": "autoInvestMinAmount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "bool",
-        "name": "auto_invest",
+        "name": "autoInvestEnabled",
         "type": "bool"
       },
       {
         "indexed": false,
         "internalType": "string",
-        "name": "url_link",
+        "name": "url",
         "type": "string"
       }
     ],
     "name": "ConfigurationChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "usdx_amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Divested",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bool",
-        "name": "frozen",
-        "type": "bool"
-      }
-    ],
-    "name": "FrozenChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "usdx_amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Invested",
     "type": "event"
   },
   {
@@ -276,13 +281,26 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "loanLimit",
         "type": "uint256"
       }
     ],
-    "name": "MarginCalled",
+    "name": "LoanLimitChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
     "type": "event"
   },
   {
@@ -291,20 +309,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "MarginInvested",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -343,7 +348,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -356,7 +361,7 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -369,11 +374,37 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "usdx_amount",
+        "name": "usdxAmount",
         "type": "uint256"
       }
     ],
     "name": "SoldSWEEP",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "sweepAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SweepBorrowedChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
     "type": "event"
   },
   {
@@ -422,8 +453,54 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "sweepAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "slippage",
+        "type": "uint256"
+      }
+    ],
+    "name": "autoCall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "sweepAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "slippage",
+        "type": "uint256"
+      }
+    ],
+    "name": "autoInvest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "auto_invest",
+    "name": "autoInvestEnabled",
     "outputs": [
       {
         "internalType": "bool",
@@ -436,7 +513,7 @@
   },
   {
     "inputs": [],
-    "name": "auto_invest_min_amount",
+    "name": "autoInvestMinAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -449,7 +526,7 @@
   },
   {
     "inputs": [],
-    "name": "auto_invest_min_ratio",
+    "name": "autoInvestMinRatio",
     "outputs": [
       {
         "internalType": "int256",
@@ -464,7 +541,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -487,28 +564,15 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "name",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_usdx_amount",
+        "name": "usdxAmount",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_amountOutMin",
+        "name": "amountOutMin",
         "type": "uint256"
       }
     ],
@@ -516,7 +580,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -525,7 +589,7 @@
   },
   {
     "inputs": [],
-    "name": "call_amount",
+    "name": "callAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -538,7 +602,7 @@
   },
   {
     "inputs": [],
-    "name": "call_delay",
+    "name": "callDelay",
     "outputs": [
       {
         "internalType": "uint256",
@@ -551,7 +615,7 @@
   },
   {
     "inputs": [],
-    "name": "call_time",
+    "name": "callTime",
     "outputs": [
       {
         "internalType": "uint256",
@@ -560,53 +624,60 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cancelCall",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "int256",
-        "name": "_min_equity_ratio",
+        "name": "_minEquityRatio",
         "type": "int256"
       },
       {
         "internalType": "uint256",
-        "name": "_spread_fee",
+        "name": "_spreadFee",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_loan_limit",
+        "name": "_loanLimit",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_liquidator_discount",
+        "name": "_liquidatorDiscount",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_call_delay",
+        "name": "_callDelay",
         "type": "uint256"
       },
       {
         "internalType": "int256",
-        "name": "_auto_invest_min_ratio",
+        "name": "_autoInvestMinRatio",
         "type": "int256"
       },
       {
         "internalType": "uint256",
-        "name": "_auto_invest_min_amount",
+        "name": "_autoInvestMinAmount",
         "type": "uint256"
       },
       {
         "internalType": "bool",
-        "name": "_auto_invest",
+        "name": "_autoInvestEnabled",
         "type": "bool"
       },
       {
         "internalType": "string",
-        "name": "_link",
+        "name": "_url",
         "type": "string"
       }
     ],
@@ -623,19 +694,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "frozen",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -721,7 +779,7 @@
   },
   {
     "inputs": [],
-    "name": "liquidator_discount",
+    "name": "liquidatorDiscount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -734,7 +792,7 @@
   },
   {
     "inputs": [],
-    "name": "loan_limit",
+    "name": "loanLimit",
     "outputs": [
       {
         "internalType": "uint256",
@@ -746,39 +804,59 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "marginCall",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_sweep_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "marginInvest",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
-    "name": "min_equity_ratio",
+    "name": "minEquityRatio",
     "outputs": [
       {
         "internalType": "int256",
         "name": "",
         "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "oracleUsdx",
+    "outputs": [
+      {
+        "internalType": "contract IPriceFeed",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -809,7 +887,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
@@ -822,12 +900,12 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_amountOutMin",
+        "name": "amountOutMin",
         "type": "uint256"
       }
     ],
@@ -835,7 +913,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "usdx_amount",
+        "name": "usdxAmount",
         "type": "uint256"
       }
     ],
@@ -845,32 +923,19 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_borrower",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "newLoanLimit",
+        "type": "uint256"
       }
     ],
-    "name": "setBorrower",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "_frozen",
-        "type": "bool"
-      }
-    ],
-    "name": "setFrozen",
+    "name": "setLoanLimit",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "settings_enabled",
+    "name": "settingsEnabled",
     "outputs": [
       {
         "internalType": "bool",
@@ -883,7 +948,7 @@
   },
   {
     "inputs": [],
-    "name": "spread_date",
+    "name": "spreadDate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -896,7 +961,7 @@
   },
   {
     "inputs": [],
-    "name": "spread_fee",
+    "name": "spreadFee",
     "outputs": [
       {
         "internalType": "uint256",
@@ -911,11 +976,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sweep_amount",
+        "name": "sweepAmount",
         "type": "uint256"
       }
     ],
-    "name": "swapSweepToUsdc",
+    "name": "swapSweepToUsdx",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -924,11 +989,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_usdx_amount",
+        "name": "usdxAmount",
         "type": "uint256"
       }
     ],
-    "name": "swapUsdcToSweep",
+    "name": "swapUsdxToSweep",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -948,7 +1013,7 @@
   },
   {
     "inputs": [],
-    "name": "sweep_borrowed",
+    "name": "sweepBorrowed",
     "outputs": [
       {
         "internalType": "uint256",
@@ -957,6 +1022,26 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateSweepBorrowed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -976,12 +1061,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_token",
+        "name": "token",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "_amount",
+        "name": "amount",
         "type": "uint256"
       }
     ],

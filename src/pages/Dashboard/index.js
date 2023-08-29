@@ -26,8 +26,11 @@ const Dashboard = () => {
       try {
         const sweepData = await sweepFetch(chainId);
         setSweepInfo(sweepData);
-        if(sweepData.assets.length > 0)
+        if(sweepData.assets.length > 0) {
           setAssetInfo(await assetListFetch(chainId, sweepData.assets));
+        } else {
+          setAssetInfo([]);
+        }
       } catch (error) {
         console.log(error)        
       }
