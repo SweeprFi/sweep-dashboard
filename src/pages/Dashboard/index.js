@@ -61,6 +61,9 @@ const Dashboard = () => {
 
   return (
     <Layout>
+      <h1 className="text-2xl xl:text-3xl font-archivo-semibold mt-4 pb-2">
+        {languages.text_title}
+      </h1>
       <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6">
         <a
           href={AMMLinks[chainId].link}
@@ -99,7 +102,7 @@ const Dashboard = () => {
           )
         }
       </div>
-      <h3 className="uppercase mb-3">
+      <h3 className="text-xl uppercase mb-3">
         {languages.text_sweep_title}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -130,7 +133,7 @@ const Dashboard = () => {
         />
       </div>
 
-      <h3 className="uppercase mt-12 mb-6">
+      <h3 className="text-xl uppercase mt-12 mb-6">
         {languages.text_assets_title}
       </h3>
       {

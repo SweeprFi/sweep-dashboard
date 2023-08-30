@@ -1,4 +1,5 @@
 export const languages = {
+    text_title: 'This warmup release holds a low interest interest rates and a small TVL while we warm up our placement channels and improve reliability.',
     text_sweep_title: 'SWEEP Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
