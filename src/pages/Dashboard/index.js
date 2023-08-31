@@ -61,7 +61,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <h1 className="text-2xl xl:text-3xl font-archivo-semibold mt-4 pb-2">
+      <h1 className="text-2xl xl:text-3xl mt-4 pb-2">
         {languages.text_title}
       </h1>
       <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6">
