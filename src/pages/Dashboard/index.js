@@ -116,14 +116,14 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-app-blue rounded-lg p-8 flex flex-col justify-center items-center">
           <div className="uppercase text-2xl">
-            <div>{sweepInfo?.total_supply} /</div>
-            <div>{sweepInfo?.local_supply}</div>
+            <div>{sweepInfo?.total_supply}</div>
+            <div>/{sweepInfo?.local_supply}</div>
           </div>
           <div className="flex items-center gap-4 mt-2">
             <img src={SweepLogo} alt="logo" className="w-8" />
             <div className="uppercase font-archivo-bold">
-              <div className="whitespace-nowrap">{languages.label_sweep_total} /</div>
-              <div>{languages.label_local}</div>
+              <div className="whitespace-nowrap">{languages.label_sweep_total}</div>
+              <div>/{languages.label_local}</div>
             </div>
           </div>
         </div>
