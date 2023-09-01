@@ -97,19 +97,19 @@ const tokens = {
 const AMMLinks = {
   1: {
     title: 'Uniswap on Ethereum',
-    link: `https://app.uniswap.org/#/swap`
+    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[1]}`
   },
   5: {
     title: 'Uniswap on Ethereum',
-    link: `https://app.uniswap.org/#/swap`
+    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[5]}`
   },
   42161: {
     title: 'Uniswap on Arbitrum',
-    link: `https://app.uniswap.org/#/swap`
+    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[42161]}`
   },
   421613: {
     title: 'Uniswap on Arbitrum',
-    link: `https://app.uniswap.org/#/swap`
+    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[421613]}`
   }
 }
 

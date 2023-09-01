@@ -10,7 +10,7 @@ export const languages = {
     text_tx_error: 'Transaction cancelled by user.',
     text_empty_asset: 'No SWEEP assets on selected chain.',
 
-    label_current_supply: 'Current Supply',
+    label_current_supply: 'Local/Total Supply',
     label_interest_rate: 'Interest Rate',
     label_target_price: 'Target Price',
     label_amm_price: 'Amm Price',

@@ -4,7 +4,7 @@ import { Multicall } from 'ethereum-multicall';
 import { addresses } from "@utils/address";
 import { assetStatus, rpcLinks, tokens } from "@config/constants";
 import { languages } from "@config/languages";
-import { toInt, pp, toDate, toTime, annualRate } from './helper';
+import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import stabilizerABI from "@abis/stabilizer.json";
@@ -31,8 +31,19 @@ export const sweepFetch = async (chainId) => {
   let callResults = await multicall.call(callInfo);
   const data = callResults.results['sweep']['callsReturnContext']
 
+  const otherRpcs = otherChainRpcs(chainId);
+  const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
+    return await getTotalSupply(rpc);
+  }));
+  
+  let totalSupply = toInt(data[0]);
+  otherTotalSupplys.map((supply) => {
+    totalSupply += Number(supply);
+  });
+
   return {
-    total_supply: pp(toInt(data[0]), 18, 2),
+    total_supply: pp(totalSupply, 18, 2),
+    local_supply: pp(toInt(data[0]), 18, 2),
     interest_rate: annualRate(toInt(data[1])),
     targe_price: pp(toInt(data[2]), 6, 4),
     amm_price: pp(toInt(data[3]), 6, 4),
@@ -134,10 +145,10 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const tokenAddress = token[curtChainId]
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
   const amount = (sendAmount * 1e18).toString();
-  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 200000])
+  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 225000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
-  const gasFee = fees.nativeFee;
-  
+  const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
+
   try {
     await contract.methods.sendFrom(
       walletAddress,
@@ -146,7 +157,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       amount,
       walletAddress,
       '0x0000000000000000000000000000000000000000',
-      adapterParam
+      '0x'
     ).send({ from: walletAddress, value: gasFee })
     .on('transactionHash', () => {
       setIsPending(true);
@@ -161,8 +172,14 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       displayNotify('error', languages.text_tx_error);
     });
   } catch (error) {
-    
+    console.log(error)
   }
+}
+
+const getTotalSupply = async (rpc) => {
+  const web3 = new Web3(rpc);
+  const contract = new web3.eth.Contract(erc20ABI, addresses.sweep);
+  return await contract.methods.totalSupply().call();
 }
 
 const getStatus = (info) => {
