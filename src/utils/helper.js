@@ -56,7 +56,7 @@ export const annualRate = (dayRate = 0) => {
 }
 
 export const otherChainRpcs = (chainId) => {
-  const ids = chainList.filter((item) => item.chainId !== chainId).map((item) => item.chainId);
+  const ids = chainList.filter((item) => Number(item.chainId) !== Number(chainId)).map((item) => item.chainId);
   const rpcs = ids.map((id) => { return rpcLinks[id] });
 
   return rpcs;

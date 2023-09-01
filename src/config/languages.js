@@ -11,6 +11,8 @@ export const languages = {
     text_empty_asset: 'No SWEEP assets on selected chain.',
 
     label_current_supply: 'Local/Total Supply',
+    label_sweep_total: 'Sweep Total',
+    label_local: 'Local',
     label_interest_rate: 'Interest Rate',
     label_target_price: 'Target Price',
     label_amm_price: 'Amm Price',

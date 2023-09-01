@@ -34,13 +34,13 @@ const Dashboard = () => {
       try {
         const sweepData = await sweepFetch(chainId);
         setSweepInfo(sweepData);
-        if(sweepData.assets.length > 0) {
+        if (sweepData.assets.length > 0) {
           setAssetInfo(await assetListFetch(chainId, sweepData.assets));
         } else {
           setAssetInfo([]);
         }
       } catch (error) {
-        console.log(error)        
+        console.log(error)
       }
       setIsLoad(false);
     }
@@ -114,13 +114,19 @@ const Dashboard = () => {
         {languages.text_sweep_title}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <SweepItem
-          label={languages.label_current_supply}
-          value={sweepInfo?.local_supply + '/' + sweepInfo?.total_supply}
-          symbolLeft={
+        <div className="bg-app-blue rounded-lg p-8 flex flex-col justify-center items-center">
+          <div className="uppercase text-2xl">
+            <div>{sweepInfo?.total_supply} /</div>
+            <div>{sweepInfo?.local_supply}</div>
+          </div>
+          <div className="flex items-center gap-4 mt-2">
             <img src={SweepLogo} alt="logo" className="w-8" />
-          }
-        />
+            <div className="uppercase font-archivo-bold">
+              <div className="whitespace-nowrap">{languages.label_sweep_total} /</div>
+              <div>{languages.label_local}</div>
+            </div>
+          </div>
+        </div>
         <SweepItem
           label={languages.label_interest_rate}
           value={sweepInfo?.interest_rate}
