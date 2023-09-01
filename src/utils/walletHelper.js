@@ -14,7 +14,7 @@ import { networks, rpcLinks, chainList } from '@config/constants'
 import walletMobileLogo from '@images/logo_mobile.svg'
 import walletLogo from "@images/logo.svg";
 
-const CHAIN_ID = chainList[0].chainId
+const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
 const CHAIN_IDS = chainList.map((item) => { return item.chainId } )
 const CHAIN_NAME = networks[CHAIN_ID]
 const RPC_URL = rpcLinks[CHAIN_ID]

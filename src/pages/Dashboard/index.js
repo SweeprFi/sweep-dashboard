@@ -14,7 +14,15 @@ import SweeprLogoWhite from "@images/icon_sweepr_white.png"
 
 const Dashboard = () => {
   const { connected, chainId } = useWallet();
-  const [sweepInfo, setSweepInfo] = useState([]);
+  const [sweepInfo, setSweepInfo] = useState({
+    total_supply: 0,
+    local_supply: 0,
+    interest_rate: 0,
+    targe_price: 0,
+    amm_price: 0,
+    mint_status: "Minting",
+    assets: []
+  });
   const [assetInfo, setAssetInfo] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
   const [isOpen, setIsOpen] = useState(false);

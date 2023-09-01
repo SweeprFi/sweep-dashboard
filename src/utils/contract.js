@@ -35,11 +35,9 @@ export const sweepFetch = async (chainId) => {
   const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
     return await getTotalSupply(rpc);
   }));
-  
+
   let totalSupply = toInt(data[0]);
-  otherTotalSupplys.map((supply) => {
-    totalSupply += Number(supply);
-  });
+  otherTotalSupplys.map((supply) => totalSupply += Number(supply));
 
   return {
     total_supply: pp(totalSupply, 18, 2),
