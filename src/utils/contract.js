@@ -2,13 +2,14 @@ import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
 import { addresses } from "@utils/address";
-import { assetStatus, rpcLinks, tokens } from "@config/constants";
+import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
 import { languages } from "@config/languages";
 import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
+import marketMakerABI from "@abis/marketMaker.json";
 
 export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
@@ -24,8 +25,9 @@ export const sweepFetch = async (chainId) => {
       { reference: 'interestRateCall', methodName: 'interestRate' },
       { reference: 'targetPriceCall', methodName: 'targetPrice' },
       { reference: 'ammPriceCall', methodName: 'ammPrice' },
+      { reference: 'arbSpreadCall', methodName: 'arbSpread' },
       { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed' },
-      { reference: 'getMintersCall', methodName: 'getMinters' }
+      { reference: 'getMintersCall', methodName: 'getMinters' },
     ]
   }
 
@@ -40,14 +42,17 @@ export const sweepFetch = async (chainId) => {
   let totalSupply = toInt(data[0]);
   otherTotalSupplys.map((supply) => totalSupply += Number(supply));
 
+  const market_price = toInt(data[2]) * (1 + toInt(data[4]) / 1e6);
+
   return {
     total_supply: pp(totalSupply, 18, 2),
     local_supply: pp(toInt(data[0]), 18, 2),
     interest_rate: annualRate(toInt(data[1])),
     targe_price: pp(toInt(data[2]), 6, 5),
     amm_price: pp(toInt(data[3]), 6, 5),
-    mint_status: data[4].returnValues[0] ? "Minting" : "Repaying",
-    assets: data[5].returnValues
+    market_price: pp(market_price, 6, 5),
+    mint_status: data[5].returnValues[0] ? "Minting" : "Repaying",
+    assets: data[6].returnValues
   }
 }
 
@@ -168,6 +173,27 @@ export const getSweepBalance = async (tokenName, curtChainId, destChainId, walle
   }
 }
 
+export const getBalances = async (chainId, tokenLists, walletAddress) => {
+  const rpc = rpcLinks[chainId];
+  const web3 = new Web3(rpc);
+  const balances = await Promise.all(
+    tokenLists.map(async (token) => {
+      const symbol = token.name.toLowerCase();
+      const address = tokens[symbol][chainId];
+      const abi = token.abi;
+      const contract = new web3.eth.Contract(abi, address);
+      const bal = await contract.methods.balanceOf(walletAddress).call();
+
+      return {
+        name: symbol,
+        bal: bal
+      }
+    })
+  )
+
+  return balances;
+}
+
 export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify) => {
   const key = Object.keys(tokens).filter((key) => key === tokenName);
   const token = tokens[key];
@@ -205,6 +231,67 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   }
 }
 
+export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAddress, setIsPending, displayNotify) => {
+  const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
+  const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
+  const amount = (sweepAmount * 1e18).toString();
+
+  try {
+    await contract.methods.buySweep(
+      amount
+    ).send({ from: walletAddress })
+      .on('transactionHash', () => {
+        setIsPending(true);
+        displayNotify('info', languages.text_tx_process);
+      })
+      .on('receipt', () => {
+        setIsPending(false);
+        displayNotify('success', languages.text_tx_success);
+      })
+      .on('error', () => {
+        setIsPending(false);
+        displayNotify('error', languages.text_tx_error);
+      });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getMarketMakerAllowance = async (chainId, walletAddress) => {
+  const rpc = rpcLinks[chainId];
+  const web3 = new Web3(rpc);
+  const tokenAddress = getAddress(tokens, 'usdc', chainId);
+  const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
+  const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+
+  return await contract.methods.allowance(walletAddress, marketMakerAddress).call();
+}
+
+export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddress, setIsPending, setAllowance) => {
+  const tokenAddress = getAddress(tokens, 'usdc', chainId);
+  const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
+  const amount = (usdcAmount * 1e6).toString();
+  const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+
+  try {
+    await contract.methods.approve(
+      marketMakerAddress, amount
+    ).send({ from: walletAddress })
+      .on('transactionHash', () => {
+        setIsPending(true);
+      })
+      .on('receipt', () => {
+        setIsPending(false);
+        setAllowance(Number(amount));
+      })
+      .on('error', () => {
+        setIsPending(false);
+      });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const getTotalSupply = async (rpc, type) => {
   const address = type === 'sweep' ? addresses.sweep : addresses.sweepr;
   const web3 = new Web3(rpc);
@@ -232,4 +319,8 @@ const getStatus = (info) => {
     return assetStatus.call;
 
   return assetStatus.good;
+}
+
+const getAddress = (list, name, id) => {
+  return list[name][id];
 }

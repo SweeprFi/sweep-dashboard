@@ -10,6 +10,7 @@ export const languages = {
     text_tx_success: 'Success: Transaction is completed.',
     text_tx_error: 'Transaction cancelled by user.',
     text_empty_asset: 'No SWEEP assets on selected chain.',
+    text_buy_sweep: 'Buy from MarketMaker',
 
     label_current_supply: 'Local/Total Supply',
     label_sweep_total: 'Sweep Total',
@@ -21,6 +22,8 @@ export const languages = {
     label_balance: 'Balance: ',
     label_transfer_from: 'Transfer From: ',
     label_transfer_to: 'Transfer To: ',
+    label_buy_from: 'Spend: ',
+    label_buy_to: 'Get: ',
 
     column_name: 'Name',
     column_borrowed: 'Borrowed',
@@ -39,10 +42,13 @@ export const languages = {
     link_go_home: 'Go Home',
 
     btn_link_uniswap: 'Sweep on Uniswap for',
-    btn_buy_sweep: 'Buy Sweep on MarketMaker',
+    btn_buy_sweep_on_market: 'Buy at',
     btn_sweep_bridge: 'Sweep Bridge',
     btn_sweepr_bridge: 'Sweepr Bridge',
     btn_send: 'Send',
+    btn_buy: 'Buy',
+    btn_close: 'Close',
+    btn_approve: 'Approve',
     btn_pending: 'Pending ...',
     btn_connect: 'Connect Wallet',
     btn_change_network: 'Change NetWork'

@@ -5,8 +5,10 @@ import ethIcon from "@images/chains/ethereum.svg"
 import arbIcon from "@images/chains/arbitrum.svg"
 import SweepLogo from "@images/icon_sweep.svg"
 import SweeprLogo from "@images/icon_sweepr.png"
+import UsdcLogo from "@images/icon_usdc.webp"
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
+import erc20ABI from "@abis/erc20.json";
 
 const networks = {
   1: 'mainnet',
@@ -94,21 +96,30 @@ const tokens = {
   }
 }
 
+const contracts = {
+  marketMaker: {
+    1: '0x709d075147a10495e5c3bBF3dfc0c138F34C6E72',
+    5: '',
+    42161: '0x99e5Ce59c5Df51D66C9933a7bbdC108746Fc7c3E',
+    421613: ''
+  }
+}
+
 const AMMLinks = {
   1: {
-    title: 'Uniswap on Ethereum',
+    title: 'Swap on Ethereum',
     link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[1]}`
   },
   5: {
-    title: 'Uniswap on Ethereum',
+    title: 'Swap on Ethereum',
     link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[5]}`
   },
   42161: {
-    title: 'Uniswap on Arbitrum',
+    title: 'Swap on Arbitrum',
     link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[42161]}`
   },
   421613: {
-    title: 'Uniswap on Arbitrum',
+    title: 'Swap on Arbitrum',
     link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[421613]}`
   }
 }
@@ -117,12 +128,20 @@ const tokenList = [
   {
     name: 'Sweep',
     logo: SweepLogo,
+    decimal: 18,
     abi: sweepABI
   },
   {
     name: 'Sweepr',
     logo: SweeprLogo,
+    decimal: 18,
     abi: sweeprABI
+  },
+  {
+    name: 'USDC',
+    logo: UsdcLogo,
+    decimal: 6,
+    abi: erc20ABI
   }
 ]
 
@@ -163,6 +182,7 @@ export {
   rpcLinks,
   scans,
   tokens,
+  contracts,
   tokenList,
   socialLinks,
   assetStatus,
