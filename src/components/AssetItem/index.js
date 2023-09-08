@@ -1,11 +1,14 @@
 import React from "react";
 import StatusBadge from "@components/StatusBadge";
 import { assetName, scanLink } from "@utils/helper";
+import { useWallet } from "@utils/walletHelper";
 import { languages } from "@config/languages";
 import imgLogo from "@images/logo.png";
 import { ReactComponent as IconLink } from "@images/icon_link.svg";
 
 const AssetItem = ({ data }) => {
+  const { chainId } = useWallet();
+
   const Row = (props) => {
     return (
       <div className="flex justify-between items-center">
@@ -154,13 +157,13 @@ const AssetItem = ({ data }) => {
           data.borrower && (
             <AssetLink
               title={languages.link_borrower}
-              link={scanLink(data.borrower)}
+              link={scanLink(chainId, data.borrower)}
             />
           )
         }
         <AssetLink
           title={languages.link_stabilizer}
-          link={scanLink(data.address)}
+          link={scanLink(chainId, data.address)}
         />
       </div>
     </div>

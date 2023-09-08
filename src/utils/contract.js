@@ -7,6 +7,7 @@ import { languages } from "@config/languages";
 import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
+import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
 
 export const sweepFetch = async (chainId) => {
@@ -23,7 +24,7 @@ export const sweepFetch = async (chainId) => {
       { reference: 'interestRateCall', methodName: 'interestRate' },
       { reference: 'targetPriceCall', methodName: 'targetPrice' },
       { reference: 'ammPriceCall', methodName: 'ammPrice' },
-      { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed'},
+      { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed' },
       { reference: 'getMintersCall', methodName: 'getMinters' }
     ]
   }
@@ -33,7 +34,7 @@ export const sweepFetch = async (chainId) => {
 
   const otherRpcs = otherChainRpcs(chainId);
   const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
-    return await getTotalSupply(rpc);
+    return await getTotalSupply(rpc, 'sweep');
   }));
 
   let totalSupply = toInt(data[0]);
@@ -47,6 +48,36 @@ export const sweepFetch = async (chainId) => {
     amm_price: pp(toInt(data[3]), 6, 5),
     mint_status: data[4].returnValues[0] ? "Minting" : "Repaying",
     assets: data[5].returnValues
+  }
+}
+
+export const sweeprFetch = async (chainId) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+
+  const callInfo = {
+    reference: 'sweepr',
+    contractAddress: addresses.sweepr,
+    abi: sweeprABI,
+    calls: [
+      { reference: 'totalSupplyCall', methodName: 'totalSupply' }
+    ]
+  }
+
+  let callResults = await multicall.call(callInfo);
+  const data = callResults.results['sweepr']['callsReturnContext']
+  const otherRpcs = otherChainRpcs(chainId);
+  const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
+    return await getTotalSupply(rpc, 'sweepr');
+  }));
+
+  let totalSupply = toInt(data[0]);
+  otherTotalSupplys.map((supply) => totalSupply += Number(supply));
+
+  return {
+    total_supply: pp(totalSupply, 18, 2),
+    local_supply: pp(toInt(data[0]), 18, 2)
   }
 }
 
@@ -130,7 +161,7 @@ export const getSweepBalance = async (tokenName, curtChainId, destChainId, walle
   web3 = new Web3(destRPC);
   contract = new web3.eth.Contract(erc20ABI, tokenAddress);
   const destAmount = await contract.methods.balanceOf(walletAddress).call();
-  
+
   return {
     curt: curtAmount,
     dest: destAmount
@@ -157,46 +188,47 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       '0x0000000000000000000000000000000000000000',
       '0x'
     ).send({ from: walletAddress, value: gasFee })
-    .on('transactionHash', () => {
-      setIsPending(true);
-      displayNotify('info', languages.text_tx_process);
-    })
-    .on('receipt', () => {
-      setIsPending(false);
-      displayNotify('success', languages.text_tx_success);
-    })
-    .on('error', () => {
-      setIsPending(false);
-      displayNotify('error', languages.text_tx_error);
-    });
+      .on('transactionHash', () => {
+        setIsPending(true);
+        displayNotify('info', languages.text_tx_process);
+      })
+      .on('receipt', () => {
+        setIsPending(false);
+        displayNotify('success', languages.text_tx_success);
+      })
+      .on('error', () => {
+        setIsPending(false);
+        displayNotify('error', languages.text_tx_error);
+      });
   } catch (error) {
     console.log(error)
   }
 }
 
-const getTotalSupply = async (rpc) => {
+const getTotalSupply = async (rpc, type) => {
+  const address = type === 'sweep' ? addresses.sweep : addresses.sweepr;
   const web3 = new Web3(rpc);
-  const contract = new web3.eth.Contract(erc20ABI, addresses.sweep);
+  const contract = new web3.eth.Contract(erc20ABI, address);
   return await contract.methods.totalSupply().call();
 }
 
 const getStatus = (info) => {
-  if(info.isPaused)
+  if (info.isPaused)
     return assetStatus.paused;
-  
-  if(info.loan_limit === 0)
+
+  if (info.loan_limit === 0)
     return assetStatus.deprecated;
 
   if (info.borrowed_amount === 0)
     return assetStatus.good;
-  
+
   if (info.isDefaulted)
     return assetStatus.defaulted;
 
   if (info.equity_ratio < info.min_equity_ratio)
     return assetStatus.marginCall;
-  
-  if(info.call_time > 0 && info.call_amount > 0)
+
+  if (info.call_time > 0 && info.call_amount > 0)
     return assetStatus.call;
 
   return assetStatus.good;

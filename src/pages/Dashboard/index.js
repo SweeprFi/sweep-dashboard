@@ -4,7 +4,7 @@ import AssetItem from "@components/AssetItem";
 import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import { useWallet } from "@utils/walletHelper";
-import { sweepFetch, assetListFetch } from "@utils/contract";
+import { sweepFetch, sweeprFetch, assetListFetch } from "@utils/contract";
 import { AMMLinks } from "@config/constants";
 import { languages } from "@config/languages"
 import { ReactComponent as LogoUniswap } from "@images/icon_uniswap.svg";
@@ -22,6 +22,10 @@ const Dashboard = () => {
     amm_price: 0,
     mint_status: "Minting",
     assets: []
+  });
+  const [sweeprInfo, setSweeprInfo] = useState({
+    total_supply: 0,
+    local_supply: 0
   });
   const [assetInfo, setAssetInfo] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
@@ -43,6 +47,19 @@ const Dashboard = () => {
         console.log(error)
       }
       setIsLoad(false);
+    }
+
+    initialHandler();
+  }, [chainId]);
+
+  useEffect(() => {
+    const initialHandler = async () => {
+      try {
+        const sweeprData = await sweeprFetch(chainId);
+        setSweeprInfo(sweeprData);
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     initialHandler();
@@ -84,29 +101,26 @@ const Dashboard = () => {
             {AMMLinks[chainId].title}
           </span>
         </a>
+        <div
+          onClick={() => { setIsOpen(true); setSelectedToken('sweep'); }}
+          className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
+        >
+          <img src={SweepLogo} alt="logo" className="w-6 mr-2" />
+          <span>
+            {languages.btn_buy_sweep}
+          </span>
+        </div>
         {
           connected && (
-            <>
-              <div
-                onClick={() => { setIsOpen(true); setSelectedToken('sweep'); }}
-                className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
-              >
-                <img src={SweepLogo} alt="logo" className="w-6 mr-2" />
-                <span>
-                  {languages.btn_sweep_bridge}
-                </span>
-              </div>
-              <div
-                onClick={() => { setIsOpen(true); setSelectedToken('sweepr'); }}
-                className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10 group"
-              >
-                <img src={SweeprLogoWhite} alt="logo" className="w-6 mr-2 group-hover:hidden" />
-                <img src={SweeprLogo} alt="logo" className="w-6 mr-2 hidden group-hover:block" />
-                <span>
-                  {languages.btn_sweepr_bridge}
-                </span>
-              </div>
-            </>
+            <div
+              onClick={() => { setIsOpen(true); setSelectedToken('sweep'); }}
+              className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10"
+            >
+              <img src={SweepLogo} alt="logo" className="w-6 mr-2" />
+              <span>
+                {languages.btn_sweep_bridge}
+              </span>
+            </div>
           )
         }
       </div>
@@ -199,6 +213,41 @@ const Dashboard = () => {
           </div>
         )
       }
+
+      <h3 className="text-xl uppercase mb-3">
+        {languages.text_sweepr_title}
+      </h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pb-12">
+        <div className="bg-app-blue rounded-lg p-8 flex flex-col justify-center items-center">
+          <div className="uppercase text-2xl">
+            <div>{sweeprInfo?.total_supply}</div>
+            <div>/{sweeprInfo?.local_supply}</div>
+          </div>
+          <div className="flex items-center gap-4 mt-2">
+            <img src={SweeprLogo} alt="logo" className="w-8" />
+            <div className="uppercase font-archivo-bold">
+              <div className="whitespace-nowrap">{languages.label_sweepr_total}</div>
+              <div>/{languages.label_local}</div>
+            </div>
+          </div>
+        </div>
+        {
+          connected && (
+            <div className="flex items-center">
+              <div
+                onClick={() => { setIsOpen(true); setSelectedToken('sweepr'); }}
+                className="flex items-center border border-app-red rounded-md px-4 py-1 hover:bg-white hover:text-app-red transform duration-300 cursor-pointer h-10 group"
+              >
+                <img src={SweeprLogoWhite} alt="logo" className="w-6 mr-2 group-hover:hidden" />
+                <img src={SweeprLogo} alt="logo" className="w-6 mr-2 hidden group-hover:block" />
+                <span>
+                  {languages.btn_sweepr_bridge}
+                </span>
+              </div>
+            </div>
+          )
+        }
+      </div>
       {
         isLoad && <Loader />
       }

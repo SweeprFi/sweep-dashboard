@@ -1,5 +1,4 @@
-import { network } from "./address"
-import { chainList, rpcLinks } from "../config/constants";
+import { chainList, rpcLinks, scans } from "../config/constants";
 
 export const assetName = (name) => {
   return name ? name : 'Off Chain Asset';
@@ -9,8 +8,8 @@ export const shortAddress = (addr) => {
   return addr?.slice(0, 6) + '...' + addr?.slice(-4)
 }
 
-export const scanLink = (addr) => {
-  return network.scan + addr;
+export const scanLink = (chainId, addr) => {
+  return scans[chainId] + addr;
 }
 
 export const toDate = (val) => {

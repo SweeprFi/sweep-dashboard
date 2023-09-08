@@ -10,6 +10,7 @@ const chainId = process.env.REACT_APP_CHAIN_ID;
 
 const addresses = {
   sweep: tokens.sweep[chainId],
+  sweepr: tokens.sweepr[chainId],
   usdc: tokens.usdc[chainId]
 }
 

@@ -1,6 +1,7 @@
 export const languages = {
     text_title: 'This warmup release starts at 1% return and small TVL while we warm up our placement channels and improve reliability',
     text_sweep_title: 'SWEEP Metrics',
+    text_sweepr_title: 'SWEEPR Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
     text_bridge: 'Bridge',
@@ -12,6 +13,7 @@ export const languages = {
 
     label_current_supply: 'Local/Total Supply',
     label_sweep_total: 'Sweep Total',
+    label_sweepr_total: 'Sweepr Total',
     label_local: 'Local',
     label_interest_rate: 'Interest Rate',
     label_target_price: 'Target Price',
@@ -37,6 +39,7 @@ export const languages = {
     link_go_home: 'Go Home',
 
     btn_link_uniswap: 'Sweep on Uniswap for',
+    btn_buy_sweep: 'Buy Sweep on MarketMaker',
     btn_sweep_bridge: 'Sweep Bridge',
     btn_sweepr_bridge: 'Sweepr Bridge',
     btn_send: 'Send',
