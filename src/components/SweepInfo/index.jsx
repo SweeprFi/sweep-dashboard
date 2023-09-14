@@ -38,17 +38,7 @@ const SweepInfo = ({ data }) => {
                     <div className="growing absolute top-0 left-0 w-full h-full p-[2px] rounded-3xl">
                         <div className="growing-inner-lg w-full h-full"></div>
                     </div>
-                    <div className="sweep-circle relative w-12 h-12 sm:w-16 sm:h-16 lg:w-12 lg:h-12 xl:w-16 xl:h-16">
-                        <div className="absolute left-0 top-0 w-1/2 h-full overflow-hidden z-10">
-                            <div className="border-app-gray-light border-[8px] -rotate-180 left-full border-l-0 rounded-tr-[80px] rounded-br-[80px] w-full h-full absolute origin-center-left"></div>
-                        </div>
-                        <div className="absolute right-0 top-0 w-1/2 h-full overflow-hidden z-10">
-                            <div className="border-app-gray-light border-[8px] -rotate-45 -left-full border-r-0 rounded-tl-[80px] rounded-bl-[80px] w-full h-full absolute origin-center-right"></div>
-                        </div>
-                        <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center z-20">
-                            <img src={SweepLogoWhite} alt="logo" className="w-8 sm:w-12 lg:w-8 xl:w-12 border-[4px] border-app-gray rounded-full" />
-                        </div>
-                    </div>
+                    <img src={SweepLogoWhite} alt="logo" className="w-10 sm:w-14 lg:w-10 xl:w-14 rounded-full" />
                     <div className="flex justify-start items-center gap-4">
                         <div className="">
                             <h3 className="font-archivo-regular mt-2 text-app-gray-dark text-xs sm:text-base lg:text-sm xl:text-base whitespace-nowrap">
