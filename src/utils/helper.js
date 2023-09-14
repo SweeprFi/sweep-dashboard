@@ -44,6 +44,10 @@ export const toInt = (val) => {
   return 0;
 }
 
+export const convertNumber = (val) => {
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export const pp = (v, d, p) => {
   return Number((v / (10 ** d)).toFixed(p));
 }

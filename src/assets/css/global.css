@@ -4,6 +4,7 @@
 @import url('https://fonts.cdnfonts.com/css/barlow');
 
 @layer base {
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -49,6 +50,65 @@
 
 .font-barlow {
   font-family: 'Barlow', sans-serif;
+}
+
+.origin-center-left {
+  -webkit-transform-origin: center left;
+  -ms-transform-origin: center left;
+  transform-origin: center left;
+}
+
+.origin-center-right {
+  -webkit-transform-origin: center right;
+  -ms-transform-origin: center right;
+  transform-origin: center right;
+}
+
+.growing {
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: xor;
+}
+
+.growing-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  background-image: linear-gradient(320deg, transparent, hsla(0, 0%, 60%, 0) 35%, hsla(0, 0%, 100%, .5) 50%, hsla(0, 0%, 76%, 0) 65%, transparent);
+}
+
+.growing-inner-lg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  background-image: linear-gradient(334deg, transparent, hsla(0, 0%, 60%, 0) 25%, hsla(0, 0%, 100%, .5) 50%, hsla(0, 0%, 76%, 0) 75%, transparent);
+}
+
+.sweep-circle::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(180deg, #C005C6 10%, #ee217d 50%);
+}
+
+.sweepr-circle::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(180deg, #F2F2F2 10%, #808080 50%);
 }
 
 .bg-blue {

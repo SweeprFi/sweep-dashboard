@@ -1,6 +1,8 @@
-import DocIcon from "@images/icon_doc.svg"
-import TwitterIcon from "@images/icon_twitter.svg"
-import DiscordIcon from "@images/icon_discord.svg"
+import { ReactComponent as GitbookIcon } from "@images/icons/gitbook.svg"
+import { ReactComponent as GithubIcon } from "@images/icons/github.svg"
+import { ReactComponent as DiscordIcon } from "@images/icons/discord.svg"
+import { ReactComponent as TwitterIcon } from "@images/icons/twitter.svg"
+import { ReactComponent as MediumIcon } from "@images/icons/medium.svg"
 import ethIcon from "@images/chains/ethereum.svg"
 import arbIcon from "@images/chains/arbitrum.svg"
 import SweepLogo from "@images/icon_sweep.svg"
@@ -32,19 +34,29 @@ const scans = {
 
 const socialLinks = [
   {
-    name: 'doc',
-    link: 'https://docs.sweepr.finance',
-    icon: DocIcon
+    name: 'GitBook',
+    link: 'https://docs.sweepr.finance/',
+    icon: GitbookIcon
   },
   {
-    name: 'twitter',
+    name: 'Github',
+    link: 'https://github.com/SweeprFi',
+    icon: GithubIcon
+  },
+  {
+    name: 'X',
     link: 'https://twitter.com/SweeprFi',
     icon: TwitterIcon
   },
   {
-    name: 'discord',
-    link: 'https://github.com/SweeprFi',
+    name: 'Discord',
+    link: 'https://discord.gg/dnJ7MMgQWH',
     icon: DiscordIcon
+  },
+  {
+    name: 'Medium',
+    link: 'https://medium.com/@SweeprFi',
+    icon: MediumIcon
   }
 ]
 
@@ -100,7 +112,7 @@ const contracts = {
   marketMaker: {
     1: '0x709d075147a10495e5c3bBF3dfc0c138F34C6E72',
     5: '',
-    42161: '0x99e5Ce59c5Df51D66C9933a7bbdC108746Fc7c3E',
+    42161: '0x33A48e4aA79A66fc4f7061f5D9E274528C213029',
     421613: ''
   }
 }

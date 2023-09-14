@@ -15,11 +15,11 @@ const SelectBox = (props) => {
                 <>
                     {
                         props.title !== "" && (
-                            <Listbox.Label className="block text-sm md:text-base font-medium leading-6 text-white mb-2">{props.title}</Listbox.Label>
+                            <Listbox.Label className="block text-sm md:text-base font-medium leading-6 text-transparent mb-2">{props.title}</Listbox.Label>
                         )
                     }
                     <div className="relative">
-                        <Listbox.Button className={`relative w-full rounded-md bg-white py-1.5 md:py-2 pl-3 pr-10 text-left text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none text-sm md:text-base leading-6 ${props.pending ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
+                        <Listbox.Button className={`relative w-full rounded-full bg-transparent py-1.5 md:py-2 pl-4 pr-11 text-left text-black shadow-sm ring-1 ring-inset ring-app-gray-light focus:outline-none text-sm md:text-base leading-6 ${props.pending ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
                             <span className="flex items-center">
                                 <img src={props.val?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
                                 {
