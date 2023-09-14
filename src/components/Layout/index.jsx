@@ -5,9 +5,9 @@ import { socialLinks } from "@config/constants";
 const Layout = ({ children }) => {
   return (
     <div className="relative bg-black text-white font-archivo-regular">
-      <div className="h-full pt-6 min-h-screen">
+      <div className="h-full pt-6 min-h-screen flex flex-col">
         <Navbar />
-        <div className="container sm:pt-6 mx-auto pb-8">
+        <div className="container sm:pt-6 mx-auto pb-8 flex-1">
           {children}
         </div>
         <footer class="bg-footer">

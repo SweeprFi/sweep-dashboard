@@ -16,7 +16,7 @@ export const languages = {
 
     label_current_supply: 'Local/Total Supply',
     label_sweep_total: 'SWEEP Total',
-    label_sweepr_total: 'Sweepr Total',
+    label_sweepr_total: 'SWEEPR Total',
     label_sweep_local: 'SWEEP Local',
     label_sweepr_local: 'SWEEPR Local',
     label_interest_rate: 'Interest Rate',
