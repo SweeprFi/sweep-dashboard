@@ -16,7 +16,7 @@ const AssetItem = ({ data }) => {
         <span className="font-medium capitalize">
           {props.title}
         </span>
-        <div className={`capitalize flex items-center font-medium ${props.class ? props.class : "text-base sm:text-lg"}`}>
+        <div className={`flex items-center font-medium ${props.class ? props.class : "text-base sm:text-lg"}`}>
           {
             props.symbolLeft && props.symbolLeft
           }
@@ -95,7 +95,7 @@ const AssetItem = ({ data }) => {
               status={data.status}
             />
           </div>
-          <div className="col-span-1 flex justify-end items-center">
+          <div className="col-span-1 flex justify-end items-center text-sm whitespace-nowrap">
             {data.call_time}
           </div>
           <div className="col-span-1 flex justify-end items-center">
@@ -113,6 +113,7 @@ const AssetItem = ({ data }) => {
         <Row
           title={languages.column_name}
           value={assetName(data.name)}
+          class="capitalize"
         />
         <Row
           title={languages.column_borrowed + '/' + languages.column_limit}

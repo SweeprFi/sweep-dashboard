@@ -1,4 +1,4 @@
-import { chainList, rpcLinks, scans } from "../config/constants";
+import { chainList, rpcLinks, scans, month } from "../config/constants";
 
 export const assetName = (name) => {
   return name ? name : 'Off Chain Asset';
@@ -18,22 +18,21 @@ export const toDate = (val) => {
 
   const date = new Date(val * 1000);
 
-  return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.getHours() + ':' + date.getMinutes();
+  return month[date.getMonth()] + ' ' + date.getDate() + ', ' + zeroToNum(date.getHours()) + ':' + zeroToNum(date.getMinutes());
 }
 
 export const toTime = (val) => {
   if (val === 0)
     return '';
 
-  const d = Math.floor(val / (3600 * 24));
-  const h = Math.floor(val % (3600 * 24) / 3600);
-  const m = val % 3600;
+  const h = val / 3600;
+  const m = Math.floor(val % 3600 / 60);
 
-  const day = d === 0 ? '' : d > 1 ? d + ' Days ' : d + ' Day ';
-  const hour = h === 0 ? '' : h > 1 ? h + ' Hours ' : h + ' Hour ';
-  const min = m === 0 ? '' : m > 1 ? m + ' Mins' : m + ' Min';
+  const min = m === 0 ? '' : m > 1 ? m + ' mins' : m + ' min';
+  const hour = h >= 1 ? Math.round(h) : 0;
+  const delay = hour === 0 ? min : hour > 1 ? hour + ' hours ' : hour + ' hour ';
 
-  return day + hour + min;
+  return delay;
 }
 
 export const toInt = (val) => {
@@ -63,4 +62,8 @@ export const otherChainRpcs = (chainId) => {
   const rpcs = ids.map((id) => { return rpcLinks[id] });
 
   return rpcs;
+}
+
+export const zeroToNum = (val) => {
+  return ('00' + val).slice(-2);
 }

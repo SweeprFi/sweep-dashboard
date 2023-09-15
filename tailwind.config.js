@@ -10,26 +10,29 @@ module.exports = {
           black: {
             DEFAULT: "#000000",
             light: "#2d2c2ccf",
-            medium: "#161616"
+            medium: "#161616",
+            dark: "#1A1A1A"
           },
           blue: {
             DEFAULT: "#1A2A76",
             semiLight: "#b1c0fe",
-            light: "#33407F",
+            light: "#14A8DF",
             dark: "#1C2759"
           },
           red: {
-            DEFAULT: "#f32b6d"
+            DEFAULT: "#f32b6d",
+            light: "#FE4649"
           },
           green: "#41f35f",
           gray: {
-            DEFAULT: "#2c2c2c",
+            DEFAULT: "#808080",
             light: "#4c4c4c",
-            dark: "#898989"
+            dark: "#898989",
+            semidark: "#292929"
           },
-          yellow: "#FFFF00",
+          yellow: "#DBD204",
           pink: {
-            DEFAULT: "#ee217d",
+            DEFAULT: "#F9661E",
             light: "#fa6126"
           },
           purple: "#c106c3",

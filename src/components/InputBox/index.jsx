@@ -13,7 +13,7 @@ const InputBox = ({ className, title, value, minValue, maxValue, setValue, pendi
             <div className="relative mt-2">
                 <input 
                     type="number" 
-                    className={`relative w-full rounded-md py-1.5 md:py-2 px-3 text-left text-black focus:outline-none leading-6 ${className} ${pending ? 'opacity-70 cursor-not-allowed' : 'cursor-default'}`}
+                    className={`relative w-full rounded-md py-1 text-left text-white focus:outline-none leading-6 ${className} ${pending ? 'opacity-70 cursor-not-allowed' : 'cursor-text'}`}
                     value={value}
                     onChange={(e) => changeHandler(e)}
                 />

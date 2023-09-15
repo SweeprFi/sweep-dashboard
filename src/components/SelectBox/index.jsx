@@ -19,7 +19,7 @@ const SelectBox = (props) => {
                         )
                     }
                     <div className="relative">
-                        <Listbox.Button className={`relative w-full rounded-full bg-transparent py-1.5 md:py-2 pl-4 pr-11 text-left text-black shadow-sm ring-1 ring-inset ring-app-gray-light focus:outline-none text-sm md:text-base leading-6 ${props.pending ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
+                        <Listbox.Button className={`relative w-full rounded-full ${props.bg ? "bg-app-gray-semidark" : "bg-transparent"} py-1.5 md:py-2 pl-4 pr-11 text-left text-black shadow-sm ring-1 ring-inset ring-app-gray-semidark focus:outline-none text-sm md:text-base leading-6 ${props.pending ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}>
                             <span className="flex items-center">
                                 <img src={props.val?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
                                 {

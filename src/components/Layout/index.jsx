@@ -10,9 +10,9 @@ const Layout = ({ children }) => {
         <div className="container sm:pt-6 mx-auto pb-8 flex-1">
           {children}
         </div>
-        <footer class="bg-footer">
-          <div class="container mx-auto py-12 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between">
-            <div class="-ml-4 -mt-1 flex flex-wrap items-center justify-center gap-3">
+        <footer className="bg-footer">
+          <div className="container mx-auto py-12 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between">
+            <div className="-ml-4 -mt-1 flex flex-wrap items-center justify-center gap-3">
               {
                 socialLinks.map((item, index) => (
                   <a
@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
                 ))
               }
             </div>
-            <div class="mt-4 text-center text-sm font-normal tracking-[0.28px] text-white/80 lg:mt-0">
+            <div className="mt-4 text-center text-sm font-normal tracking-[0.28px] text-white/80 lg:mt-0">
               {languages.text_copyright}
             </div>
           </div>

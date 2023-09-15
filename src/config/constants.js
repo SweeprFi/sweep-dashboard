@@ -5,12 +5,14 @@ import { ReactComponent as TwitterIcon } from "@images/icons/twitter.svg"
 import { ReactComponent as MediumIcon } from "@images/icons/medium.svg"
 import ethIcon from "@images/chains/ethereum.svg"
 import arbIcon from "@images/chains/arbitrum.svg"
-import SweepLogo from "@images/icon_sweep.svg"
+import SweepLogo from "@images/logo.png"
 import SweeprLogo from "@images/icon_sweepr.png"
 import UsdcLogo from "@images/icon_usdc.webp"
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
 import erc20ABI from "@abis/erc20.json";
+
+const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const networks = {
   1: 'mainnet',
@@ -67,7 +69,7 @@ const assetStatus = {
   },
   defaulted: {
     name: 'Defaulted',
-    class: 'bg-red-500 text-white'
+    class: 'bg-app-red-light text-white'
   },
   deprecated: {
     name: 'Deprecated',
@@ -75,7 +77,7 @@ const assetStatus = {
   },
   call: {
     name: 'Call',
-    class: 'bg-app-yellow text-black'
+    class: 'bg-app-blue-light text-black'
   },
   marginCall: {
     name: 'Margin Call',
@@ -83,7 +85,7 @@ const assetStatus = {
   },
   paused: {
     name: 'Paused',
-    class: 'bg-red-500 text-white'
+    class: 'bg-app-pink text-white'
   }
 }
 
@@ -190,6 +192,7 @@ const mainChainList = [
 const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
 
 export {
+  month,
   networks,
   rpcLinks,
   scans,
