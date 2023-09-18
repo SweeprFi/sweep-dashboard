@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from '@headlessui/react'
 import InputBox from "../InputBox";
+import Alert from "@components/Alert"
 import { tokenList } from "@config/constants";
 import { languages } from "@config/languages";
 import { useWallet } from "@utils/walletHelper";
@@ -60,12 +61,12 @@ const BuySweepModal = (props) => {
 
     useEffect(() => {
         const _sweepAmount = Number((usdcAmount / props.marketPrice).toFixed(2));
-        setSweepAmount(_sweepAmount)
+        setSweepAmount(isNaN(_sweepAmount) ? 0 : _sweepAmount);
     }, [usdcAmount, props.marketPrice])
 
     useEffect(() => {
         const _usdcAmount = Number((sweepAmount * props.marketPrice).toFixed(2));
-        setUsdcAmount(_usdcAmount)
+        setUsdcAmount(isNaN(_usdcAmount) ? 0 : _usdcAmount)
     }, [sweepAmount, props.marketPrice])
 
     const buySweepHandler = useCallback(async () => {
@@ -98,14 +99,6 @@ const BuySweepModal = (props) => {
         if (web3)
             await approveMarketMaker(web3, chainId, usdcAmount, walletAddress, setIsPending, setAllowance);
     }, [web3, chainId, usdcAmount, walletAddress, isPending, setIsPending, setAllowance])
-
-    const closeNotify = useCallback(async () => {
-        setAlertState({
-            open: false,
-            message: "",
-            severity: undefined,
-        })
-    }, [setAlertState])
 
     const setMaxAmount = useCallback(() => {
         const _bal = pp(balances.usdc, 6, 2);
@@ -161,14 +154,6 @@ const BuySweepModal = (props) => {
                                         {languages.text_buy_sweep}
                                         <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
                                     </Dialog.Title>
-                                    {
-                                        alertState.open && (
-                                            <div className={`${alertState.severity === 'info' ? 'bg-blue-400' : alertState.severity === 'success' ? 'bg-green-400' : 'bg-red-400'} text-white pl-6 pr-8 py-2 rounded-md w-full mt-4 relative`}>
-                                                {alertState.message}
-                                                <XMarkIcon className="h-5 w-5 text-white absolute right-3 top-2 cursor-pointer" aria-hidden="true" onClick={() => closeNotify()} />
-                                            </div>
-                                        )
-                                    }
                                     <div className="mt-6 mb-2 text-md flex items-center">
                                         {languages.label_buy_from}
                                     </div>
@@ -225,6 +210,7 @@ const BuySweepModal = (props) => {
                                             </div>
                                         </div>
                                     </div>
+                                    <Alert data={alertState} />
                                     <div className="mt-6 flex justify-center gap-4">
                                         <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-white w-1/2">
                                             <div

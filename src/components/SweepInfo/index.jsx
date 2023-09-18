@@ -1,6 +1,6 @@
 import { languages } from "@config/languages"
+import { sweepStatus } from "@config/constants";
 import { convertNumber } from "@utils/helper";
-import SweepLogo from "@images/icon_sweep.svg"
 import SweepLogoWhite from "@images/logo.png"
 
 const SweepInfo = ({ data }) => {
@@ -71,8 +71,7 @@ const SweepInfo = ({ data }) => {
                 />
                 <SweepItem
                     label={
-                        languages.label_amm_price +
-                        (data?.mint_status && ` - ${data.mint_status}`)
+                        languages.label_amm_price + ` - ${sweepStatus[data.mint_status]}`
                     }
                     value={data?.amm_price}
                     symbolLeft="$"

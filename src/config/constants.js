@@ -65,7 +65,7 @@ const socialLinks = [
 const assetStatus = {
   good: {
     name: 'Good',
-    class: 'bg-app-green text-black'
+    class: 'bg-app-green-light text-black'
   },
   defaulted: {
     name: 'Defaulted',
@@ -191,6 +191,8 @@ const mainChainList = [
 
 const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
 
+const sweepStatus = ["Minting", "Repaying"];
+
 export {
   month,
   networks,
@@ -202,5 +204,6 @@ export {
   socialLinks,
   assetStatus,
   chainList,
-  AMMLinks
+  AMMLinks,
+  sweepStatus
 }

@@ -23,7 +23,7 @@ const Dashboard = () => {
     targe_price: 0,
     amm_price: 0,
     market_price: 0,
-    mint_status: "Minting",
+    mint_status: 0,
     assets: []
   });
   const [sweeprInfo, setSweeprInfo] = useState({
@@ -97,21 +97,26 @@ const Dashboard = () => {
           {
             connected && (
               <>
-                <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow">
-                  <div
-                    className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
-                  >
-                    <button
-                      onClick={() => setIsBuyOpen(true)}
-                      className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
+              {
+                // Hide buy button when mint not allowed.
+                sweepInfo.mint_status === 0 && (
+                  <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow">
+                    <div
+                      className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                     >
-                      <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                      <span>
-                        {languages.btn_buy_sweep_on_market + ' $' + sweepInfo.market_price}
-                      </span>
-                    </button>
+                      <button
+                        onClick={() => setIsBuyOpen(true)}
+                        className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
+                      >
+                        <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
+                        <span>
+                          {languages.btn_buy_sweep_on_market + ' $' + sweepInfo.market_price}
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )
+              }
                 <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow">
                   <div
                     className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"

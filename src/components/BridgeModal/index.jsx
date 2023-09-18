@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from '@headlessui/react'
 import SelectBox from "../SelectBox";
 import InputBox from "../InputBox";
+import Alert from "@components/Alert"
 import { tokenList, chainList } from "@config/constants";
 import { languages } from "@config/languages";
 import { useWallet } from "@utils/walletHelper";
@@ -25,7 +26,7 @@ const BridgeModal = (props) => {
         message: "",
         severity: undefined,
     })
-    
+
     const token = useMemo(() => {
         return tokenList.filter((item) => item.name.toLowerCase() === props.selectedToken)[0] || tokenList[0];
     }, [tokenList, props])
@@ -79,14 +80,6 @@ const BridgeModal = (props) => {
             await bridgeSweep(web3, props.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
     }, [web3, props, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending]);
 
-    const closeNotify = useCallback(async () => {
-        setAlertState({
-            open: false,
-            message: "",
-            severity: undefined,
-        })
-    }, [setAlertState])
-
     const setMaxAmount = useCallback(() => {
         const _bal = pp(balances.curt, 18, 2);
         setSendAmount(_bal)
@@ -133,7 +126,7 @@ const BridgeModal = (props) => {
                                 leaveFrom="opacity-100 scale-100"
                                 leaveTo="opacity-0 scale-95"
                             >
-                            <Dialog.Panel className="w-full max-w-md md:max-w-md transform overflow-hidden rounded-3xl bg-app-black-dark text-white px-10 py-8 text-left align-middle shadow-xl transition-all">
+                                <Dialog.Panel className="w-full max-w-md md:max-w-md transform overflow-hidden rounded-3xl bg-app-black-dark text-white px-10 py-8 text-left align-middle shadow-xl transition-all">
                                     <Dialog.Title
                                         as="h3"
                                         className="text-2xl md:text-3xl text-left text-bold text-white capitalize"
@@ -141,14 +134,6 @@ const BridgeModal = (props) => {
                                         {props.selectedToken + ' ' + languages.text_bridge}
                                         <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
                                     </Dialog.Title>
-                                    {
-                                        alertState.open && (
-                                            <div className={`${alertState.severity === 'info' ? 'bg-blue-400' : alertState.severity === 'success' ? 'bg-green-400' : 'bg-red-400'} text-white pl-6 pr-8 py-2 rounded-md w-full mt-4 relative`}>
-                                                {alertState.message}
-                                                <XMarkIcon className="h-5 w-5 text-white absolute right-3 top-2 cursor-pointer" aria-hidden="true" onClick={() => closeNotify()} />
-                                            </div>
-                                        )
-                                    }
                                     <div className="mt-6 mb-2 text-md flex items-center">
                                         {languages.label_transfer_from}
                                         <img src={curtChain[0]?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full ml-2" />
@@ -205,6 +190,7 @@ const BridgeModal = (props) => {
                                             </div>
                                         </div>
                                     </div>
+                                    <Alert data={alertState} />
                                     <div className="mt-6 flex justify-center gap-4">
                                         <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-white w-1/2">
                                             <div
@@ -231,7 +217,7 @@ const BridgeModal = (props) => {
                                                     className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 text-black whitespace-nowrap ${isPending || Number(sendAmount) === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'}`}
                                                 >
                                                     <span>
-                                            {isPending ? languages.btn_pending : languages.btn_send}
+                                                        {isPending ? languages.btn_pending : languages.btn_send}
                                                     </span>
                                                 </button>
                                             </div>
