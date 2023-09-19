@@ -154,6 +154,7 @@ const BuySweepModal = (props) => {
                                         {languages.text_buy_sweep}
                                         <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
                                     </Dialog.Title>
+                                    <Alert data={alertState} />
                                     <div className="mt-6 mb-2 text-md flex items-center">
                                         {languages.label_buy_from}
                                     </div>
@@ -169,7 +170,7 @@ const BuySweepModal = (props) => {
                                         />
                                         <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
                                             {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.usdc, 6, 2))}
-                                            <div className="ml-2 cursor-pointer flex justify-center items-center" onClick={setMaxAmount}>
+                                            <div className="ml-2 cursor-pointer flex justify-center items-center bg-app-gray-light px-2 py-0.5 rounded-2xl -mt-0.5" onClick={setMaxAmount}>
                                                 <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
                                             </div>
                                         </div>
@@ -210,7 +211,6 @@ const BuySweepModal = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <Alert data={alertState} />
                                     <div className="mt-6 flex justify-center gap-4">
                                         <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-white w-1/2">
                                             <div

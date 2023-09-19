@@ -46,43 +46,45 @@ const SelectBox = (props) => {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <Listbox.Options className={`absolute right-0 z-10 mt-1 max-h-56 ${props.onlyIcon ? isDevMode ? 'w-48' : 'w-36' : 'w-full'} overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}>
-                                {props.data.map((item, index) => (
-                                    <Listbox.Option
-                                        key={index}
-                                        className={({ active }) =>
-                                            classNames(
-                                                active ? 'bg-app-blue text-white' : 'text-black',
-                                                'relative cursor-pointer select-none py-2 pl-3 pr-3'
-                                            )
-                                        }
-                                        value={item}
-                                    >
-                                        {({ selected, active }) => (
-                                            <>
-                                                <div className="flex items-center">
-                                                    <img src={item?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
-                                                    <span
-                                                        className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
-                                                    >
-                                                        {item.name}
-                                                    </span>
-                                                </div>
+                            <Listbox.Options className={`absolute right-0 z-10 mt-1 max-h-56 ${props.onlyIcon ? isDevMode ? 'w-52' : 'w-40' : 'w-full'} overflow-auto rounded-xl bg-app-gray-semidark border-app-gray-light border-4 text-base shadow-lg ring-1 ring-white ring-opacity-5 focus:outline-none sm:text-sm`}>
+                                <div className="border-2 border-black rounded-xl py-1 w-full h-full relative">
+                                    {props.data.map((item, index) => (
+                                        <Listbox.Option
+                                            key={index}
+                                            className={({ active }) =>
+                                                classNames(
+                                                    active ? 'bg-app-gray-light rounded-xl text-white' : 'text-white',
+                                                    'relative cursor-pointer select-none py-2 pl-3 pr-3'
+                                                )
+                                            }
+                                            value={item}
+                                        >
+                                            {({ selected, active }) => (
+                                                <>
+                                                    <div className="flex items-center">
+                                                        <img src={item?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
+                                                        <span
+                                                            className={classNames(selected ? 'font-normal' : 'font-normal', 'ml-3 block truncate')}
+                                                        >
+                                                            {item.name}
+                                                        </span>
+                                                    </div>
 
-                                                {selected ? (
-                                                    <span
-                                                        className={classNames(
-                                                            active ? 'text-white' : 'text-app-blue',
-                                                            'absolute -top-1 inset-y-0 right-0 flex items-center pr-4'
-                                                        )}
-                                                    >
-                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                    </span>
-                                                ) : null}
-                                            </>
-                                        )}
-                                    </Listbox.Option>
-                                ))}
+                                                    {selected ? (
+                                                        <span
+                                                            className={classNames(
+                                                                active ? 'text-white' : 'text-white',
+                                                                'absolute -top-1 inset-y-0 right-0 flex items-center pr-4'
+                                                            )}
+                                                        >
+                                                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                        </span>
+                                                    ) : null}
+                                                </>
+                                            )}
+                                        </Listbox.Option>
+                                    ))}
+                                </div>
                             </Listbox.Options>
                         </Transition>
                     </div>
