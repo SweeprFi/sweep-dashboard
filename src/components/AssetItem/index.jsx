@@ -109,63 +109,85 @@ const AssetItem = ({ data }) => {
       </div>
 
       {/* Mobile Design */}
-      <div className="flex lg:hidden flex-col gap-2 p-6">
-        <Row
-          title={languages.column_name}
-          value={assetName(data.name)}
-          class="capitalize"
-        />
-        <Row
-          title={languages.column_borrowed + '/' + languages.column_limit}
-          value={convertNumber(data.borrowed_amount)}
-          value2={'/ ' + convertNumber(data.loan_limit)}
-          symbolLeft={
+      <div className="flex lg:hidden flex-col p-6">
+        <div className="flex justify-between items-center">
+          <div className="text-xl">
+            {assetName(data.name)}
+          </div>
+          <StatusBadge
+            status={data.status}
+          />
+        </div>
+        <div className="flex justify-between mt-4">
+          <div className="text-app-gray-dark">
+            {languages.column_borrowed + '/' + languages.column_limit}
+          </div>
+          <div className="text-app-gray-dark">
+            {languages.column_value}
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
             <LogoSweep className="w-6" />
-          }
-          class="gap-2"
-        />
-        <Row
-          title={languages.column_value}
-          value={convertNumber(data.current_value)}
-          symbolLeft="$"
-        />
-        <Row
-          title={languages.column_min_equity}
-          value={data.min_equity_ratio}
-          symbolRight="%"
-        />
-        <Row
-          title={languages.column_equity}
-          value={data.equity_ratio}
-          symbolRight="%"
-        />
-        <Row
-          title={languages.column_status}
-          badge={
-            <StatusBadge
-              status={data.status}
-            />
-          }
-        />
-        <Row
-          title={languages.column_call_time}
-          value={data.call_time}
-        />
-        <Row
-          title={languages.column_call_delay}
-          value={data.call_delay}
-        />
-        <Row
-          title={languages.column_call_amount}
-          value={data.call_amount}
-          symbolLeft={
-            <LogoSweep className="w-6" />
-          }
-          class="gap-2"
-        />
+            <div className="leading-6">
+              <span className="font-archivo-semibold">
+                {convertNumber(data.borrowed_amount)}
+              </span><br />
+              <span className="whitespace-nowrap">
+                / {convertNumber(data.loan_limit)}
+              </span>
+            </div>
+          </div>
+          <div>
+            ${convertNumber(data.current_value)}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-4 mt-4">
+          <div>
+            <div className="text-app-gray-dark">
+              {languages.column_min_equity}
+            </div>
+            <div>
+              {data.min_equity_ratio}%
+            </div>
+          </div>
+          <div>
+            <div className="text-app-gray-dark">
+              {languages.column_equity}
+            </div>
+            <div>
+              {data.equity_ratio}%
+            </div>
+          </div>
+          <div>
+            <div className="text-app-gray-dark">
+              {languages.column_call_time}
+            </div>
+            <div>
+              {data.call_time}
+            </div>
+          </div>
+          <div>
+            <div className="text-app-gray-dark">
+              {languages.column_call_delay}
+            </div>
+            <div>
+              {data.call_delay}
+            </div>
+          </div>
+          <div>
+            <div className="text-app-gray-dark">
+              {languages.column_call_amount}
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <LogoSweep className="w-6" />
+              {data.call_amount}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-4 pb-8 lg:py-3 text-sm font-light bg-app-black-medium rounded-b-2xl">
+      <div className="flex flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-6 pb-6 lg:py-3 text-sm font-light bg-app-black-medium rounded-b-2xl">
         {
           data.link && (
             <AssetLink
