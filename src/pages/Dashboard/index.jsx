@@ -73,7 +73,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className="sm:bg-l2s p-4">
-        <h1 className="text-xl font-archivo-regular mt-4 pb-2">
+        <h1 className="font-archivo-regular mt-4 pb-2">
           {languages.text_title1} <br className="hidden sm:block"/>
           {languages.text_title2}
         </h1>
