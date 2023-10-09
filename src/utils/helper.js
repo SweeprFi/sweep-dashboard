@@ -12,6 +12,10 @@ export const scanLink = (chainId, addr) => {
   return scans[chainId] + addr;
 }
 
+export const assetLink = (addr) => {
+  return "/asset/" + addr;
+}
+
 export const toDate = (val) => {
   if (val === 0)
     return '';
@@ -66,4 +70,13 @@ export const otherChainRpcs = (chainId) => {
 
 export const zeroToNum = (val) => {
   return ('00' + val).slice(-2);
+}
+
+export const getMaxBorrow = (total, ratio, borrowed) => {
+  return ((total * (1 - ratio/100)) - borrowed).toFixed(2);  
+}
+
+export const getMaxWithdraw = (total, invested, ratio, junior) => {
+  const maxWithdraw = junior - (ratio/100 * total);
+  return (maxWithdraw > 0) ? maxWithdraw.toFixed(2) : 0;
 }

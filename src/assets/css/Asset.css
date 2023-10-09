@@ -1,0 +1,16 @@
+tbody tr:first-child td {
+  height: 50px;
+  color: black;
+}
+
+td {
+  min-width: 300px;
+}
+
+tr td:first-child {
+  color: gray
+}
+
+.main-container {
+  min-height: 500px;
+}

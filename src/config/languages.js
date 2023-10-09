@@ -40,7 +40,7 @@ export const languages = {
     column_call_amount: 'Call Amount',
 
     link_deal: 'Deal Page',
-    link_borrower: 'Borrower Activity',
+    link_asset: 'Asset Page',
     link_stabilizer: 'Stabilizer Contract',
     link_go_home: 'Go Home',
 
@@ -54,5 +54,22 @@ export const languages = {
     btn_approve: 'Approve',
     btn_pending: 'Pending ...',
     btn_connect: 'Connect Wallet',
-    btn_change_network: 'Change NetWork'
+    btn_change_network: 'Change NetWork',
+
+    text_asset_not_found: 'Asset Not Found',
+    subtext_asset_not_found: 'The address you are looking for is not an asset',
+    text_status_title: 'Asset Status',
+    text_borrower: 'Borrower',
+    text_loan_limit: 'Loan Limit',
+    text_sweep_borrowed: 'Sweep Borrowed',
+    text_debt: 'Total Debt',
+    text_fee: 'Accrued Fee',
+    text_equity_ratio: 'Current Equity Ratio',
+    text_min_equity_ratio: 'Minimum Equity Ratio',
+    text_current_value: 'Total Value',
+    text_asset_value: 'Invested Value',
+    text_deposited_value: 'Not-Invested Value',
+    text_equities: 'Equity',
+    text_max_borrow: 'Maximum Borrowable Amount',
+    text_max_withdraw: 'Maximum Withdrawable Amount',
 }

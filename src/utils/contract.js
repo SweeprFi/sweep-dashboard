@@ -4,7 +4,7 @@ import { Multicall } from 'ethereum-multicall';
 import { addresses } from "@utils/address";
 import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
 import { languages } from "@config/languages";
-import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs } from './helper';
+import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs, getMaxBorrow, getMaxWithdraw } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
@@ -290,6 +290,71 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
   } catch (error) {
     console.log(error)
   }
+}
+
+export const assetFetch = async (chainId, addr) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
+  const isValidMinter = await checkAsset(web3, addr);
+
+  if(!isValidMinter) return { loading: false, found: false, asset: {} };
+
+  const info = {
+    reference: addr,
+    contractAddress: addr,
+    abi: stabilizerABI,
+    calls: [
+      { reference: 'borrowerCall', methodName: 'borrower' },
+      { reference: 'sweepBorrowedCall', methodName: 'sweepBorrowed' },
+      { reference: 'loanLimitCall', methodName: 'loanLimit' },
+      { reference: 'currentValueCall', methodName: 'currentValue' },
+      { reference: 'assetValueCall', methodName: 'assetValue' },
+      { reference: 'equityRatioCall', methodName: 'getEquityRatio' },
+      { reference: 'juniorTranchCall', methodName: 'getJuniorTrancheValue' },
+      { reference: 'nameCall', methodName: 'name' },
+      { reference: 'debtCall', methodName: 'getDebt' },
+      { reference: 'feeCall', methodName: 'accruedFee' },
+      { reference: 'minEquityRatioCall', methodName: 'minEquityRatio' },
+    ]
+  }
+  
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  let callResult = await multicall.call(info);
+  const data = callResult.results[addr]['callsReturnContext'];
+  const sweepBorrowed = pp(toInt(data[1]), 18, 2);
+  const loanLimit = pp(toInt(data[2]), 18, 2);
+  const currentValue = pp(toInt(data[3]), 6, 2);
+  const assetValue = pp(toInt(data[4]), 6, 2);
+  const minEquityRatio = pp(toInt(data[10]), 4, 2);
+  const equityRatio = pp(toInt(data[5]), 4, 2);
+  const juniorTranche = pp(toInt(data[6]), 6, 2);
+
+  return {
+    loading: false,
+    found: true,
+    asset: {
+      borrower: data[0].returnValues[0],
+      sweepBorrowed,
+      loanLimit,
+      currentValue,
+      assetValue,
+      equityRatio,
+      juniorTranche,
+      deposited: (currentValue - assetValue).toFixed(2),
+      name: data[7].returnValues[0],
+      debt: pp(toInt(data[8]), 18, 2),
+      fee: pp(toInt(data[9]), 18, 2),
+      minEquityRatio,
+      maxBorrow: getMaxBorrow(currentValue, minEquityRatio, sweepBorrowed),
+      maxWithdraw: getMaxWithdraw(currentValue, assetValue, minEquityRatio, juniorTranche),
+    }
+  }
+}
+
+// *******************
+const checkAsset = async (web3, addr) => {
+  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+  return await contract.methods.isValidMinter(addr).call();
 }
 
 const getTotalSupply = async (rpc, type) => {
