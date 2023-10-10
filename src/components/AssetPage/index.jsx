@@ -4,7 +4,35 @@ import { languages } from "@config/languages";
 import ExternalLink from "@components/ExternalLink";
 
 const AssetPage = (props) => {
-  const { asset, chainId, address} = props;
+  const { asset, chainId, address } = props;
+
+  const EmptyRow = () => {
+    return <tr><td>&nbsp;</td></tr>
+  }
+
+  const Title = (props) => {
+    return (
+      <>
+        <EmptyRow />
+        <tr>
+          <td>
+            <span className={`uppercase text-black bg-app-sweepMetrics py-1 px-2 rounded-lg bg-gradient-to-r ${props.class}`}>
+              {props.title}
+            </span>
+          </td>
+        </tr>
+        <EmptyRow />
+      </>
+    )
+  }
+
+  const Row = (props) => {
+    return (
+      <tr>
+        <td>{props.label}</td><td>{props.value}</td>
+      </tr>
+    )
+  }
 
   return (
     <div className="bg-l2s p-4">
@@ -17,60 +45,36 @@ const AssetPage = (props) => {
           <div>
             <table>
               <tbody>
-                <tr>
-                  <td>
-                    <span className="uppercase bg-app-sweepMetrics py-1 px-2 rounded-lg bg-gradient-to-r from-app-red to-app-pink-light">
-                      {languages.text_status_title}
-                    </span>
-                  </td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                  <td>{languages.text_borrower}</td><td>{asset.borrower}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_loan_limit}</td><td>{asset.loanLimit}</td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                  <td>{languages.text_sweep_borrowed}</td><td>{asset.sweepBorrowed}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_fee}</td><td>{asset.fee}</td>
-                </tr>
-                <tr>
-                <td>{languages.text_debt}</td><td>{asset.debt}</td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                  <td>{languages.text_min_equity_ratio}</td><td>{asset.minEquityRatio} %</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_equity_ratio}</td><td>{asset.equityRatio} %</td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                  <td>{languages.text_current_value}</td><td>{asset.currentValue}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_asset_value}</td><td>{asset.assetValue}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_deposited_value}</td><td>{asset.deposited}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_equities}</td><td>{asset.juniorTranche}</td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                  <td>{languages.text_max_borrow}</td><td>{asset.maxBorrow}</td>
-                </tr>
-                <tr>
-                  <td>{languages.text_max_withdraw}</td><td>{asset.maxWithdraw}</td>
-                </tr>
+                <Title title={languages.text_configuration_title} class={"from-app-red to-app-pink-light"} />
+                <Row label={languages.text_borrower} value={asset.borrower} />
+                <Row label={languages.text_loan_limit} value={asset.loanLimit} />
+                <Row label={languages.text_call_delay} value={asset.callDelay} />
+                <Row label={languages.text_spread_fee} value={asset.spreadFee + " %"} />
+                {
+                  asset.autoInvestEnabled &&
+                  <Row label={languages.text_auto_invest_amount} value={asset.autoInvestMinAmount} />
+                }
+                <Title title={languages.text_status_title} class={"from-app-red to-app-pink-light"} />
+                <Row label={languages.text_sweep_borrowed} value={asset.sweepBorrowed} />
+                <Row label={languages.text_fee} value={asset.fee} />
+                <Row label={languages.text_debt} value={asset.debt} />
+                <EmptyRow />
+                <Row label={languages.text_min_equity_ratio} value={asset.minEquityRatio + " %"} />
+                <Row label={languages.text_equity_ratio} value={asset.equityRatio + " %"} />
+                <EmptyRow />
+                <Row label={languages.text_current_value} value={asset.currentValue} />
+                <Row label={languages.text_asset_value} value={asset.assetValue} />
+                <Row label={languages.text_deposited_value} value={asset.deposited} />
+                <Row label={languages.text_equities} value={asset.juniorTranche} />
+                <EmptyRow />
+                <Row label={languages.text_max_borrow} value={asset.maxBorrow} />
+                <Row label={languages.text_remaning_borrow} value={asset.remainingBorrow} />
+                <Row label={languages.text_max_withdraw} value={asset.maxWithdraw} />
+                <Title title={languages.text_call_title} class={"from-app-red to-app-pink-light"} />
+                <Row label={languages.text_call_time} value={asset.callTime} />
+                <Row label={languages.text_call_amount} value={asset.callAmount} />
               </tbody>
             </table>
-
             <br/>
             <ExternalLink
               title={languages.link_stabilizer}

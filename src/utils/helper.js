@@ -9,7 +9,7 @@ export const shortAddress = (addr) => {
 }
 
 export const scanLink = (chainId, addr) => {
-  return scans[chainId] + addr;
+  return scans[chainId] + addr + "#writeContract";
 }
 
 export const assetLink = (addr) => {
@@ -72,11 +72,12 @@ export const zeroToNum = (val) => {
   return ('00' + val).slice(-2);
 }
 
-export const getMaxBorrow = (total, ratio, borrowed) => {
-  return ((total * (1 - ratio/100)) - borrowed).toFixed(2);  
+export const getMaxBorrow = (equity, ratio) => {
+  if(ratio === 0) return 0;
+  return ((equity * (1/(ratio/100))-1)).toFixed(2);  
 }
 
-export const getMaxWithdraw = (total, invested, ratio, junior) => {
+export const getMaxWithdraw = (total, ratio, junior) => {
   const maxWithdraw = junior - (ratio/100 * total);
   return (maxWithdraw > 0) ? maxWithdraw.toFixed(2) : 0;
 }

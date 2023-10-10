@@ -56,11 +56,17 @@ export const languages = {
     btn_connect: 'Connect Wallet',
     btn_change_network: 'Change NetWork',
 
+    // Asset page
     text_asset_not_found: 'Asset Not Found',
-    subtext_asset_not_found: 'The address you are looking for is not an asset',
+    subtext_asset_not_found: 'The address you are looking for does not correspond to an asset',
+    text_configuration_title: 'Asset Configuration',
     text_status_title: 'Asset Status',
+    text_call_title: 'Call Status',
     text_borrower: 'Borrower',
     text_loan_limit: 'Loan Limit',
+    text_call_delay: 'Call Delay',
+    text_spread_fee: 'Spread Fee',
+    text_auto_invest_amount: 'Autoinvest Minimum Amount',
     text_sweep_borrowed: 'Sweep Borrowed',
     text_debt: 'Total Debt',
     text_fee: 'Accrued Fee',
@@ -71,5 +77,8 @@ export const languages = {
     text_deposited_value: 'Not-Invested Value',
     text_equities: 'Equity',
     text_max_borrow: 'Maximum Borrowable Amount',
+    text_remaning_borrow: 'Remaining Borrowable Amount',
     text_max_withdraw: 'Maximum Withdrawable Amount',
+    text_call_time: 'Call Time',
+    text_call_amount: 'Call Amount',
 }

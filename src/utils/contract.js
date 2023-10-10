@@ -297,7 +297,7 @@ export const assetFetch = async (chainId, addr) => {
   const web3 = new Web3(RPC);
   const isValidMinter = await checkAsset(web3, addr);
 
-  if(!isValidMinter) return { loading: false, found: false, asset: {} };
+  if (!isValidMinter) return { loading: false, found: false, asset: {} };
 
   const info = {
     reference: addr,
@@ -315,38 +315,62 @@ export const assetFetch = async (chainId, addr) => {
       { reference: 'debtCall', methodName: 'getDebt' },
       { reference: 'feeCall', methodName: 'accruedFee' },
       { reference: 'minEquityRatioCall', methodName: 'minEquityRatio' },
+      { reference: 'callDelayCall', methodName: 'callDelay' },
+      { reference: 'callAmountCall', methodName: 'callAmount' },
+      { reference: 'callTimeCall', methodName: 'callTime' },
+      { reference: 'spreadFeeCall', methodName: 'spreadFee' },
+      { reference: 'spreadDateCall', methodName: 'spreadDate' },
+      { reference: 'autoInvestMinRatioCall', methodName: 'autoInvestMinRatio' },
+      { reference: 'autoInvestMinAmountCall', methodName: 'autoInvestMinAmount' },
+      { reference: 'autoInvestEnabledCall', methodName: 'autoInvestEnabled' },
+      { reference: 'settingsEnabledCall', methodName: 'settingsEnabled' },
+      { reference: 'startingTimeCall', methodName: 'startingTime' },
+      { reference: 'startingPriceCall', methodName: 'startingPrice' },
+      { reference: 'decreaseFactorCall', methodName: 'decreaseFactor' },
+      { reference: 'minLiquidationRatioCall', methodName: 'minLiquidationRatio' },
+      { reference: 'auctionAllowedCall', methodName: 'auctionAllowed' },
     ]
   }
-  
+
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
   let callResult = await multicall.call(info);
   const data = callResult.results[addr]['callsReturnContext'];
-  const sweepBorrowed = pp(toInt(data[1]), 18, 2);
-  const loanLimit = pp(toInt(data[2]), 18, 2);
-  const currentValue = pp(toInt(data[3]), 6, 2);
-  const assetValue = pp(toInt(data[4]), 6, 2);
-  const minEquityRatio = pp(toInt(data[10]), 4, 2);
-  const equityRatio = pp(toInt(data[5]), 4, 2);
-  const juniorTranche = pp(toInt(data[6]), 6, 2);
+
+  let sweepBorrowed = pp(toInt(data[1]), 18, 2);
+  let currentValue = pp(toInt(data[3]), 6, 2);
+  let assetValue = pp(toInt(data[4]), 6, 2);
+  let minEquityRatio = pp(toInt(data[10]), 4, 2);
+  let juniorTranche = pp(toInt(data[6]), 6, 2);
+  let maxBorrow = getMaxBorrow(juniorTranche, minEquityRatio);
 
   return {
     loading: false,
     found: true,
     asset: {
       borrower: data[0].returnValues[0],
-      sweepBorrowed,
-      loanLimit,
-      currentValue,
-      assetValue,
-      equityRatio,
-      juniorTranche,
-      deposited: (currentValue - assetValue).toFixed(2),
+      loanLimit: pp(toInt(data[2]), 18, 2),
+      equityRatio: pp(toInt(data[5]), 4, 2),
       name: data[7].returnValues[0],
       debt: pp(toInt(data[8]), 18, 2),
       fee: pp(toInt(data[9]), 18, 2),
-      minEquityRatio,
-      maxBorrow: getMaxBorrow(currentValue, minEquityRatio, sweepBorrowed),
-      maxWithdraw: getMaxWithdraw(currentValue, assetValue, minEquityRatio, juniorTranche),
+      callDelay: toInt(data[11]),
+      callAmount:pp(toInt(data[12]), 18, 2),
+      callTime: toInt(data[13]),
+      spreadFee: pp(toInt(data[14]), 4, 2),
+      spreadDate: toInt(data[15]),
+      autoInvestMinRatio: pp(toInt(data[16]), 4, 2),
+      autoInvestMinAmount: pp(toInt(data[17]), 18, 2),
+      autoInvestEnabled: data[18].returnValues[0],
+      settingsEnabled: data[19].returnValues[0],
+      startingTime: data[20].returnValues[0],
+      startingPrice: pp(toInt(data[21]), 6, 2),
+      decreaseFactor: pp(toInt(data[22]), 4, 2),
+      minLiquidationRatio: pp(toInt(data[23]), 4, 2),
+      auctionAllowed: data[24].returnValues[0],
+      sweepBorrowed, currentValue, assetValue, minEquityRatio, juniorTranche, maxBorrow,
+      remainingBorrow: (maxBorrow - sweepBorrowed).toFixed(2),
+      maxWithdraw: getMaxWithdraw(currentValue, minEquityRatio, juniorTranche),
+      deposited: (currentValue - assetValue).toFixed(2),
     }
   }
 }
