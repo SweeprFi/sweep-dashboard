@@ -18,7 +18,7 @@ export const assetLink = (addr) => {
 
 export const toDate = (val) => {
   if (val === 0)
-    return '';
+    return '-';
 
   const date = new Date(val * 1000);
 
@@ -27,7 +27,7 @@ export const toDate = (val) => {
 
 export const toTime = (val) => {
   if (val === 0)
-    return '';
+    return '-';
 
   const h = val / 3600;
   const m = Math.floor(val % 3600 / 60);

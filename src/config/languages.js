@@ -59,6 +59,7 @@ export const languages = {
     // Asset page
     text_asset_not_found: 'Asset Not Found',
     subtext_asset_not_found: 'The address you are looking for does not correspond to an asset',
+    text_how_to: '# How to',
     text_configuration_title: 'Asset Configuration',
     text_status_title: 'Asset Status',
     text_call_title: 'Call Status',
@@ -66,7 +67,9 @@ export const languages = {
     text_loan_limit: 'Loan Limit',
     text_call_delay: 'Call Delay',
     text_spread_fee: 'Spread Fee',
+    text_auto_invest_enabled: 'Autoinvest Enabled',
     text_auto_invest_amount: 'Autoinvest Minimum Amount',
+    text_auto_invest_ratio: 'Autoinvest Minimum Ratio',
     text_sweep_borrowed: 'Sweep Borrowed',
     text_debt: 'Total Debt',
     text_fee: 'Accrued Fee',

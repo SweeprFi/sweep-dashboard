@@ -2,6 +2,7 @@ import "@styles/Asset.css";
 import { scanLink } from "@utils/helper";
 import { languages } from "@config/languages";
 import ExternalLink from "@components/ExternalLink";
+import HowTo from "@components/HowTo";
 
 const AssetPage = (props) => {
   const { asset, chainId, address } = props;
@@ -43,6 +44,10 @@ const AssetPage = (props) => {
       <div className="grid">
         <div className="sm:col-span-6 lg:col-span-6 xl:col-span-7 bg-app-sweepMetrics rounded-3xl p-8 flex items-center gap-6 relative overflow-hidden">
           <div>
+            <ExternalLink
+              title={languages.link_stabilizer}
+              link={scanLink(chainId, address)}
+            />
             <table>
               <tbody>
                 <Title title={languages.text_configuration_title} class={"from-app-red to-app-pink-light"} />
@@ -50,16 +55,21 @@ const AssetPage = (props) => {
                 <Row label={languages.text_loan_limit} value={asset.loanLimit} />
                 <Row label={languages.text_call_delay} value={asset.callDelay} />
                 <Row label={languages.text_spread_fee} value={asset.spreadFee + " %"} />
+                <Row label={languages.text_min_equity_ratio} value={asset.minEquityRatio + " %"} />
+                <EmptyRow />
+                <Row label={languages.text_auto_invest_enabled} value={asset.autoInvestEnabled.toString()} />
                 {
                   asset.autoInvestEnabled &&
-                  <Row label={languages.text_auto_invest_amount} value={asset.autoInvestMinAmount} />
+                  <>
+                    <Row label={languages.text_auto_invest_amount} value={asset.autoInvestMinAmount} />
+                    <Row label={languages.text_auto_invest_ratio} value={asset.autoInvestMinRatio + " %"} />
+                  </>
                 }
                 <Title title={languages.text_status_title} class={"from-app-red to-app-pink-light"} />
                 <Row label={languages.text_sweep_borrowed} value={asset.sweepBorrowed} />
                 <Row label={languages.text_fee} value={asset.fee} />
                 <Row label={languages.text_debt} value={asset.debt} />
                 <EmptyRow />
-                <Row label={languages.text_min_equity_ratio} value={asset.minEquityRatio + " %"} />
                 <Row label={languages.text_equity_ratio} value={asset.equityRatio + " %"} />
                 <EmptyRow />
                 <Row label={languages.text_current_value} value={asset.currentValue} />
@@ -75,14 +85,11 @@ const AssetPage = (props) => {
                 <Row label={languages.text_call_amount} value={asset.callAmount} />
               </tbody>
             </table>
-            <br/>
-            <ExternalLink
-              title={languages.link_stabilizer}
-              link={scanLink(chainId, address)}
-            />
           </div>
         </div>
       </div>
+      <br/>
+      <HowTo name={asset.name} />
     </div>
   )
 }
