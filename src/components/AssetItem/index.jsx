@@ -9,40 +9,6 @@ import InternalLink from "@components/InternalLink";
 
 const AssetItem = ({ data }) => {
 
-  const Row = (props) => {
-    return (
-      <div className="flex justify-between items-center">
-        <span className="font-medium capitalize">
-          {props.title}
-        </span>
-        <div className={`flex items-center font-medium ${props.class ? props.class : "text-base sm:text-lg"}`}>
-          {
-            props.symbolLeft && props.symbolLeft
-          }
-          <div className="leading-6">
-            {props.value}
-            {
-              props.value2 && (
-                <>
-                  <br />
-                  {
-                    props.value2
-                  }
-                </>
-              )
-            }
-          </div>
-          {
-            props.symbolRight && props.symbolRight
-          }
-        </div>
-        {
-          props.badge && props.badge
-        }
-      </div>
-    )
-  }
-
   const LogoSweep = (props) => {
     return (
       <img src={imgLogo} className={props.className} alt="logo" />

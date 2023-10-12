@@ -9,7 +9,7 @@ export const shortAddress = (addr) => {
 }
 
 export const scanLink = (chainId, addr) => {
-  return scans[chainId] + addr + "#writeContract";
+  return scans[chainId] + addr;
 }
 
 export const assetLink = (addr) => {

@@ -9,3 +9,13 @@ tr td:first-child {
 .main-container {
   min-height: 500px;
 }
+
+@media screen and (max-width: 600px) {
+  table tr {
+    display: grid;
+  }
+}
+
+td a {
+  color: white!important;
+}

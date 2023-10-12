@@ -35,6 +35,8 @@ const AssetPage = (props) => {
     )
   }
 
+  const shorten = (addr) => { return `${addr.slice(0, 7)} ··· ${addr.slice(-7)}`}
+
   return (
     <div className="bg-l2s p-4">
       <div className="text-2xl sm:text-4xl lg:text-3xl xl:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-app-red to-app-pink-light">
@@ -46,12 +48,21 @@ const AssetPage = (props) => {
           <div>
             <ExternalLink
               title={languages.link_stabilizer}
-              link={scanLink(chainId, address)}
+              link={scanLink(chainId, address + "#writeContract")}
             />
             <table>
               <tbody>
                 <Title title={languages.text_configuration_title} class={"from-app-red to-app-pink-light"} />
-                <Row label={languages.text_borrower} value={asset.borrower} />
+                {/* <Row label={languages.text_borrower} value={asset.borrower} /> */}
+                <tr>
+                  <td>{languages.text_borrower}</td>
+                  <td>
+                    <ExternalLink
+                      title={shorten(asset.borrower)}
+                      link={scanLink(chainId, asset.borrower)}
+                    />
+                  </td>
+                </tr>
                 <Row label={languages.text_loan_limit} value={asset.loanLimit} />
                 <Row label={languages.text_call_delay} value={asset.callDelay} />
                 <Row label={languages.text_spread_fee} value={asset.spreadFee + " %"} />
@@ -88,7 +99,7 @@ const AssetPage = (props) => {
           </div>
         </div>
       </div>
-      <br/>
+      <br />
       <HowTo name={asset.name} />
     </div>
   )
