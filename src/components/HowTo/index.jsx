@@ -1,8 +1,8 @@
-import { stabilizers } from "@utils/functions";
+import { assets } from "@utils/assets/index";
 import { languages } from "@config/languages";
 
 const HowTo = (props) => {
-  const functions = stabilizers[props.name] || [];
+  const functions = assets[props.name] || assets["default"];
 
   return (
     <div className="grid">

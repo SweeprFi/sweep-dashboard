@@ -53,7 +53,6 @@ const AssetPage = (props) => {
             <table>
               <tbody>
                 <Title title={languages.text_configuration_title} class={"from-app-red to-app-pink-light"} />
-                {/* <Row label={languages.text_borrower} value={asset.borrower} /> */}
                 <tr>
                   <td>{languages.text_borrower}</td>
                   <td>

@@ -342,6 +342,8 @@ export const assetFetch = async (chainId, addr) => {
   let minEquityRatio = pp(toInt(data[10]), 4, 2);
   let juniorTranche = pp(toInt(data[6]), 6, 2);
   let maxBorrow = getMaxBorrow(juniorTranche, minEquityRatio);
+  let accruedFee = data[9].returnValues[0].hex;
+  let feeInUSD = await convertToUSD(web3, accruedFee);
 
   return {
     loading: false,
@@ -370,7 +372,7 @@ export const assetFetch = async (chainId, addr) => {
       sweepBorrowed, currentValue, assetValue, minEquityRatio, juniorTranche, maxBorrow,
       remainingBorrow: (maxBorrow - sweepBorrowed).toFixed(2),
       maxWithdraw: getMaxWithdraw(currentValue, minEquityRatio, juniorTranche),
-      deposited: (currentValue - assetValue).toFixed(2),
+      deposited: (currentValue - assetValue + pp(feeInUSD, 6, 2)).toFixed(2),
     }
   }
 }
@@ -379,6 +381,11 @@ export const assetFetch = async (chainId, addr) => {
 const checkAsset = async (web3, addr) => {
   const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
   return await contract.methods.isValidMinter(addr).call();
+}
+
+const convertToUSD = async (web3, amount) => {
+  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+  return await contract.methods.convertToUSD(amount).call();
 }
 
 const getTotalSupply = async (rpc, type) => {
