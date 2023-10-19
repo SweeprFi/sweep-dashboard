@@ -48,6 +48,12 @@ const walletInfo = {
       rpcUrl: `https://rpc.ankr.com/eth_goerli`
     },
     {
+      id: '0xA',
+      token: 'OETH',
+      label: 'Optimism',
+      rpcUrl: 'https://rpc.ankr.com/optimism'
+   },
+    {
       id: '0xaa36a7',
       token: 'SepoliaETH',
       label: 'Ethereum Sepolia',
