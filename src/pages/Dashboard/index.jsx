@@ -69,7 +69,6 @@ const Dashboard = () => {
     initialHandler();
   }, [chainId]);
 
-
   return (
     <Layout>
       <div className="sm:bg-l2s p-4">

@@ -1,0 +1,21 @@
+td {
+  min-width: 300px;
+}
+
+tr td:first-child {
+  color: gray
+}
+
+.main-container {
+  min-height: 500px;
+}
+
+@media screen and (max-width: 600px) {
+  table tr {
+    display: grid;
+  }
+}
+
+td a {
+  color: white!important;
+}

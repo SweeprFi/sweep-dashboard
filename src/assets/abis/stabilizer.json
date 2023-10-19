@@ -32,6 +32,21 @@
   },
   {
     "inputs": [],
+    "name": "ActionNotAllowed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AssetDefaulted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AuctionNotActive",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "EquityRatioExcessed",
     "type": "error"
   },
@@ -112,17 +127,7 @@
   },
   {
     "inputs": [],
-    "name": "WrongMinimumRatio",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "ZeroAddressDetected",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ZeroPrice",
     "type": "error"
   },
   {
@@ -227,7 +232,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "liquidatorDiscount",
+        "name": "decreaseFactor",
         "type": "uint256"
       },
       {
@@ -250,8 +255,20 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "minLiquidationRatio",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "bool",
         "name": "autoInvestEnabled",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "_auctionAllowed",
         "type": "bool"
       },
       {
@@ -453,6 +470,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "auctionAllowed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -564,6 +594,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "buyAuction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -652,7 +689,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_liquidatorDiscount",
+        "name": "_decreaseFactor",
         "type": "uint256"
       },
       {
@@ -671,8 +708,18 @@
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "_minLiquidationRatio",
+        "type": "uint256"
+      },
+      {
         "internalType": "bool",
         "name": "_autoInvestEnabled",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_auctionAllowed",
         "type": "bool"
       },
       {
@@ -688,7 +735,46 @@
   },
   {
     "inputs": [],
+    "name": "assetValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "currentValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decreaseFactor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAuctionAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -740,19 +826,6 @@
   },
   {
     "inputs": [],
-    "name": "getLiquidationValue",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "isDefaulted",
     "outputs": [
       {
@@ -779,19 +852,6 @@
   },
   {
     "inputs": [],
-    "name": "liquidatorDiscount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "loanLimit",
     "outputs": [
       {
@@ -811,6 +871,19 @@
         "internalType": "int256",
         "name": "",
         "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minLiquidationRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -962,6 +1035,39 @@
   {
     "inputs": [],
     "name": "spreadFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "startAuction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "startingPrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "startingTime",
     "outputs": [
       {
         "internalType": "uint256",

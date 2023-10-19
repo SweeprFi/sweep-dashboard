@@ -4,7 +4,7 @@ import { Multicall } from 'ethereum-multicall';
 import { addresses } from "@utils/address";
 import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
 import { languages } from "@config/languages";
-import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs } from './helper';
+import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs, getMaxBorrow, getMaxWithdraw } from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
@@ -290,6 +290,102 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
   } catch (error) {
     console.log(error)
   }
+}
+
+export const assetFetch = async (chainId, addr) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
+  const isValidMinter = await checkAsset(web3, addr);
+
+  if (!isValidMinter) return { loading: false, found: false, asset: {} };
+
+  const info = {
+    reference: addr,
+    contractAddress: addr,
+    abi: stabilizerABI,
+    calls: [
+      { reference: 'borrowerCall', methodName: 'borrower' },
+      { reference: 'sweepBorrowedCall', methodName: 'sweepBorrowed' },
+      { reference: 'loanLimitCall', methodName: 'loanLimit' },
+      { reference: 'currentValueCall', methodName: 'currentValue' },
+      { reference: 'assetValueCall', methodName: 'assetValue' },
+      { reference: 'equityRatioCall', methodName: 'getEquityRatio' },
+      { reference: 'juniorTranchCall', methodName: 'getJuniorTrancheValue' },
+      { reference: 'nameCall', methodName: 'name' },
+      { reference: 'debtCall', methodName: 'getDebt' },
+      { reference: 'feeCall', methodName: 'accruedFee' },
+      { reference: 'minEquityRatioCall', methodName: 'minEquityRatio' },
+      { reference: 'callDelayCall', methodName: 'callDelay' },
+      { reference: 'callAmountCall', methodName: 'callAmount' },
+      { reference: 'callTimeCall', methodName: 'callTime' },
+      { reference: 'spreadFeeCall', methodName: 'spreadFee' },
+      { reference: 'spreadDateCall', methodName: 'spreadDate' },
+      { reference: 'autoInvestMinRatioCall', methodName: 'autoInvestMinRatio' },
+      { reference: 'autoInvestMinAmountCall', methodName: 'autoInvestMinAmount' },
+      { reference: 'autoInvestEnabledCall', methodName: 'autoInvestEnabled' },
+      { reference: 'settingsEnabledCall', methodName: 'settingsEnabled' },
+      { reference: 'startingTimeCall', methodName: 'startingTime' },
+      { reference: 'startingPriceCall', methodName: 'startingPrice' },
+      { reference: 'decreaseFactorCall', methodName: 'decreaseFactor' },
+      { reference: 'minLiquidationRatioCall', methodName: 'minLiquidationRatio' },
+      { reference: 'auctionAllowedCall', methodName: 'auctionAllowed' },
+    ]
+  }
+
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  let callResult = await multicall.call(info);
+  const data = callResult.results[addr]['callsReturnContext'];
+
+  let sweepBorrowed = pp(toInt(data[1]), 18, 2);
+  let currentValue = pp(toInt(data[3]), 6, 2);
+  let assetValue = pp(toInt(data[4]), 6, 2);
+  let minEquityRatio = pp(toInt(data[10]), 4, 2);
+  let juniorTranche = pp(toInt(data[6]), 6, 2);
+  let maxBorrow = getMaxBorrow(juniorTranche, minEquityRatio);
+  let accruedFee = data[9].returnValues[0].hex;
+  let feeInUSD = await convertToUSD(web3, accruedFee);
+
+  return {
+    loading: false,
+    found: true,
+    asset: {
+      borrower: data[0].returnValues[0],
+      loanLimit: pp(toInt(data[2]), 18, 2),
+      equityRatio: pp(toInt(data[5]), 4, 2),
+      name: data[7].returnValues[0],
+      debt: pp(toInt(data[8]), 18, 2),
+      fee: pp(toInt(data[9]), 18, 2),
+      callDelay: toTime(toInt(data[11])),
+      callAmount:pp(toInt(data[12]), 18, 2),
+      callTime: toDate(toInt(data[13])),
+      spreadFee: pp(toInt(data[14]), 4, 2),
+      spreadDate: toInt(data[15]),
+      autoInvestMinRatio: pp(toInt(data[16]), 4, 2),
+      autoInvestMinAmount: pp(toInt(data[17]), 18, 2),
+      autoInvestEnabled: data[18].returnValues[0],
+      settingsEnabled: data[19].returnValues[0],
+      startingTime: data[20].returnValues[0],
+      startingPrice: pp(toInt(data[21]), 6, 2),
+      decreaseFactor: pp(toInt(data[22]), 4, 2),
+      minLiquidationRatio: pp(toInt(data[23]), 4, 2),
+      auctionAllowed: data[24].returnValues[0],
+      sweepBorrowed, currentValue, assetValue, minEquityRatio, juniorTranche, maxBorrow,
+      remainingBorrow: (maxBorrow - sweepBorrowed).toFixed(2),
+      maxWithdraw: getMaxWithdraw(currentValue, minEquityRatio, juniorTranche),
+      deposited: (currentValue - assetValue + pp(feeInUSD, 6, 2)).toFixed(2),
+    }
+  }
+}
+
+// *******************
+const checkAsset = async (web3, addr) => {
+  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+  return await contract.methods.isValidMinter(addr).call();
+}
+
+const convertToUSD = async (web3, amount) => {
+  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+  return await contract.methods.convertToUSD(amount).call();
 }
 
 const getTotalSupply = async (rpc, type) => {

@@ -1,57 +1,13 @@
 import React from "react";
 import StatusBadge from "@components/StatusBadge";
-import { assetName, scanLink } from "@utils/helper";
-import { useWallet } from "@utils/walletHelper";
+import { assetName, assetLink } from "@utils/helper";
 import { languages } from "@config/languages";
 import { convertNumber } from "@utils/helper";
 import imgLogo from "@images/logo.png";
-import { ArrowRightIcon } from '@heroicons/react/20/solid'
+import ExternalLink from "@components/ExternalLink";
+import InternalLink from "@components/InternalLink";
 
 const AssetItem = ({ data }) => {
-  const { chainId } = useWallet();
-
-  const Row = (props) => {
-    return (
-      <div className="flex justify-between items-center">
-        <span className="font-medium capitalize">
-          {props.title}
-        </span>
-        <div className={`flex items-center font-medium ${props.class ? props.class : "text-base sm:text-lg"}`}>
-          {
-            props.symbolLeft && props.symbolLeft
-          }
-          <div className="leading-6">
-            {props.value}
-            {
-              props.value2 && (
-                <>
-                  <br />
-                  {
-                    props.value2
-                  }
-                </>
-              )
-            }
-          </div>
-          {
-            props.symbolRight && props.symbolRight
-          }
-        </div>
-        {
-          props.badge && props.badge
-        }
-      </div>
-    )
-  }
-
-  const AssetLink = (props) => {
-    return (
-      <a href={props.link} className="flex items-center font-archivo-light gap-1 hover:underline text-app-gray-dark hover:text-white" target="_blank" rel="noreferrer">
-        {props.title}
-        <ArrowRightIcon className="-rotate-45 w-5 h-5" />
-      </a>
-    )
-  }
 
   const LogoSweep = (props) => {
     return (
@@ -190,15 +146,16 @@ const AssetItem = ({ data }) => {
       <div className="flex flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-6 pb-6 lg:py-3 text-sm font-light bg-app-black-medium rounded-b-2xl">
         {
           data.link && (
-            <AssetLink
+            <ExternalLink
               title={languages.link_deal}
               link={data.link}
             />
           )
         }
-        <AssetLink
-          title={languages.link_stabilizer}
-          link={scanLink(chainId, data.address)}
+
+        <InternalLink
+          title={languages.link_asset}
+          link={assetLink(data.address)}
         />
       </div>
     </div>
