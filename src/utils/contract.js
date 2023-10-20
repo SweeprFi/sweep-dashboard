@@ -1,10 +1,12 @@
 import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
-import { addresses } from "@utils/address";
-import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
 import { languages } from "@config/languages";
-import { toInt, pp, toDate, toTime, annualRate, otherChainRpcs, getMaxBorrow, getMaxWithdraw } from './helper';
+import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
+import {
+  toInt, pp, toDate, toTime, annualRate,
+  otherChainRpcs, getMaxBorrow, getMaxWithdraw
+} from './helper';
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
@@ -18,7 +20,7 @@ export const sweepFetch = async (chainId) => {
 
   const callInfo = {
     reference: 'sweep',
-    contractAddress: addresses.sweep,
+    contractAddress: tokens.sweep[chainId],
     abi: sweepABI,
     calls: [
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
@@ -34,9 +36,9 @@ export const sweepFetch = async (chainId) => {
   let callResults = await multicall.call(callInfo);
   const data = callResults.results['sweep']['callsReturnContext']
 
-  const otherRpcs = otherChainRpcs(chainId);
-  const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
-    return await getTotalSupply(rpc, 'sweep');
+  const { rpcs, ids } = otherChainRpcs(chainId);
+  const otherTotalSupplys = await Promise.all(rpcs.map(async (rpc, index) => {
+    return await getTotalSupply(rpc, tokens.sweep[ids[index]]);
   }));
 
   let totalSupply = toInt(data[0]);
@@ -63,7 +65,7 @@ export const sweeprFetch = async (chainId) => {
 
   const callInfo = {
     reference: 'sweepr',
-    contractAddress: addresses.sweepr,
+    contractAddress: tokens.sweepr[chainId],
     abi: sweeprABI,
     calls: [
       { reference: 'totalSupplyCall', methodName: 'totalSupply' }
@@ -72,9 +74,9 @@ export const sweeprFetch = async (chainId) => {
 
   let callResults = await multicall.call(callInfo);
   const data = callResults.results['sweepr']['callsReturnContext']
-  const otherRpcs = otherChainRpcs(chainId);
-  const otherTotalSupplys = await Promise.all(otherRpcs.map(async (rpc) => {
-    return await getTotalSupply(rpc, 'sweepr');
+  const { rpcs, ids} = otherChainRpcs(chainId);
+  const otherTotalSupplys = await Promise.all(rpcs.map(async (rpc, index) => {
+    return await getTotalSupply(rpc, tokens.sweepr[ids[index]]);
   }));
 
   let totalSupply = toInt(data[0]);
@@ -270,7 +272,7 @@ export const getMarketMakerAllowance = async (chainId, walletAddress) => {
 export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddress, setIsPending, setAllowance) => {
   const tokenAddress = getAddress(tokens, 'usdc', chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
-  const amount = (usdcAmount * 1e6).toString();
+  const amount = (usdcAmount * 1e6).toFixed();
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
 
   try {
@@ -295,7 +297,8 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
 export const assetFetch = async (chainId, addr) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
-  const isValidMinter = await checkAsset(web3, addr);
+  const sweepAddress = tokens.sweep[chainId];
+  const isValidMinter = await checkAsset(web3, sweepAddress, addr);
 
   if (!isValidMinter) return { loading: false, found: false, asset: {} };
 
@@ -343,7 +346,7 @@ export const assetFetch = async (chainId, addr) => {
   let juniorTranche = pp(toInt(data[6]), 6, 2);
   let maxBorrow = getMaxBorrow(juniorTranche, minEquityRatio);
   let accruedFee = data[9].returnValues[0].hex;
-  let feeInUSD = await convertToUSD(web3, accruedFee);
+  let feeInUSD = await convertToUSD(web3, sweepAddress, accruedFee);
 
   return {
     loading: false,
@@ -378,18 +381,17 @@ export const assetFetch = async (chainId, addr) => {
 }
 
 // *******************
-const checkAsset = async (web3, addr) => {
-  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+const checkAsset = async (web3, sweepAddress, addr) => {
+  const contract = new web3.eth.Contract(sweepABI, sweepAddress);
   return await contract.methods.isValidMinter(addr).call();
 }
 
-const convertToUSD = async (web3, amount) => {
-  const contract = new web3.eth.Contract(sweepABI, addresses.sweep);
+const convertToUSD = async (web3, sweepAddress, amount) => {
+  const contract = new web3.eth.Contract(sweepABI, sweepAddress);
   return await contract.methods.convertToUSD(amount).call();
 }
 
-const getTotalSupply = async (rpc, type) => {
-  const address = type === 'sweep' ? addresses.sweep : addresses.sweepr;
+const getTotalSupply = async (rpc, address) => {
   const web3 = new Web3(rpc);
   const contract = new web3.eth.Contract(erc20ABI, address);
   return await contract.methods.totalSupply().call();
