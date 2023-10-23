@@ -250,22 +250,6 @@ const BuySweepModal = (props) => {
                       </div>
 
                     </div>
-
-                    <div className="mt-2">
-                      <div className="group inline-block w-full rounded-full bg-white/20 p-1 hover:bg-white w-1/2">
-                        <div className="inline-block w-full rounded-full bg-app-gray-light p-0.5 group-hover:bg-white">
-                          <button
-                            onClick={() => props.closeModal(false)}
-                            className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-app-gray-light whitespace-nowrap group-hover:bg-white group-hover:text-black`}
-                          >
-                            <span>
-                              {languages.btn_close}
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
