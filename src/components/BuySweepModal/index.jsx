@@ -40,7 +40,7 @@ const BuySweepModal = (props) => {
   }, [balances.usdc, marketPrice])
 
   const isApproval = useMemo(() => {
-    return (allowance >= usdcAmount * 1e6 && usdcAmount > 0);
+    return (allowance >= usdcAmount * 1e6);
   }, [allowance, usdcAmount])
 
   useEffect(() => {
@@ -118,6 +118,11 @@ const BuySweepModal = (props) => {
 
     return () => clearInterval(interval);
   }, [alertState, setAlertState])
+
+  const enabledClass = "text-black bg-white";
+  const disabledClass = "cursor-not-allowed text-white bg-app-gray";
+  const approveDisabled = (isApproval && usdcAmount >= 0) || (isPendingApprove || isPendingBuy);
+  const buyDisabled = !(isApproval && usdcAmount > 0) || (isPendingApprove || isPendingBuy);
 
   return (
     <>
@@ -214,12 +219,12 @@ const BuySweepModal = (props) => {
 
                   <div className="mt-6 justify-center gap-4">
                     <div className="flex">
-                      <div className={`inline-block rounded-full bg-white/20 p-1 w-1/2 ${isApproval ? "" : "group hover:bg-rainbow"}`}>
-                        <div className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none">
+                      <div className={`inline-block m-1 rounded-full bg-white/20 p-1 w-1/2 ${approveDisabled ? "" : "group hover:bg-rainbow"}`}>
+                        <div className="inline-block w-full rounded-full p-0.5 bg-rainbow group-hover:bg-black group-hover:bg-none">
                           <button
-                            disabled={isApproval}
+                            disabled={approveDisabled}
                             onClick={() => approveHandler()}
-                            className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 text-black whitespace-nowrap ${isApproval && (isPendingApprove || isPendingBuy) ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'}`}
+                            className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 ${approveDisabled ? disabledClass : enabledClass}`}
                           >
                             <span>
                               {isPendingApprove ? languages.btn_pending : languages.btn_approve}
@@ -228,14 +233,14 @@ const BuySweepModal = (props) => {
                         </div>
                       </div>
 
-                      <div className={`inline-block rounded-full bg-white/20 p-1 w-1/2 ${isApproval ? "group hover:bg-rainbow" : ""}`}>
+                      <div className={`inline-block m-1 rounded-full bg-white/20 p-1 w-1/2 ${buyDisabled ? "" : "group hover:bg-rainbow"}`}>
                         <div
                           className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                         >
                           <button
                             disabled={!isApproval}
                             onClick={() => buySweepHandler()}
-                            className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 text-black whitespace-nowrap ${isApproval && (isPendingApprove || isPendingBuy) ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'}`}
+                            className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 text-black whitespace-nowrap ${buyDisabled ? disabledClass : enabledClass}`}
                           >
                             <span>
                               {isPendingBuy ? languages.btn_pending : languages.btn_buy}
