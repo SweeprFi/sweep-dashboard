@@ -54,7 +54,7 @@ const Dashboard = () => {
     }
 
     initialHandler();
-  }, [chainId]);
+  }, [chainId, isBuyOpen]);
 
   useEffect(() => {
     const initialHandler = async () => {

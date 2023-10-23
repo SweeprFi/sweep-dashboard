@@ -22,7 +22,7 @@ const networks = {
   1: 'mainnet',
   5: 'goerli',
   10: 'optimism',
-  420: 'optimism goerli',
+  // 420: 'optimism goerli',
   42161: 'arbitrum',
   421613: 'arbiturm goerli',
 }
@@ -106,7 +106,7 @@ const assetStatus = {
 const tokens = {
   sweep: {
     1: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
-    5: '0x760389840E5B30919D881feb747C12054CBE671f',
+    5: '0x6C68a114c406dA77c3Ce1Ad1Cf09B420E37087b8',// '0x760389840E5B30919D881feb747C12054CBE671f'
     10: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     420: '',
     42161: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
@@ -133,11 +133,11 @@ const tokens = {
 const contracts = {
   marketMaker: {
     1: '0xff368E106EA8782FaB6B2D4AD69739a60C66400E',
-    5: '',
+    5: '0x1655D8EC4d34BAE3E93a0864166676B86B0287d3',
     10: '0x676524646377A6e66Ca797edF7CCB1B5162a8cE0',
     420: '',
     42161: '0x78326Ce3be64977658726EEdAd9A35de460E310A',
-    421613: ''
+    421613: '0x953b290385d856303834aCab13Ee12Bf2CEEF253'
   }
 }
 
@@ -196,12 +196,12 @@ const testChainList = [
     name: 'Ethereum Goerli',
     logo: ethIcon
   },
-  {
-    chainId: 420,
-    netId: 10132,
-    name: 'Optimism Goerli',
-    logo: optIcon
-  },
+  // {
+  //   chainId: 420,
+  //   netId: 10132,
+  //   name: 'Optimism Goerli',
+  //   logo: optIcon
+  // },
   {
     chainId: 421613,
     netId: 10143,
