@@ -201,7 +201,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const token = tokens[key];
   const tokenAddress = token[curtChainId]
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
-  const amount = (sendAmount * 1e18).toString();
+  const amount = ethers.parseEther(sendAmount.toString()).toString();
   const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 225000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
   const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
@@ -236,7 +236,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
 export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAddress, setIsPending, displayNotify) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
-  const amount = (sweepAmount * 1e18).toString();
+  const amount = ethers.parseEther(sweepAmount.toString()).toString();
 
   try {
     await contract.methods.buySweep(
