@@ -218,17 +218,17 @@ const mainChainList = [
     logo: ethIcon
   },
   {
+    chainId: 42161,
+    netId: 110,
+    name: 'Arbitrum',
+    logo: arbIcon
+  },
+  {
     chainId: 10,
     netId: 111,
     name: 'Optimism',
     logo: optIcon
   },
-  {
-    chainId: 42161,
-    netId: 110,
-    name: 'Arbitrum',
-    logo: arbIcon
-  }
 ]
 
 const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;

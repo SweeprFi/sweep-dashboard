@@ -214,7 +214,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       amount,
       walletAddress,
       '0x0000000000000000000000000000000000000000',
-      '0x'
+      adapterParam
     ).send({ from: walletAddress, value: gasFee })
       .on('transactionHash', () => {
         setIsPending(true);
