@@ -1,11 +1,11 @@
 import "@styles/Asset.css";
-import { scanLink } from "@utils/helper";
+import { scanLink, shortAddress } from "@utils/helper";
 import { languages } from "@config/languages";
 import ExternalLink from "@components/ExternalLink";
 import HowTo from "@components/HowTo";
 
 const AssetPage = (props) => {
-  const { asset, chainId, address } = props;
+  const { asset, network, address } = props;
 
   const EmptyRow = () => {
     return <tr><td>&nbsp;</td></tr>
@@ -35,8 +35,6 @@ const AssetPage = (props) => {
     )
   }
 
-  const shorten = (addr) => { return `${addr.slice(0, 7)} ··· ${addr.slice(-7)}`}
-
   return (
     <div className="bg-l2s p-4">
       <div className="text-2xl sm:text-4xl lg:text-3xl xl:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-app-red to-app-pink-light">
@@ -48,7 +46,7 @@ const AssetPage = (props) => {
           <div>
             <ExternalLink
               title={languages.link_stabilizer}
-              link={scanLink(chainId, address + "#writeContract")}
+              link={scanLink(network, address + "#writeContract")}
             />
             <table>
               <tbody>
@@ -57,8 +55,8 @@ const AssetPage = (props) => {
                   <td>{languages.text_borrower}</td>
                   <td>
                     <ExternalLink
-                      title={shorten(asset.borrower)}
-                      link={scanLink(chainId, asset.borrower)}
+                      title={shortAddress(asset.borrower)}
+                      link={scanLink(network, asset.borrower)}
                     />
                   </td>
                 </tr>

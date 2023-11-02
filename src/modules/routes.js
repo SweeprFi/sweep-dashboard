@@ -8,7 +8,7 @@ const routes =  [
     element: <Dashboard/>
   },
   {
-    path: "/asset/:address",
+    path: "/asset/:network/:address",
     element: <Asset/>
   },
   {

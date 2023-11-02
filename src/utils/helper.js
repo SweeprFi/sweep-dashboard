@@ -1,19 +1,19 @@
 import { chainList, rpcLinks, scans, month } from "../config/constants";
 
-export const assetName = (name) => {
-  return name ? name : 'Off Chain Asset';
-}
-
 export const shortAddress = (addr) => {
-  return addr?.slice(0, 6) + '...' + addr?.slice(-4)
+  if(!addr) return
+  return `${addr.slice(0, 6)} ··· ${addr.slice(-4)}`
 }
 
-export const scanLink = (chainId, addr) => {
-  return scans[chainId] + addr;
+export const scanLink = (network, addr) => {
+  const chain = chainList.filter(net => net.name.toLowerCase() === network);
+  return scans[chain[0]?.chainId] + addr;
 }
 
-export const assetLink = (addr) => {
-  return "/asset/" + addr;
+export const assetLink = (addr, chainId) => {
+  const chain = chainList.filter((el) => el.chainId === Number(chainId));
+  const net = chain[0].name.toLowerCase();
+  return `/asset/${net}/${addr}`;
 }
 
 export const toDate = (val) => {
