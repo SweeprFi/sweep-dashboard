@@ -295,7 +295,7 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
 }
 
 export const assetFetch = async (network, addr) => {
-  const chain = chainList.filter(net => net.name.toLowerCase() === network);
+  const chain = chainList.filter(_chain => _chain.name.toLowerCase() === network);
   const chainId = chain[0]?.chainId;
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
