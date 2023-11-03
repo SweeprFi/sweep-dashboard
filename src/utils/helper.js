@@ -6,13 +6,13 @@ export const shortAddress = (address) => {
 }
 
 export const scanLink = (network, address) => {
-  const chain = chainList.filter(_chain => _chain.name.toLowerCase() === network);
-  return scans[chain[0]?.chainId] + address;
+  const chain = chainList.find(_chain => _chain.name.toLowerCase() === network);
+  return scans[chain?.chainId] + address;
 }
 
 export const assetLink = (address, chainId) => { 
-  const chain = chainList.filter((_chain) => _chain.chainId === Number(chainId));
-  const network = chain[0]?.name.toLowerCase();
+  const chain = chainList.find((_chain) => _chain.chainId === Number(chainId));
+  const network = chain?.name.toLowerCase();
   return `/asset/${network}/${address}`;
 }
 
