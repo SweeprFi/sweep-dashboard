@@ -57,38 +57,36 @@ const Navbar = () => {
                   </div>
                   <div className="ml-6 flex justify-center items-center gap-4">
                     {
-                      connected && (
-                        <div>
-                          <SelectBox
-                            title=""
-                            data={chainList}
-                            val={curtChain}
-                            setVal={(e) => chainChange(e)}
-                            onlyIcon={true}
-                            pending={false}
-                            bg={true}
-                          />
-                        </div>
-                      )
-                    }
-                    {
                       connected ? (
-                        <div className="flex justify-center items-center text-white gap-2">
-                          <BlockieIcon className="w-6 h-6" />
-                          {shortAddress(walletAddress)}
-                        </div>
-                      ) : (
-                        <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow">
-                          <div
-                            className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
-                            onClick={connectHandler}
-                          >
-                            <button className="flex w-full items-center justify-center space-x-1 rounded-full px-6 py-2 bg-white whitespace-nowrap">
-                              <span className="font-bold text-black group-active:text-black/70">{languages.btn_connect}</span>
-                            </button>
+                        <>
+                          <div>
+                            <SelectBox
+                              title=""
+                              data={chainList}
+                              val={curtChain}
+                              setVal={(e) => chainChange(e)}
+                              onlyIcon={true}
+                              pending={false}
+                              bg={true}
+                            />
                           </div>
-                        </div>
-                      )
+                          <div className="flex justify-center items-center text-white gap-2">
+                            <BlockieIcon className="w-6 h-6" />
+                            {shortAddress(walletAddress)}
+                          </div>
+                        </>
+                      ) : (
+                          <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow">
+                            <div
+                              className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
+                              onClick={connectHandler}
+                            >
+                              <button className="flex w-full items-center justify-center space-x-1 rounded-full px-6 py-2 bg-white whitespace-nowrap">
+                                <span className="font-bold text-black group-active:text-black/70">{languages.btn_connect}</span>
+                              </button>
+                            </div>
+                          </div>
+                        )
                     }
                   </div>
                 </div>
@@ -156,8 +154,6 @@ const Navbar = () => {
           </div>
         )}
       </Disclosure>
-
-
     </>
   )
 }

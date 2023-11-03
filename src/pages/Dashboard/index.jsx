@@ -135,16 +135,11 @@ const Dashboard = () => {
             )
           }
         </div>
-        <SweepInfo
-          data={sweepInfo}
-        />
+        <SweepInfo data={sweepInfo} />
       </div>
 
       <div className="px-4">
-        <AssetInfo
-          data={assetInfo}
-        />
-
+        <AssetInfo data={assetInfo} chainId={chainId} />
         <SweeprInfo
           data={sweeprInfo}
           connected={connected}
@@ -153,19 +148,9 @@ const Dashboard = () => {
         />
       </div>
 
-      {
-        isLoad && <Loader />
-      }
-      <BridgeModal
-        isOpen={isOpen}
-        closeModal={setIsOpen}
-        selectedToken={selectedToken}
-      />
-      <BuySweepModal
-        isOpen={isBuyOpen}
-        closeModal={setIsBuyOpen}
-        marketPrice={sweepInfo.market_price}
-      />
+      { isLoad && <Loader /> }
+      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} />
+      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} />
     </Layout>
   )
 }

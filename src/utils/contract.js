@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
 import { languages } from "@config/languages";
-import { assetStatus, rpcLinks, tokens, contracts } from "@config/constants";
+import { assetStatus, rpcLinks, tokens, contracts, chainList } from "@config/constants";
 import {
   toInt, pp, toDate, toTime, annualRate,
   otherChainRpcs, getMaxBorrow, getMaxWithdraw
@@ -294,7 +294,9 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
   }
 }
 
-export const assetFetch = async (chainId, addr) => {
+export const assetFetch = async (network, addr) => {
+  const chain = chainList.filter(_chain => _chain.name.toLowerCase() === network);
+  const chainId = chain[0]?.chainId;
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const sweepAddress = tokens.sweep[chainId];

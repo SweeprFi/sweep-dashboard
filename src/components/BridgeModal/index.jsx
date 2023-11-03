@@ -29,7 +29,7 @@ const BridgeModal = (props) => {
 
     const token = useMemo(() => {
         return tokenList.filter((item) => item.name.toLowerCase() === props.selectedToken)[0] || tokenList[0];
-    }, [tokenList, props])
+    }, [props])
 
     const curtChain = useMemo(() => {
         return chainList.filter((item) => item.chainId === chainId)
@@ -52,7 +52,7 @@ const BridgeModal = (props) => {
         }
 
         intialHandler();
-    }, [walletAddress, props, chainId, destChain, setBalances, setSendAmount])
+    }, [walletAddress, props, chainId, destChain, setBalances, setSendAmount, sendAmount])
 
     useEffect(() => {
         if (destChainList.indexOf(destChain) < 0)

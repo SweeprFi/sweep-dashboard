@@ -1,13 +1,13 @@
 import React from "react";
 import StatusBadge from "@components/StatusBadge";
-import { assetName, assetLink } from "@utils/helper";
+import { assetLink } from "@utils/helper";
 import { languages } from "@config/languages";
 import { convertNumber } from "@utils/helper";
 import imgLogo from "@images/logo.png";
 import ExternalLink from "@components/ExternalLink";
 import InternalLink from "@components/InternalLink";
 
-const AssetItem = ({ data }) => {
+const AssetItem = ({ data, chainId }) => {
 
   const LogoSweep = (props) => {
     return (
@@ -21,7 +21,7 @@ const AssetItem = ({ data }) => {
       <div className="hidden lg:block">
         <div className="grid grid-cols-12 gap-2 px-6 py-3 text-lg">
           <div className="col-span-2 flex items-center font-archivo-semibold capitalize">
-            {assetName(data.name)}
+            {data.name}
           </div>
           <div className="col-span-2 flex items-center gap-2">
             <LogoSweep className="w-6" />
@@ -68,7 +68,7 @@ const AssetItem = ({ data }) => {
       <div className="flex lg:hidden flex-col p-6">
         <div className="flex justify-between items-center">
           <div className="text-xl">
-            {assetName(data.name)}
+            {data.name}
           </div>
           <StatusBadge
             status={data.status}
@@ -146,17 +146,10 @@ const AssetItem = ({ data }) => {
       <div className="flex flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-6 pb-6 lg:py-3 text-sm font-light bg-app-black-medium rounded-b-2xl">
         {
           data.link && (
-            <ExternalLink
-              title={languages.link_deal}
-              link={data.link}
-            />
+            <ExternalLink title={languages.link_deal} link={data.link} />
           )
         }
-
-        <InternalLink
-          title={languages.link_asset}
-          link={assetLink(data.address)}
-        />
+        <InternalLink title={languages.link_asset} link={assetLink(data.address, chainId)} />
       </div>
     </div>
   )
