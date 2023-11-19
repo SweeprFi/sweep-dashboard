@@ -8,7 +8,7 @@ import { sweepFetch, sweeprFetch, assetListFetch } from "@utils/contract";
 import { AMMLinks } from "@config/constants";
 import { languages } from "@config/languages";
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
-import { ReactComponent as UniswapIcon } from "@images/icons/uniswap.svg";
+import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
 import SweepLogo from "@images/icon_sweep.svg"
 import SweepInfo from "@components/SweepInfo";
 import AssetInfo from "@components/AssetInfo";
@@ -85,7 +85,7 @@ const Dashboard = () => {
               className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
             >
               <button className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap">
-                <UniswapIcon className="w-6 h-6" />
+                <BalancerIcon className="w-6 h-6" />
                 <span>
                   {AMMLinks[chainId].title}
                 </span>

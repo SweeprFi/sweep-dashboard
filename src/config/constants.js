@@ -144,27 +144,27 @@ const contracts = {
 const AMMLinks = {
   1: {
     title: 'Swap on Ethereum',
-    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[1]}`
+    link: `https://app.balancer.fi/#/ethereum/swap`
   },
   5: {
     title: 'Swap on Ethereum',
-    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[5]}`
+    link: `https://app.balancer.fi/#/ethereum/swap`
   },
   10: {
     title: 'Swap on Optimism',
-    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[10]}`
+    link: `https://app.balancer.fi/#/optimism/swap`
   },
   420: {
     title: 'Swap on Optimism',
-    link: ''
+    link: 'https://app.balancer.fi/#/optimism/swap'
   },
   42161: {
     title: 'Swap on Arbitrum',
-    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[42161]}`
+    link: `https://app.balancer.fi/#/arbitrum/swap`
   },
   421613: {
     title: 'Swap on Arbitrum',
-    link: `https://app.uniswap.org/#/swap?outputCurrency=${tokens.sweep[421613]}`
+    link: `https://app.balancer.fi/#/arbitrum/swap`
   }
 }
 
