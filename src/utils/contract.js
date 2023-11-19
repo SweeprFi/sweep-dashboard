@@ -240,7 +240,7 @@ export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAd
 
   try {
     await contract.methods.buySweep(
-      amount
+      amount, 2000
     ).send({ from: walletAddress })
       .on('transactionHash', () => {
         setIsPending(true);
