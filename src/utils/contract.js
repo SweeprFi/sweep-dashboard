@@ -1,8 +1,12 @@
 import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
+import { BalancerSDK } from "@balancer-labs/sdk";
 import { languages } from "@config/languages";
-import { assetStatus, rpcLinks, tokens, contracts, chainList } from "@config/constants";
+import {
+  assetStatus, rpcLinks, tokens,
+  contracts, chainList, poolsIds
+} from "@config/constants";
 import {
   toInt, pp, toDate, toTime, annualRate,
   otherChainRpcs, getMaxBorrow, getMaxWithdraw
@@ -16,6 +20,10 @@ import marketMakerABI from "@abis/marketMaker.json";
 export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
+  const balancer = new BalancerSDK({ network: chainId, rpcUrl: RPC });
+  const pool = await balancer.pools.find(poolsIds[chainId]);
+  const spotPrice = await pool.calcSpotPrice(tokens.usdc[chainId], tokens.sweep[chainId]);
+
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const callInfo = {
@@ -26,7 +34,7 @@ export const sweepFetch = async (chainId) => {
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
       { reference: 'interestRateCall', methodName: 'interestRate' },
       { reference: 'targetPriceCall', methodName: 'targetPrice' },
-      { reference: 'ammPriceCall', methodName: 'ammPrice' },
+      // { reference: 'ammPriceCall', methodName: 'ammPrice' },
       { reference: 'arbSpreadCall', methodName: 'arbSpread' },
       { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed' },
       { reference: 'getMintersCall', methodName: 'getMinters' },
@@ -44,17 +52,17 @@ export const sweepFetch = async (chainId) => {
   let totalSupply = toInt(data[0]);
   otherTotalSupplys.map((supply) => totalSupply += Number(supply));
 
-  const market_price = toInt(data[2]) * (1 + toInt(data[4]) / 1e6);
+  const market_price = toInt(data[2]) * (1 + toInt(data[3]) / 1e6);
 
   return {
     total_supply: pp(totalSupply, 18, 2),
     local_supply: pp(toInt(data[0]), 18, 2),
     interest_rate: annualRate(toInt(data[1])),
     targe_price: pp(toInt(data[2]), 6, 5),
-    amm_price: pp(toInt(data[3]), 6, 5),
+    amm_price: Number(spotPrice).toFixed(5),
     market_price: pp(market_price, 6, 5),
-    mint_status: data[5].returnValues[0] ? 0 : 1,
-    assets: data[6].returnValues
+    mint_status: data[4].returnValues[0] ? 0 : 1,
+    assets: data[5].returnValues
   }
 }
 
@@ -201,8 +209,8 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const token = tokens[key];
   const tokenAddress = token[curtChainId]
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
-  const amount = ethers.parseEther(sendAmount.toString()).toString();
-  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 225000]);
+  const amount = ethers.utils.parseEther(sendAmount.toString()).toString();
+  const adapterParam = ethers.utils.solidityPack(["uint16", "uint256"], [1, 225000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
   const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
 
@@ -236,7 +244,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
 export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAddress, setIsPending, displayNotify) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
-  const amount = ethers.parseEther(sweepAmount.toString()).toString();
+  const amount = ethers.utils.parseEther(sweepAmount.toString()).toString();
 
   try {
     await contract.methods.buySweep(

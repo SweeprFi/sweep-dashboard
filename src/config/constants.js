@@ -231,7 +231,20 @@ const mainChainList = [
   },
 ]
 
+const mainPoolList = {
+  1: '0xa468570db143321bc034bbd74a6cc2694d15b252000000000000000000000629',
+  10: '0xc4ee406970047a70aed14621d97b3b460a7dea0b00000000000000000000010b',
+  42161: '0xef093ccfdd4d5a590b028463e0528049939889c90000000000000000000004cf',
+}
+
+const testPoolList = {
+  5: '0x0',
+  420: '0x0',
+  421613: '0x0'
+}
+
 const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
+const poolsIds = Number(process.env.REACT_APP_MODE) === 0 ? testPoolList : mainPoolList;
 
 const sweepStatus = ["Minting", "Repaying"];
 
@@ -246,6 +259,7 @@ export {
   socialLinks,
   assetStatus,
   chainList,
+  poolsIds,
   AMMLinks,
   sweepStatus
 }
