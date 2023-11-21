@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
+    "sweepr-analytics": "^1.0.4",
     "web-vitals": "^2.1.4",
     "web3": "^1.10.0"
   },

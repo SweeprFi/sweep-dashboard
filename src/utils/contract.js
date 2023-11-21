@@ -1,68 +1,60 @@
 import Web3 from 'web3'
 import { ethers } from "ethers";
+import { Provider, Sweep, Sweepr, Asset } from 'sweepr-analytics';
+
 import { Multicall } from 'ethereum-multicall';
-import { BalancerSDK } from "@balancer-labs/sdk";
+
 import { languages } from "@config/languages";
 import {
+  networks, poolList,
   assetStatus, rpcLinks, tokens,
-  contracts, chainList, poolsIds
+  contracts, chainList
 } from "@config/constants";
 import {
   toInt, pp, toDate, toTime, annualRate,
   otherChainRpcs, getMaxBorrow, getMaxWithdraw
 } from './helper';
+
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
 import marketMakerABI from "@abis/marketMaker.json";
 
+const provider = new Provider();
+provider.setProvider("mainnet", process.env.REACT_APP_ALCHEMY_KEY);
+provider.setProvider("arbitrum", process.env.REACT_APP_ARBITRUM_MAIN_KEY);
+provider.setProvider("optimism", process.env.REACT_APP_OPTIMISTIC_API_KEY);
+
+// const ASSET = new Asset(provider);
+const SWEEP = new Sweep(provider);
+// const SWEEPR = new Sweepr(provider);
+
+const supportedNetworks = ["mainnet", "arbitrum", "optimism"]
+
 export const sweepFetch = async (chainId) => {
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
-  const balancer = new BalancerSDK({ network: chainId, rpcUrl: RPC });
-  const pool = await balancer.pools.find(poolsIds[chainId]);
-  const spotPrice = await pool.calcSpotPrice(tokens.usdc[chainId], tokens.sweep[chainId]);
+  const network = networks[chainId];
+  const poolId = poolList[network]?.poolId;
+  const token = poolList[network]?.stableCoin;
 
-  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  const [response, price, assets] = await Promise.all([
+      SWEEP.fetchData(network),
+      SWEEP.getPrice(network, poolId, token),
+      SWEEP.getMinters(network)
+  ]);
 
-  const callInfo = {
-    reference: 'sweep',
-    contractAddress: tokens.sweep[chainId],
-    abi: sweepABI,
-    calls: [
-      { reference: 'totalSupplyCall', methodName: 'totalSupply' },
-      { reference: 'interestRateCall', methodName: 'interestRate' },
-      { reference: 'targetPriceCall', methodName: 'targetPrice' },
-      // { reference: 'ammPriceCall', methodName: 'ammPrice' },
-      { reference: 'arbSpreadCall', methodName: 'arbSpread' },
-      { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed' },
-      { reference: 'getMintersCall', methodName: 'getMinters' },
-    ]
-  }
+  const totalSupplied = await Promise.all(supportedNetworks.map(async (network) => {
+    return await SWEEP.getTotalSupply(network)
+  }))
 
-  let callResults = await multicall.call(callInfo);
-  const data = callResults.results['sweep']['callsReturnContext']
-
-  const { rpcs, ids } = otherChainRpcs(chainId);
-  const otherTotalSupplys = await Promise.all(rpcs.map(async (rpc, index) => {
-    return await getTotalSupply(rpc, tokens.sweep[ids[index]]);
-  }));
-
-  let totalSupply = toInt(data[0]);
-  otherTotalSupplys.map((supply) => totalSupply += Number(supply));
-
-  const market_price = toInt(data[2]) * (1 + toInt(data[3]) / 1e6);
+  let supplied = totalSupplied.reduce((ac, nt) => ac + nt.totalSupply, 0);
 
   return {
-    total_supply: pp(totalSupply, 18, 2),
-    local_supply: pp(toInt(data[0]), 18, 2),
-    interest_rate: annualRate(toInt(data[1])),
-    targe_price: pp(toInt(data[2]), 6, 5),
-    amm_price: Number(spotPrice).toFixed(5),
-    market_price: pp(market_price, 6, 5),
-    mint_status: data[4].returnValues[0] ? 0 : 1,
-    assets: data[5].returnValues
+    ...response,
+    ...price,
+    supplied,
+    assets: assets.minters,
+    interestRate: annualRate(response.interestRate),
   }
 }
 

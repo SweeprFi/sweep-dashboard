@@ -56,9 +56,7 @@ export const pp = (v, d, p) => {
 }
 
 export const annualRate = (dayRate = 0) => {
-  const PRECISION = 1e10;
-
-  return Number(((dayRate / PRECISION * 365) * 100).toFixed(2));
+  return Number((dayRate / 100 * 365).toFixed(2));
 }
 
 export const otherChainRpcs = (chainId) => {
