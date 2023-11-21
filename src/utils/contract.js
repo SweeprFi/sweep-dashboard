@@ -20,7 +20,7 @@ import marketMakerABI from "@abis/marketMaker.json";
 export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
-  const balancer = new BalancerSDK({ network: chainId, rpcUrl: RPC });
+  const balancer = new BalancerSDK({ network: Number(chainId), rpcUrl: RPC });
   const pool = await balancer.pools.find(poolsIds[chainId]);
   const spotPrice = await pool.calcSpotPrice(tokens.usdc[chainId], tokens.sweep[chainId]);
 
@@ -34,7 +34,6 @@ export const sweepFetch = async (chainId) => {
       { reference: 'totalSupplyCall', methodName: 'totalSupply' },
       { reference: 'interestRateCall', methodName: 'interestRate' },
       { reference: 'targetPriceCall', methodName: 'targetPrice' },
-      // { reference: 'ammPriceCall', methodName: 'ammPrice' },
       { reference: 'arbSpreadCall', methodName: 'arbSpread' },
       { reference: 'mintingAllowedCall', methodName: 'isMintingAllowed' },
       { reference: 'getMintersCall', methodName: 'getMinters' },
