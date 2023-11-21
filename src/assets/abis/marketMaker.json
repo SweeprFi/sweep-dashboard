@@ -18,33 +18,18 @@
             },
             {
                 "internalType": "address",
-                "name": "_liquidityHelper",
+                "name": "_oracleUsdx",
                 "type": "address"
             },
             {
                 "internalType": "address",
-                "name": "_oracleUsdx",
+                "name": "_poolAddress",
                 "type": "address"
             },
             {
                 "internalType": "address",
                 "name": "_borrower",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_topSpread",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_bottomSpread",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_tickSpread",
-                "type": "uint256"
             }
         ],
         "stateMutability": "nonpayable",
@@ -63,6 +48,17 @@
     {
         "inputs": [],
         "name": "AuctionNotActive",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "asset",
+                "type": "address"
+            }
+        ],
+        "name": "BadAddress",
         "type": "error"
     },
     {
@@ -219,19 +215,6 @@
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "tokenId",
-                "type": "uint256"
-            }
-        ],
-        "name": "Burned",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
                 "indexed": true,
                 "internalType": "uint256",
                 "name": "sweepAmount",
@@ -333,11 +316,17 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "loanLimit",
+                "name": "usdxAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "sweepAmount",
                 "type": "uint256"
             }
         ],
-        "name": "LoanLimitChanged",
+        "name": "LiquidityAdded",
         "type": "event"
     },
     {
@@ -346,17 +335,30 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "tokenId",
+                "name": "usdxAmount",
                 "type": "uint256"
             },
             {
                 "indexed": false,
-                "internalType": "uint128",
-                "name": "liquidity",
-                "type": "uint128"
+                "internalType": "uint256",
+                "name": "sweepAmount",
+                "type": "uint256"
             }
         ],
-        "name": "Minted",
+        "name": "LiquidityRemoved",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "loanLimit",
+                "type": "uint256"
+            }
+        ],
+        "name": "LoanLimitChanged",
         "type": "event"
     },
     {
@@ -468,6 +470,19 @@
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "uint256",
+                "name": "sweeAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "SweepPurchased",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "address",
                 "name": "account",
                 "type": "address"
@@ -506,6 +521,29 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "usdxAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "sweepAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slippage",
+                "type": "uint256"
+            }
+        ],
+        "name": "addLiquidity",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -660,12 +698,12 @@
     },
     {
         "inputs": [],
-        "name": "bottomSpread",
+        "name": "bptIndex",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "uint8",
                 "name": "",
-                "type": "uint256"
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -689,7 +727,7 @@
                 "internalType": "uint256",
                 "name": "slippage",
                 "type": "uint256"
-            },
+            }
         ],
         "name": "buySweep",
         "outputs": [],
@@ -856,19 +894,6 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "sweepAmount",
-                "type": "uint256"
-            }
-        ],
-        "name": "execute",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "getAuctionAmount",
         "outputs": [
@@ -918,6 +943,24 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "usdxAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "sweepAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "initPool",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -1000,32 +1043,6 @@
     },
     {
         "inputs": [],
-        "name": "nonfungiblePositionManager",
-        "outputs": [
-            {
-                "internalType": "contract INonfungiblePositionManager",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "numPositions",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "oracleUsdx",
         "outputs": [
             {
@@ -1065,6 +1082,19 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "pool",
+        "outputs": [
+            {
+                "internalType": "contract IBalancerPool",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -1072,12 +1102,25 @@
                 "type": "uint256"
             }
         ],
-        "name": "positionIds",
+        "name": "poolAssets",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "contract IAsset",
                 "name": "",
-                "type": "uint256"
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "poolId",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
             }
         ],
         "stateMutability": "view",
@@ -1093,6 +1136,29 @@
     {
         "inputs": [],
         "name": "reject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "usdxAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "sweepAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slippage",
+                "type": "uint256"
+            }
+        ],
+        "name": "removeLiquidity",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1138,50 +1204,11 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "newBottomSpread",
-                "type": "uint256"
-            }
-        ],
-        "name": "setBottomSpread",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
                 "name": "newLoanLimit",
                 "type": "uint256"
             }
         ],
         "name": "setLoanLimit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "newTickSpread",
-                "type": "uint256"
-            }
-        ],
-        "name": "setTickSpread",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "newTopSpread",
-                "type": "uint256"
-            }
-        ],
-        "name": "setTopSpread",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1312,51 +1339,12 @@
     },
     {
         "inputs": [],
-        "name": "tickSpread",
+        "name": "sweepIndex",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "uint8",
                 "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "token0",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "token1",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "topSpread",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -1388,6 +1376,32 @@
         "outputs": [
             {
                 "internalType": "contract IERC20Metadata",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "usdxIndex",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "vault",
+        "outputs": [
+            {
+                "internalType": "contract IBalancerVault",
                 "name": "",
                 "type": "address"
             }
