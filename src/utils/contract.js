@@ -13,18 +13,10 @@ import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
 import marketMakerABI from "@abis/marketMaker.json";
 
-const networks = {
-  1: "mainnet",
-  10: "optimism",
-  42161: "arbitrum"
-}
-
 export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
-  const response = await fetch('https://sweepr-analytics.netlify.app/api/amm/' + networks[chainId]);
-  const ammData = await response.json();
 
   const callInfo = {
     reference: 'sweep',
@@ -59,7 +51,7 @@ export const sweepFetch = async (chainId) => {
     local_supply: pp(toInt(data[0]), 18, 2),
     interest_rate: annualRate(toInt(data[1])),
     targe_price: pp(toInt(data[2]), 6, 5),
-    amm_price: ammData.ammPrice,//pp(toInt(data[3]), 6, 5),
+    amm_price: pp(toInt(data[3]), 6, 5),
     market_price: pp(market_price, 6, 5),
     mint_status: data[5].returnValues[0] ? 0 : 1,
     assets: data[6].returnValues
@@ -209,8 +201,8 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const token = tokens[key];
   const tokenAddress = token[curtChainId]
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
-  const amount = ethers.utils.parseEther(sendAmount.toString()).toString();
-  const adapterParam = ethers.utils.solidityPack(["uint16", "uint256"], [1, 225000]);
+  const amount = ethers.parseEther(sendAmount.toString()).toString();
+  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 225000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
   const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
 
@@ -244,7 +236,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
 export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAddress, setIsPending, displayNotify) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
-  const amount = ethers.utils.parseEther(sweepAmount.toString()).toString();
+  const amount = ethers.parseEther(sweepAmount.toString()).toString();
 
   try {
     await contract.methods.buySweep(
