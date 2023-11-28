@@ -70,7 +70,13 @@ const walletInfo = {
       token: 'AGOR',
       label: 'Arbitrum Goerli',
       rpcUrl: `https://endpoints.omniatech.io/v1/arbitrum/goerli/public`
-    }
+    },
+    {
+      id: '0x2105',
+      token: 'ETH',
+      label: 'Base',
+      rpcUrl: `https://mainnet.base.org`
+    },
   ],
   connect: {
     showSidebar: true,
