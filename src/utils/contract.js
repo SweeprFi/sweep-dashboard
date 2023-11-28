@@ -17,7 +17,6 @@ export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
-  console.log("--->", multicall, chainId);
 
   const callInfo = {
     reference: 'sweep',
