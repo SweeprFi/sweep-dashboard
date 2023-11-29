@@ -203,9 +203,13 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const tokenAddress = token[curtChainId]
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
   const amount = ethers.parseEther(sendAmount.toString()).toString();
-  const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 225000]);
+  let adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 2250000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
   const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
+
+  if(curtChainId == 42161) {
+    adapterParam = [];
+  }
 
   try {
     await contract.methods.sendFrom(
