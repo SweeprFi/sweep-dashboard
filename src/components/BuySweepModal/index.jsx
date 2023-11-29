@@ -23,6 +23,7 @@ const BuySweepModal = (props) => {
 
   const [usdcAmount, setUsdcAmount] = useState(0);
   const [sweepAmount, setSweepAmount] = useState(0);
+  const [slippageAmount, setSlippageAmount] = useState(1);
   const [allowance, setAllowance] = useState(0);
   const [balances, setBalances] = useState({ usdc: 0, sweep: 0 });
   const [isPendingApprove, setIsPendingApprove] = useState(false);
@@ -90,8 +91,8 @@ const BuySweepModal = (props) => {
     }
 
     if (web3)
-      await buySweepOnMarketMaker(web3, chainId, sweepAmount, walletAddress, setIsPendingBuy, displayNotify)
-  }, [web3, chainId, sweepAmount, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount]);
+      await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify)
+  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice]);
 
   const approveHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingApprove) return;
@@ -163,7 +164,7 @@ const BuySweepModal = (props) => {
                   <div className="mt-6 mb-2 text-md flex items-center">
                     {languages.label_buy_from}
                   </div>
-                  <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-10 relative">
+                  <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-2 relative">
                     <InputBox
                       className='bg-transparent text-2xl cursor-text'
                       title=""
@@ -173,12 +174,26 @@ const BuySweepModal = (props) => {
                       setValue={setUsdcAmount}
                       pending={isPendingApprove || isPendingBuy}
                     />
-                    <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
+                    <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
                       {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.usdc, 6, 2))}
                       <div className="ml-2 cursor-pointer flex justify-center items-center bg-app-gray-light px-2 py-0.5 rounded-2xl -mt-0.5" onClick={setMaxAmount}>
                         <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
                       </div>
                     </div>
+                    <br/>
+                    <div className="flex justify-between items-center">
+                      <div>
+                      <InputBox
+                        className='bg-transparent text-xl cursor-text'
+                        value={slippageAmount}
+                        minValue={0}
+                        maxValue={100}
+                        setValue={setSlippageAmount}
+                      />
+                      </div>
+                      <div>Slippage (%)</div>
+                    </div>
+
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                       <div className="">
                         <span className="flex items-center">
