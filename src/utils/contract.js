@@ -17,7 +17,6 @@ export const sweepFetch = async (chainId) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
-  console.log("--->", multicall, chainId);
 
   const callInfo = {
     reference: 'sweep',
@@ -234,14 +233,16 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   }
 }
 
-export const buySweepOnMarketMaker = async (web3, chainId, sweepAmount, walletAddress, setIsPending, displayNotify) => {
+export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPending, displayNotify) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
-  const amount = ethers.parseEther(sweepAmount.toString()).toString();
+  const value = (usdcAmount / marketPrice) * 99.8 / 100;
+  const amount = ethers.parseEther(value.toString()).toString();
+  const slippage = (slippageAmount*1e4);
 
   try {
     await contract.methods.buySweep(
-      amount, 2000
+      amount, slippage
     ).send({ from: walletAddress })
       .on('transactionHash', () => {
         setIsPending(true);
