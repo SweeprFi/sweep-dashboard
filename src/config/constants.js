@@ -8,6 +8,7 @@ import ethIcon from "@images/chains/ethereum.svg"
 import arbIcon from "@images/chains/arbitrum.svg"
 import optIcon from "@images/chains/optimism.svg"
 import baseIcon from "@images/chains/base.svg"
+import avaxIcon from "@images/chains/avalanche.svg"
 
 import SweepLogo from "@images/logo.png"
 import SweeprLogo from "@images/icon_sweepr.png"
@@ -27,6 +28,7 @@ const networks = {
   // 420: 'optimism goerli',
   42161: 'arbitrum',
   421613: 'arbiturm goerli',
+  43114: 'avalanche',
 }
 
 const rpcLinks = {
@@ -35,6 +37,7 @@ const rpcLinks = {
   10: `https://opt-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_OPTIMISTIC_API_KEY}`,
   42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
   8453: `https://base-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
+  43114: `https://api.avax.network/ext/bc/C/rpc`,
   // testnet
   5: `https://eth-goerli.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
   420: `https://opt-goerli.g.alchemy.com/v2/${process.env.REACT_APP_OPTIMISTIC_API_KEY}`,
@@ -46,6 +49,7 @@ const scans = {
   10: 'https://optimistic.etherscan.io/address/',
   42161: 'https://arbiscan.io/address/',
   8453: 'https://basescan.org/address/',
+  43114: 'https://snowtrace.io/address/',
  
   5: 'https://goerli.etherscan.io/address/',
   420: 'https://goerli-optimism.etherscan.io/address/',
@@ -116,6 +120,7 @@ const tokens = {
     8453: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     42161: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     421613: '0xa5120a12Ff848b2e96439557A9f7E4083f921314',
+    43114: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
   },
   sweepr: {
     1: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
@@ -124,7 +129,8 @@ const tokens = {
     420: '',
     8453: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     42161: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
-    421613: '0x98d06DBb715e16dB57021eCA85b44e7916EB0c17'
+    421613: '0x98d06DBb715e16dB57021eCA85b44e7916EB0c17',
+    43114: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
   },
   usdc: {
     1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -133,7 +139,8 @@ const tokens = {
     420: '',
     8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', // !?
     42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-    421613: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892'
+    421613: '0x8FB1E3fC51F3b789dED7557E680551d93Ea9d892',
+    43114: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
   }
 }
 
@@ -145,7 +152,8 @@ const contracts = {
     420: '',
     8453: '0x7560d15774499386B04A64177E090B33e803493F',
     42161: '0xA014cCE13ECB3d92BB6D253b74Bb6E7Ed2418276',
-    421613: '0x953b290385d856303834aCab13Ee12Bf2CEEF253'
+    421613: '0x953b290385d856303834aCab13Ee12Bf2CEEF253',
+    43114: '0x26D68988843197B22AB03c92519b357eCd9c5b5f',
   }
 }
 
@@ -177,6 +185,10 @@ const AMMLinks = {
   421613: {
     title: 'Swap on Arbitrum',
     link: `https://app.balancer.fi/#/arbitrum/swap`
+  },
+  43114: {
+    title: 'Swap on Avalanche',
+    link: `https://app.balancer.fi/#/avalanche/swap`
   }
 }
 
@@ -246,6 +258,12 @@ const mainChainList = [
     netId: 184,
     name: 'Base',
     logo: baseIcon
+  },
+  {
+    chainId: 43114,
+    netId: 106,
+    name: 'Avalanche',
+    logo: avaxIcon
   },
 ]
 

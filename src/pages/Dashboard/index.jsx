@@ -72,9 +72,8 @@ const Dashboard = () => {
   return (
     <Layout>
       <div className="sm:bg-l2s p-4">
-        <h1 className="font-archivo-regular mt-4 pb-2">
-          {languages.text_title1} <br className="hidden sm:block"/>
-          {languages.text_title2}
+        <h1 className="font-archivo-regular my-2 release-title">
+          {languages.text_title1}
         </h1>
         <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6 mb-10">
           <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">

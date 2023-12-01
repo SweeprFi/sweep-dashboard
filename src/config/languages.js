@@ -1,6 +1,5 @@
 export const languages = {
-    text_title1: 'This warmup release starts at 1% return and small TVL',
-    text_title2: 'while we warm up our placement channels and improve reliability',
+    text_title1: 'Now in roadmap phase 1 (distribution) and 2 (yield aggregation)',
     text_sweep_title: 'SWEEP Metrics',
     text_sweepr_title: 'SWEEPR Metrics',
     text_assets_title: 'Assets',
