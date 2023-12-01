@@ -77,6 +77,12 @@ const walletInfo = {
       label: 'Base',
       rpcUrl: `https://mainnet.base.org`
     },
+    {
+      id: '0xA86A',
+      token: 'AVAX',
+      label: 'Avalanche',
+      rpcUrl: ` https://api.avax.network/ext/bc/C/rpc`
+    },
   ],
   connect: {
     showSidebar: true,
