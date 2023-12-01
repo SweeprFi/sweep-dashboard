@@ -89,28 +89,8 @@
   background-image: linear-gradient(334deg, transparent, hsla(0, 0%, 60%, 0) 25%, hsla(0, 0%, 100%, .5) 50%, hsla(0, 0%, 76%, 0) 75%, transparent);
 }
 
-.sweep-circle::after {
-  content: "";
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: linear-gradient(180deg, #C005C6 10%, #ee217d 50%);
-}
-
-.sweepr-circle::after {
-  content: "";
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: linear-gradient(180deg, #F2F2F2 10%, #808080 50%);
-}
-
-.bg-blue {
-  background: linear-gradient(108.97deg, #050E33 19.69%, #33407F 87.21%);
+@media screen and (max-width: 600px) {
+  .release-title {
+    font-size: 12px;
+  }
 }
