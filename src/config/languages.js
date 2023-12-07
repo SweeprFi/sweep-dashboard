@@ -65,7 +65,7 @@ export const languages = {
     text_borrower: 'Borrower',
     text_loan_limit: 'Loan Limit',
     text_call_delay: 'Call Delay',
-    text_spread_fee: 'Spread Fee',
+    text_spread_fee: 'Stabilizer Fee',
     text_auto_invest_enabled: 'Autoinvest Enabled',
     text_auto_invest_amount: 'Autoinvest Minimum Amount',
     text_auto_invest_ratio: 'Autoinvest Minimum Ratio',
