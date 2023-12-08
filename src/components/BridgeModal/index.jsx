@@ -5,14 +5,13 @@ import InputBox from "../InputBox";
 import Alert from "@components/Alert"
 import { tokenList, chainList } from "@config/constants";
 import { languages } from "@config/languages";
-import { useWallet } from "@utils/walletHelper";
 import { getSweepBalance, bridgeSweep } from "@utils/contract";
 import { pp } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import icon_wallet from "@images/wallet.svg";
 
 const BridgeModal = (props) => {
-    const { web3, chainId, walletAddress } = useWallet();
+    const { web3, chainId, walletAddress } = props.walletProps;
     const [sendAmount, setSendAmount] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
     const [destChain, setDestChain] = useState(chainList[1]);
