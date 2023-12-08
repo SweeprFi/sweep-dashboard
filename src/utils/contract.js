@@ -7,6 +7,7 @@ import {
   toInt, pp, toDate, toTime, annualRate,
   otherChainRpcs, getMaxBorrow, getMaxWithdraw
 } from './helper';
+
 import erc20ABI from "@abis/erc20.json";
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
@@ -14,6 +15,7 @@ import stabilizerABI from "@abis/stabilizer.json";
 import marketMakerABI from "@abis/marketMaker.json";
 
 export const sweepFetch = async (chainId) => {
+  if(!chainId) return {};
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
@@ -59,6 +61,7 @@ export const sweepFetch = async (chainId) => {
 }
 
 export const sweeprFetch = async (chainId) => {
+  if(!chainId) return {};
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
@@ -304,7 +307,7 @@ export const assetFetch = async (network, addr) => {
   const sweepAddress = tokens.sweep[chainId];
   const isValidMinter = await checkAsset(web3, sweepAddress, addr);
 
-  if (!isValidMinter) return { loading: false, found: false, asset: {} };
+  if (!isValidMinter) return { loading: false, found: false, data: {} };
 
   const info = {
     reference: addr,
@@ -336,6 +339,7 @@ export const assetFetch = async (network, addr) => {
       { reference: 'decreaseFactorCall', methodName: 'decreaseFactor' },
       { reference: 'minLiquidationRatioCall', methodName: 'minLiquidationRatio' },
       { reference: 'auctionAllowedCall', methodName: 'auctionAllowed' },
+      { reference: 'linkCall', methodName: 'link' },
     ]
   }
 
@@ -355,7 +359,7 @@ export const assetFetch = async (network, addr) => {
   return {
     loading: false,
     found: true,
-    asset: {
+    data: {
       borrower: data[0].returnValues[0],
       loanLimit: pp(toInt(data[2]), 18, 2),
       equityRatio: pp(toInt(data[5]), 4, 2),
@@ -380,6 +384,7 @@ export const assetFetch = async (network, addr) => {
       remainingBorrow: (maxBorrow - sweepBorrowed).toFixed(2),
       maxWithdraw: getMaxWithdraw(currentValue, minEquityRatio, juniorTranche),
       deposited: (currentValue - assetValue + pp(feeInUSD, 6, 2)).toFixed(2),
+      link: data[25].returnValues[0]
     }
   }
 }

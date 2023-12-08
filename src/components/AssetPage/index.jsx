@@ -48,6 +48,7 @@ const AssetPage = (props) => {
               title={languages.link_stabilizer}
               link={scanLink(network, address + "#writeContract")}
             />
+            <ExternalLink title={languages.link_deal} link={asset.link} />
             <table>
               <tbody>
                 <Title title={languages.text_configuration_title} class={"from-app-red to-app-pink-light"} />

@@ -5,15 +5,15 @@ import NotFound from "@pages/NotFound"
 const routes =  [
   {
     path: "/",
-    element: <Dashboard/>
+    element: Dashboard
   },
   {
     path: "/asset/:network/:address",
-    element: <Asset/>
+    element: Asset
   },
   {
     path: "*",
-    element: <NotFound/>
+    element: NotFound
   }
 ];
 

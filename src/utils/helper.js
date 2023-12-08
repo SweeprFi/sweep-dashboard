@@ -48,6 +48,7 @@ export const toInt = (val) => {
 }
 
 export const convertNumber = (val) => {
+  if(!val) return 0;
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 

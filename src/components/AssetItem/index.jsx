@@ -4,7 +4,6 @@ import { assetLink } from "@utils/helper";
 import { languages } from "@config/languages";
 import { convertNumber } from "@utils/helper";
 import imgLogo from "@images/logo.png";
-import ExternalLink from "@components/ExternalLink";
 import InternalLink from "@components/InternalLink";
 
 const AssetItem = ({ data, chainId }) => {
@@ -144,11 +143,6 @@ const AssetItem = ({ data, chainId }) => {
       </div>
 
       <div className="flex flex-row lg:items-center gap-4 lg:gap-8 px-6 pt-6 pb-6 lg:py-3 text-sm font-light bg-app-black-medium rounded-b-2xl">
-        {
-          data.link && (
-            <ExternalLink title={languages.link_deal} link={data.link} />
-          )
-        }
         <InternalLink title={languages.link_asset} link={assetLink(data.address, chainId)} />
       </div>
     </div>

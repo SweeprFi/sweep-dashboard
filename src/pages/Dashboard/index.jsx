@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import BuySweepModal from "@components/BuySweepModal";
-import { useWallet } from "@utils/walletHelper";
 import { sweepFetch, sweeprFetch, assetListFetch } from "@utils/contract";
 import { AMMLinks } from "@config/constants";
 import { languages } from "@config/languages";
@@ -14,8 +12,8 @@ import SweepInfo from "@components/SweepInfo";
 import AssetInfo from "@components/AssetInfo";
 import SweeprInfo from "@components/SweeprInfo";
 
-const Dashboard = () => {
-  const { connected, chainId } = useWallet();
+const Dashboard = ({ walletProps }) => {
+  const { connected, chainId } = walletProps;
   const [sweepInfo, setSweepInfo] = useState({
     total_supply: 0,
     local_supply: 0,
@@ -31,29 +29,38 @@ const Dashboard = () => {
     local_supply: 0
   });
   const [assetInfo, setAssetInfo] = useState([]);
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isBuyOpen, setIsBuyOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
     const initialHandler = async () => {
-      setIsLoad(true);
       try {
+        setIsLoading(true);
         const sweepData = await sweepFetch(chainId);
-        setSweepInfo(sweepData);
-        if (sweepData.assets.length > 0) {
-          setAssetInfo(await assetListFetch(chainId, sweepData.assets));
-        } else {
-          setAssetInfo([]);
+        if (isMounted) {
+          if (sweepData?.assets && sweepData.assets.length > 0) {
+            const assetsData = await assetListFetch(chainId, sweepData.assets);
+            setAssetInfo(assetsData);
+            setSweepInfo(sweepData);
+          } else {
+            setAssetInfo([]);
+          }
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-      setIsLoad(false);
-    }
+    };
 
     initialHandler();
+    return () => { isMounted = false; };
   }, [chainId, isBuyOpen]);
 
   useEffect(() => {
@@ -67,10 +74,12 @@ const Dashboard = () => {
     }
 
     initialHandler();
-  }, [chainId]);
+  }, [chainId, isOpen]);
+
+  if(!chainId) return;
 
   return (
-    <Layout>
+    <>
       <div className="sm:bg-l2s p-4">
         <h1 className="font-archivo-regular my-2 release-title">
           {languages.text_title1}
@@ -147,10 +156,10 @@ const Dashboard = () => {
         />
       </div>
 
-      { isLoad && <Loader /> }
-      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} />
-      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} />
-    </Layout>
+      { isLoading && <Loader /> }
+      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} walletProps={walletProps} />
+      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} walletProps={walletProps} />
+    </>
   )
 }
 
