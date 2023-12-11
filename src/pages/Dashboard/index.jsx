@@ -13,7 +13,7 @@ import AssetInfo from "@components/AssetInfo";
 import SweeprInfo from "@components/SweeprInfo";
 
 const Dashboard = ({ walletProps }) => {
-  const { connected, chainId } = walletProps;
+  const { connected, chainId, walletAddress } = walletProps;
   const [sweepInfo, setSweepInfo] = useState({
     total_supply: 0,
     local_supply: 0,
@@ -61,7 +61,7 @@ const Dashboard = ({ walletProps }) => {
 
     initialHandler();
     return () => { isMounted = false; };
-  }, [chainId, isBuyOpen]);
+  }, [chainId, isBuyOpen, walletAddress]);
 
   useEffect(() => {
     const initialHandler = async () => {
