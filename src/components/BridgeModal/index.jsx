@@ -15,10 +15,7 @@ const BridgeModal = (props) => {
     const [sendAmount, setSendAmount] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
     const [destChain, setDestChain] = useState(chainList[1]);
-    const [balances, setBalances] = useState({
-        curt: 0,
-        dest: 0
-    });
+    const [balances, setBalances] = useState({ curt: 0, dest: 0 });
     const [isPending, setIsPending] = useState(false);
     const [alertState, setAlertState] = useState({
         open: false,

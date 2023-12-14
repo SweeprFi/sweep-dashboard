@@ -8,6 +8,7 @@ import {
   getBalances,
   getMarketMakerAllowance,
   buySweepOnMarketMaker,
+  buySweepOnMarketMaker2,
   approveMarketMaker
 } from "@utils/contract";
 import { pp, convertNumber } from "@utils/helper";
@@ -89,8 +90,13 @@ const BuySweepModal = (props) => {
       }
     }
 
-    if (web3)
-      await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify)
+    if (web3) {
+      if(chainId === 42161 || chainId === "42161") {
+        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify)
+      } else {
+        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify)
+      }
+    }
   }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice]);
 
   const approveHandler = useCallback(async () => {
@@ -180,18 +186,22 @@ const BuySweepModal = (props) => {
                       </div>
                     </div>
                     <br/>
-                    <div className="flex justify-between items-center">
-                      <div>
-                      <InputBox
-                        className='bg-transparent text-xl cursor-text'
-                        value={slippageAmount}
-                        minValue={0}
-                        maxValue={100}
-                        setValue={setSlippageAmount}
-                      />
+
+                    {
+                      !(chainId === 42161 || chainId === "42161") &&
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <InputBox
+                            className='bg-transparent text-xl cursor-text'
+                            value={slippageAmount}
+                            minValue={0}
+                            maxValue={100}
+                            setValue={setSlippageAmount}
+                          />
+                        </div>
+                        <div>Slippage (%)</div>
                       </div>
-                      <div>Slippage (%)</div>
-                    </div>
+                    }
 
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                       <div className="">
