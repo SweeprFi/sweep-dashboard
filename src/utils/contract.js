@@ -13,6 +13,7 @@ import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
 import marketMakerABI from "@abis/marketMaker.json";
+import marketMakerABI2 from "@abis/marketMaker2.json";
 
 export const sweepFetch = async (chainId) => {
   if(!chainId) return {};
@@ -247,6 +248,31 @@ export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPri
     await contract.methods.buySweep(
       amount, slippage
     ).send({ from: walletAddress })
+      .on('transactionHash', () => {
+        setIsPending(true);
+        displayNotify('info', languages.text_tx_process);
+      })
+      .on('receipt', () => {
+        setIsPending(false);
+        displayNotify('success', languages.text_tx_success);
+      })
+      .on('error', () => {
+        setIsPending(false);
+        displayNotify('error', languages.text_tx_error);
+      });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const buySweepOnMarketMaker2 = async (web3, chainId, usdcAmount, walletAddress, setIsPending, displayNotify) => {
+  const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
+  const contract = new web3.eth.Contract(marketMakerABI2, marketMakerAddress);
+  const amount = ethers.parseUnits((usdcAmount).toString(), 6).toString();
+
+  try {
+    await contract.methods.buySweep(amount)
+      .send({ from: walletAddress })
       .on('transactionHash', () => {
         setIsPending(true);
         displayNotify('info', languages.text_tx_process);
