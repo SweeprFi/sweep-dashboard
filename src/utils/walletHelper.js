@@ -89,9 +89,7 @@ const walletInfo = {
     removeWhereIsMyWalletWarning: true,
     autoConnectAllPreviousWallet: true
   },
-  notify: {
-    enabled: false
-  },
+  notify: { enabled: false },
   appMetadata: {
     name: "Sweep",
     icon: walletMobileLogo,
@@ -99,14 +97,8 @@ const walletInfo = {
     description: "Wallet Connections"
   },
   accountCenter: {
-    desktop: {
-      enabled: false,
-      minimal: true
-    },
-    mobile: {
-      enabled: false,
-      minimal: true
-    }
+    desktop: { enabled: false, minimal: true },
+    mobile: { enabled: false, minimal: true }
   },
 }
 
@@ -178,6 +170,9 @@ const UseWalletProvider = (props) => {
 
   const handleNetworkChange = useCallback(async (networkId) => {
     const _chainId = parseInt(networkId)
+
+    console.log("WalletHelper - chain ID", _chainId);
+
     if(CHAIN_IDS.indexOf(_chainId) < 0) {
       setChain({ chainId: parseInt(chainId) });
     } else {
@@ -195,7 +190,6 @@ const UseWalletProvider = (props) => {
 
     if (typeof window !== "undefined") {
       if (window.ethereum) {
-
         window.ethereum.on('chainChanged', handleNetworkChange);
         window.ethereum.on('accountsChanged', disconnectHandler);
       }
@@ -227,11 +221,7 @@ const UseWalletProvider = (props) => {
   )
 
   return (
-    <UseWalletContext.Provider
-      value={{
-        walletData
-      }}
-    >
+    <UseWalletContext.Provider value={{ walletData }}>
       {props.children}
     </UseWalletContext.Provider>
   )

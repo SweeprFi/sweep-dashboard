@@ -36,11 +36,13 @@ const Dashboard = ({ walletProps }) => {
 
   useEffect(() => {
     let isMounted = true;
+    console.log("useEffect - chain", chainId);
 
     const initialHandler = async () => {
       try {
         setIsLoading(true);
         const sweepData = await sweepFetch(chainId);
+        console.log("fetch SWP data", sweepData);
         if (isMounted) {
           if (sweepData?.assets && sweepData.assets.length > 0) {
             const assetsData = await assetListFetch(chainId, sweepData.assets);

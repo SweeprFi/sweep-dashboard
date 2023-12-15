@@ -1,31 +1,11 @@
 import { languages } from "@config/languages"
-import { sweepStatus } from "@config/constants";
 import { convertNumber } from "@utils/helper";
+
+import SweepItem from "@components/SweepItem";
 import SweepLogoWhite from "@images/logo.png"
+const sweepStatus = ["Minting", "Repaying"];
 
 const SweepInfo = ({ data }) => {
-    const SweepItem = (props) => {
-        return (
-            <div className={`bg-app-sweepMetrics rounded-3xl p-8 flex flex-col justify-center items-start relative overflow-hidden ${props.className}`}>
-                <div className="growing absolute top-0 left-0 w-full h-full p-[2px] rounded-3xl">
-                    <div className="growing-inner w-full h-full"></div>
-                </div>
-                <h3 className="font-archivo-regular mt-2 text-app-gray-dark whitespace-nowrap text-sm sm:text-base lg:text-sm xl:text-base">
-                    {props.label}
-                </h3>
-                <div className="flex items-center gap-4 text-3xl sm:text-4xl lg:text-3xl xl:text-4xl">
-                    {
-                        props.symbolLeft && props.symbolLeft
-                    }
-                    {props.value}
-                    {
-                        props.symbolRight && props.symbolRight
-                    }
-                </div>
-            </div>
-        )
-    }
-
     return (
         <>
             <div className="mb-3">
@@ -70,9 +50,7 @@ const SweepInfo = ({ data }) => {
                     className="sm:col-span-4 lg:col-span-3"
                 />
                 <SweepItem
-                    label={
-                        languages.label_amm_price + ` - ${sweepStatus[data.mint_status]}`
-                    }
+                    label={languages.label_amm_price + ` - ${sweepStatus[data.mint_status]}`}
                     value={data?.amm_price}
                     symbolLeft="$"
                     className="sm:col-span-4 lg:col-span-3"

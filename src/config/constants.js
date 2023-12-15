@@ -269,8 +269,6 @@ const mainChainList = [
 
 const chainList = Number(process.env.REACT_APP_MODE) === 0 ? testChainList : mainChainList;
 
-const sweepStatus = ["Minting", "Repaying"];
-
 export {
   month,
   networks,
@@ -282,6 +280,5 @@ export {
   socialLinks,
   assetStatus,
   chainList,
-  AMMLinks,
-  sweepStatus
+  AMMLinks
 }
