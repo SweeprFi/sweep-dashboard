@@ -54,6 +54,7 @@ export const languages = {
     btn_pending: 'Pending ...',
     btn_connect: 'Connect Wallet',
     btn_change_network: 'Change NetWork',
+    btn_swap_balancer: 'Swap on Balancer',
 
     // Asset page
     text_asset_not_found: 'Asset Not Found',
@@ -83,4 +84,11 @@ export const languages = {
     text_max_withdraw: 'Maximum Withdrawable Amount',
     text_call_time: 'Call Time',
     text_call_amount: 'Call Amount',
+
+    // landing / home
+    text_how_sweep_works: 'SWEEP target price in USD increases with interest. The interest rate crawls once per week',
+    text_swap_sweep: 'Buy or sell SWEEP from a local AMM',
+    text_buy_at: 'You can always buy SWEEP at a price that is slightly above the target price. This grows the SWEEP supply and gives borrowers a reliable way to repay',
+    text_bridge_sweep: 'Bridge your SWEEP other blockchains',
+    text_asset_distribution: 'Sweep grows the DeFi and RWA economy with collateralized lending to wholesale borrowers. Select the panels below to see the assets on each chain'
 }

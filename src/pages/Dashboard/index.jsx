@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from 'react-router-dom';
+
+import { useWallet } from "@utils/walletHelper";
+import { assetListFetch } from "@utils/contract";
+
 import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import BuySweepModal from "@components/BuySweepModal";
-import { sweepFetch, sweeprFetch, assetListFetch } from "@utils/contract";
-import { AMMLinks } from "@config/constants";
+
+import { AMMLinks, chainList } from "@config/constants";
 import { languages } from "@config/languages";
+
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
 import SweepLogo from "@images/icon_sweep.svg"
@@ -12,22 +19,16 @@ import SweepInfo from "@components/SweepInfo";
 import AssetInfo from "@components/AssetInfo";
 import SweeprInfo from "@components/SweeprInfo";
 
-const Dashboard = ({ walletProps }) => {
-  const { connected, chainId, walletAddress } = walletProps;
-  const [sweepInfo, setSweepInfo] = useState({
-    total_supply: 0,
-    local_supply: 0,
-    interest_rate: 0,
-    targe_price: 0,
-    amm_price: 0,
-    market_price: 0,
-    mint_status: 0,
-    assets: []
-  });
-  const [sweeprInfo, setSweeprInfo] = useState({
-    total_supply: 0,
-    local_supply: 0
-  });
+const Dashboard = () => {
+  const { network } = useParams();
+  const { connected, chainId } = useWallet();
+
+  const sweepInfo = useSelector((state) => state.sweep);
+  const sweeprInfo = useSelector((state) => state.sweepr);
+  const chain = chainList.find((chain) => chain.name.toLowerCase() === network);
+  const sweepData = sweepInfo[chain?.chainId]
+  const sweeprData = sweeprInfo[chain?.chainId]
+
   const [assetInfo, setAssetInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -35,50 +36,26 @@ const Dashboard = ({ walletProps }) => {
   const [selectedToken, setSelectedToken] = useState('');
 
   useEffect(() => {
-    let isMounted = true;
-    console.log("useEffect - chain", chainId);
-
     const initialHandler = async () => {
       try {
         setIsLoading(true);
-        const sweepData = await sweepFetch(chainId);
-        console.log("fetch SWP data", sweepData);
-        if (isMounted) {
-          if (sweepData?.assets && sweepData.assets.length > 0) {
-            const assetsData = await assetListFetch(chainId, sweepData.assets);
-            setAssetInfo(assetsData);
-            setSweepInfo(sweepData);
-          } else {
-            setAssetInfo([]);
-          }
+        if (sweepData?.assets && sweepData.assets.length > 0) {
+          const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
+          setAssetInfo(assetsData);
+        } else {
+          setAssetInfo([]);
         }
       } catch (error) {
         console.log(error);
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     initialHandler();
-    return () => { isMounted = false; };
-  }, [chainId, isBuyOpen, walletAddress]);
+  }, [chain, sweepData]);
 
-  useEffect(() => {
-    const initialHandler = async () => {
-      try {
-        const sweeprData = await sweeprFetch(chainId);
-        setSweeprInfo(sweeprData);
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    initialHandler();
-  }, [chainId, isOpen]);
-
-  if(!chainId) return;
+  if (!chainId) return;
 
   return (
     <>
@@ -106,26 +83,26 @@ const Dashboard = ({ walletProps }) => {
           {
             connected && (
               <>
-              {
-                // Hide buy button when mint not allowed.
-                sweepInfo.mint_status === 0 && (
-                  <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
-                    <div
-                      className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
-                    >
-                      <button
-                        onClick={() => setIsBuyOpen(true)}
-                        className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
+                {
+                  // Hide buy button when mint not allowed.
+                  sweepInfo.mint_status === 0 && (
+                    <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
+                      <div
+                        className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                       >
-                        <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                        <span>
-                          {languages.btn_buy_sweep_on_market + ' $' + sweepInfo.market_price}
-                        </span>
-                      </button>
+                        <button
+                          onClick={() => setIsBuyOpen(true)}
+                          className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
+                        >
+                          <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
+                          <span>
+                            {languages.btn_buy_sweep_on_market + ' $' + sweepInfo.market_price}
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )
-              }
+                  )
+                }
                 <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
                   <div
                     className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
@@ -145,22 +122,22 @@ const Dashboard = ({ walletProps }) => {
             )
           }
         </div>
-        <SweepInfo data={sweepInfo} />
+        <SweepInfo data={sweepData} />
       </div>
 
       <div className="px-4">
-        <AssetInfo data={assetInfo} chainId={chainId} />
+        <AssetInfo data={assetInfo} chainId={chain?.chainId} />
         <SweeprInfo
-          data={sweeprInfo}
+          data={sweeprData}
           connected={connected}
           setIsOpen={setIsOpen}
           setSelectedToken={setSelectedToken}
         />
       </div>
 
-      { isLoading && <Loader /> }
-      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} walletProps={walletProps} />
-      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} walletProps={walletProps} />
+      {isLoading && <Loader />}
+      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} />
+      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} />
     </>
   )
 }

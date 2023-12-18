@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import SelectBox from "../SelectBox";
 import InputBox from "../InputBox";
@@ -11,7 +12,7 @@ import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import icon_wallet from "@images/wallet.svg";
 
 const BridgeModal = (props) => {
-    const { web3, chainId, walletAddress } = props.walletProps;
+    const { web3, chainId, walletAddress } = useWallet();
     const [sendAmount, setSendAmount] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
     const [destChain, setDestChain] = useState(chainList[1]);

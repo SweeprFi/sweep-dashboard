@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import InputBox from "../InputBox";
 import Alert from "@components/Alert"
@@ -16,7 +17,7 @@ import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import WalletIcon from "@images/wallet.svg";
 
 const BuySweepModal = (props) => {
-  const { web3, chainId, walletAddress } = props.walletProps;
+  const { web3, chainId, walletAddress } = useWallet();
   const { marketPrice } = props;
   const sweepToken = tokenList[0];
   const usdcToken = tokenList[2];

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useWallet } from "@utils/walletHelper";
 import { Link } from "react-router-dom"
 import { Disclosure } from "@headlessui/react"
 import SelectBox from "@components/SelectBox";
@@ -10,7 +11,8 @@ import SweepLogo from "@images/icon_sweep.svg"
 import { ReactComponent as BlockieIcon } from "@images/icon_blockies.svg"
 import BlockieImage from "@images/icon_blockies.svg"
 
-const Navbar = ({ walletProps: { connected, connectHandler, walletAddress, chainId, setChain } }) => {
+const Navbar = () => {
+  const { connected, connectHandler, walletAddress, chainId, setChain } = useWallet();
   const [curtChain, setCurtChain] = useState(chainList[0]);
 
   useEffect(() => {

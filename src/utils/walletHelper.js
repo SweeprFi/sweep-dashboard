@@ -4,8 +4,8 @@ import React, {
   useMemo,
   useCallback,
   useState,
-} from 'react'
-import Web3 from 'web3'
+} from 'react';
+import Web3 from 'web3';
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
@@ -21,10 +21,7 @@ const RPC_URL = rpcLinks[CHAIN_ID]
 
 const injected = injectedModule()
 const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
-
-const initOptions = {
-  projectId: 'cd4a577bcbeff487bba452a9deeaeace'
-}
+const initOptions = { projectId: 'cd4a577bcbeff487bba452a9deeaeace' }
 const walletConnect = walletConnectModule(initOptions)
 
 const walletInfo = {
@@ -101,7 +98,6 @@ const walletInfo = {
     mobile: { enabled: false, minimal: true }
   },
 }
-
 init(walletInfo)
 
 const UseWalletContext = React.createContext(null)
@@ -118,9 +114,7 @@ const useWallet = () => {
 
   const { walletData } = walletContext
 
-  return useMemo(() => ({ ...walletData }), [
-    walletData
-  ])
+  return useMemo(() => ({ ...walletData }), [walletData])
 }
 
 const UseWalletProvider = (props) => {
@@ -132,10 +126,10 @@ const UseWalletProvider = (props) => {
     throw new Error('<UseWalletProvider /> has already been declared.')
   }
 
-  const [web3, setWeb3] = useState(undefined)
-  const [connected, setConnected] = useState(false)
-  const [walletAddress, setWalletAddress] = useState('')
-  const [chainId, setChainId] = useState(props.chainId)
+  const [web3, setWeb3] = useState(undefined);
+  const [connected, setConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [chainId, setChainId] = useState(props.chainId);
 
   useEffect(() => {
     const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 })
@@ -171,8 +165,6 @@ const UseWalletProvider = (props) => {
   const handleNetworkChange = useCallback(async (networkId) => {
     const _chainId = parseInt(networkId)
 
-    console.log("WalletHelper - chain ID", _chainId);
-
     if(CHAIN_IDS.indexOf(_chainId) < 0) {
       setChain({ chainId: parseInt(chainId) });
     } else {
@@ -198,26 +190,8 @@ const UseWalletProvider = (props) => {
   }, [handleNetworkChange, walletInitialize, disconnectHandler])
 
   const walletData = useMemo(
-    () => ({
-      web3,
-      chainId,
-      connected,
-      connecting,
-      walletAddress,
-      connectHandler,
-      setChain,
-      disconnectHandler
-    }),
-    [
-      web3,
-      chainId,
-      connected,
-      connecting,
-      walletAddress,
-      connectHandler,
-      setChain,
-      disconnectHandler
-    ]
+    () => ({web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler}),
+    [web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler]
   )
 
   return (
@@ -227,12 +201,5 @@ const UseWalletProvider = (props) => {
   )
 }
 
-UseWalletProvider.defaultProps = {
-  chainId: CHAIN_ID,
-  chainName: CHAIN_NAME
-}
-
-export {
-  UseWalletProvider,
-  useWallet
-}
+UseWalletProvider.defaultProps = { chainId: CHAIN_ID, chainName: CHAIN_NAME }
+export { UseWalletProvider, useWallet }

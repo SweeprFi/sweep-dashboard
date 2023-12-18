@@ -17,9 +17,11 @@ import marketMakerABI2 from "@abis/marketMaker2.json";
 
 export const sweepFetch = async (chainId) => {
   if(!chainId) return {};
+
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  const network = chainList.find((network) => network.chainId === chainId);
 
   const callInfo = {
     reference: 'sweep',
@@ -48,6 +50,8 @@ export const sweepFetch = async (chainId) => {
   otherTotalSupplys.map((supply) => totalSupply += Number(supply));
 
   const market_price = toInt(data[2]) * (1 + toInt(data[4]) / 1e6);
+  const assets = data[6].returnValues;
+  const { totalBorrowed, totalValue } = await assetsBlock(chainId, assets);
 
   return {
     total_supply: pp(totalSupply, 18, 2),
@@ -57,7 +61,12 @@ export const sweepFetch = async (chainId) => {
     amm_price: pp(toInt(data[3]), 6, 5),
     market_price: pp(market_price, 6, 5),
     mint_status: data[5].returnValues[0] ? 0 : 1,
-    assets: data[6].returnValues
+    assets,
+    totalBorrowed,
+    totalValue,
+    network: network.name,
+    chain: network.chainId,
+    logo: network.logo
   }
 }
 
@@ -413,6 +422,45 @@ export const assetFetch = async (network, addr) => {
       link: data[25].returnValues[0]
     }
   }
+}
+
+const assetsBlock = async (chainId, assets) => {
+  const RPC = rpcLinks[chainId];
+  const web3 = new Web3(RPC);
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  const callInfo = await Promise.all(
+    assets.map(async (asset) => {
+      const info = {
+        reference: asset,
+        contractAddress: asset,
+        abi: stabilizerABI,
+        calls: [
+          { reference: 'sweepBorrowedCall', methodName: 'sweepBorrowed' },
+          { reference: 'currentValueCall', methodName: 'currentValue' },
+          { reference: 'assetValueCall', methodName: 'assetValue' },
+        ]
+      }
+
+      return info;
+    })
+  )
+
+  let callResults = await multicall.call(callInfo);
+  callResults = callResults.results;
+
+  let totalValue = 0; 
+  let totalBorrowed = 0;
+
+  Object.keys(callResults).map(async (key) => {
+    const data = callResults[key]['callsReturnContext'];
+    totalBorrowed += toInt(data[0]);
+    totalValue += toInt(data[2]);
+  })
+
+  return {
+    totalBorrowed: pp(totalBorrowed, 18, 2),
+    totalValue: pp(totalValue, 6, 2)
+  };
 }
 
 // *******************

@@ -13,6 +13,7 @@ module.exports = {
       '@fonts': path.resolve(__dirname, "src/fonts/"),
       '@styles': path.resolve(__dirname, "src/assets/css/"),
       '@images': path.resolve(__dirname, "src/assets/images/"),
+      '@redux': path.resolve(__dirname, "src/redux/"),
     }
   }
 };
