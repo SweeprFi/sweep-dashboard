@@ -18,7 +18,7 @@ import SweeprInfo from "@components/SweeprInfo";
 
 const Dashboard = () => {
   const { network } = useParams();
-  const { connected, chainId } = useWallet();
+  const { connected, chainId, connectHandler } = useWallet();
   const dispatch = useDispatch();
 
   const sweepInfo = useSelector((state) => state.sweep);
@@ -51,12 +51,25 @@ const Dashboard = () => {
 
   if (!chainId) return;
 
+  const handleBuyPopup = async () => {
+    if (connected) {
+      dispatch(setBuyPopup({ isOpen: true, marketPrice: sweepData?.market_price, chainId: chain?.chainId }));
+    } else {
+      await connectHandler();
+    }
+  }
+
+  const handleBridgePopup = async (selected) => {
+    if (connected) {
+      dispatch(setBridgePopup({ isOpen: true, selectedToken: selected, chainId: chain?.chainId }));
+    } else {
+      await connectHandler();
+    }
+  }
+
   return (
     <>
       <div className="sm:bg-l2s p-4">
-        <h1 className="font-archivo-regular my-2 release-title">
-          {languages.text_title1}
-        </h1>
         <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6 mb-10">
           <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
             <a
@@ -74,47 +87,41 @@ const Dashboard = () => {
               </button>
             </a>
           </div>
-          {
-            connected && (
-              <>
-                {
-                  // Hide buy button when mint not allowed.
-                  sweepData.mint_status === 0 && (
-                    <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
-                      <div
-                        className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
-                      >
-                        <button
-                          onClick={() => dispatch(setBuyPopup({isOpen: true, marketPrice: sweepData?.market_price }))}
-                          className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
-                        >
-                          <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                          <span>
-                            {languages.btn_buy_sweep_on_market + ' $' + sweepData?.market_price}
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  )
-                }
+          <>
+            {
+              // Hide buy button when mint not allowed.
+              !!sweepData?.mint_status && sweepData?.mint_status === 0 && (
                 <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
                   <div
                     className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                   >
                     <button
-                      onClick={() => { dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweep' })); }}
+                      onClick={handleBuyPopup}
                       className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
                     >
                       <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                      <span>
-                        {languages.btn_sweep_bridge}
-                      </span>
+                      <span>{`${languages.btn_buy_sweep_on_market} $ ${sweepData?.market_price || 1}`}</span>
                     </button>
                   </div>
                 </div>
-              </>
-            )
-          }
+              )
+            }
+            <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
+              <div
+                className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
+              >
+                <button
+                  onClick={() => handleBridgePopup('sweep')}
+                  className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
+                >
+                  <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
+                  <span>
+                    {languages.btn_sweep_bridge}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </>
         </div>
         <SweepInfo data={sweepData} />
       </div>
@@ -123,7 +130,7 @@ const Dashboard = () => {
         <AssetInfo data={assetInfo} chainId={chain?.chainId} />
         <SweeprInfo
           data={sweeprData}
-          connected={connected}
+          handleClick={handleBridgePopup}
         />
       </div>
     </>

@@ -39,10 +39,10 @@ const AssetsBlock = ({ chainId }) => {
                       <img src={data.logo} alt="logo" className="w-6 h-6" />
                     </td>
                     <td data-label="network">{data.network}</td>
-                    <td data-label="local-supply">{data.local_supply}</td>
-                    <td data-label="total-borrowed">{data.totalBorrowed}</td>
+                    <td data-label="local supply">{data.local_supply}</td>
+                    <td data-label="total borrowed">{data.totalBorrowed}</td>
                   </Link>
-                    <td data-label="total-asset">$ {data.totalValue}</td>
+                    <td data-label="total asset">$ {data.totalValue}</td>
                 </tr>
               )
             })

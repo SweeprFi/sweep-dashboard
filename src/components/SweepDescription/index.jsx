@@ -5,10 +5,26 @@ import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
 import SweepLogo from "@images/icon_sweep.svg"
 import { setBuyPopup, setBridgePopup } from "@redux/app.reducers";
 
-const SweepDescription = ({ marketPrice, chainId }) => {
+const SweepDescription = ({ marketPrice, chainId, connected, connectHandler }) => {
   const dispatch = useDispatch();
   const classButton = "flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap";
-  const classContainer = "group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto";
+  const classContainer = "group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-11/12";
+
+  const handleBuyPopup = async () => {
+    if(connected) {
+      dispatch(setBuyPopup({isOpen: true, marketPrice: marketPrice, chainId }));
+    } else {
+      await connectHandler();
+    }
+  }
+
+  const handleBridgePopup = async () => {
+    if(connected) {
+      dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweep', chainId }));
+    } else {
+      await connectHandler();
+    }
+  }
 
   return (
     <div className="my-12">
@@ -42,9 +58,9 @@ const SweepDescription = ({ marketPrice, chainId }) => {
             <tr>
               <td className="flex justify-center">
                 <div className={classContainer}>
-                  <button onClick={() => dispatch(setBuyPopup({ isOpen: true, marketPrice }))} className={classButton}>
+                  <button onClick={handleBuyPopup} className={classButton}>
                     <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                    <span>{languages.btn_buy_sweep_on_market + ' $' + marketPrice}</span>
+                    <span>{`${languages.btn_buy_sweep_on_market} $ ${marketPrice || 1}`}</span>
                   </button>
                 </div>
               </td>
@@ -55,7 +71,7 @@ const SweepDescription = ({ marketPrice, chainId }) => {
             <tr>
               <td className="flex justify-center">
                 <div className={classContainer}>
-                  <button onClick={() => dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweep' })) } className={classButton}>
+                  <button onClick={handleBridgePopup} className={classButton}>
                     <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
                     <span>{languages.btn_sweep_bridge}</span>
                   </button>

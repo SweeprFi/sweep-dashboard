@@ -14,19 +14,16 @@ import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import icon_wallet from "@images/wallet.svg";
 
 const BridgeModal = () => {
-    const { web3, chainId, walletAddress } = useWallet();
+    const { web3, chainId, walletAddress, setChain } = useWallet();
     const dispatch = useDispatch();
     const bridgeProps = useSelector((state) => state.bridgePopup);
     const [sendAmount, setSendAmount] = useState(0);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [isConnecting, setIsConnecting] = useState(false);
     const [destChain, setDestChain] = useState(chainList[1]);
     const [balances, setBalances] = useState({ curt: 0, dest: 0 });
     const [isPending, setIsPending] = useState(false);
-    const [alertState, setAlertState] = useState({
-        open: false,
-        message: "",
-        severity: undefined,
-    })
+    const [alertState, setAlertState] = useState({ open: false, message: "", severity: undefined })
 
     const token = useMemo(() => {
         return tokenList.filter((item) => item.name.toLowerCase() === bridgeProps.selectedToken)[0] || tokenList[0];
@@ -39,6 +36,10 @@ const BridgeModal = () => {
     const destChainList = useMemo(() => {
         return chainList.filter((item) => item.chainId !== chainId)
     }, [chainId]);
+
+    const closeModal = useCallback(() => {
+        dispatch(setBridgePopup({ isOpen: false, selectedToken: '', chainId: 0 }));
+    }, [dispatch]);
 
     useEffect(() => {
         const intialHandler = async () => {
@@ -60,15 +61,26 @@ const BridgeModal = () => {
             setDestChain(destChainList[0])
     }, [destChain, destChainList])
 
+    useEffect(() => {
+        const networkHandler = async () => {
+            if (
+                bridgeProps?.chainId > 0 &&
+                Number(bridgeProps.chainId) !== Number(chainId)
+            ) {
+                setIsConnecting(true);
+                await setChain({ chainId: bridgeProps.chainId });
+            }
+
+            setIsConnecting(false);
+        }
+        networkHandler();
+    }, [bridgeProps.chainId, chainId, setChain])
+
     const sweepBridgeHandler = useCallback(async () => {
         if (Number(sendAmount) === 0 || isPending) return;
 
         const displayNotify = async (type, content) => {
-            setAlertState({
-                open: true,
-                message: content,
-                severity: type,
-            });
+            setAlertState({ open: true, message: content, severity: type });
 
             if (type === 'success') {
                 const bal = await getSweepBalance(bridgeProps.selectedToken, chainId, destChain.chainId, walletAddress);
@@ -100,13 +112,9 @@ const BridgeModal = () => {
         return () => clearInterval(interval);
     }, [alertState, setAlertState])
 
-    const closeModal = () => {
-        dispatch(setBridgePopup({ isOpen: false, selectedToken: '' }));
-    }
-
     return (
         <>
-            <Transition appear show={bridgeProps.isOpen} as={Fragment}>
+            <Transition appear show={(bridgeProps.isOpen && !isConnecting)} as={Fragment}>
                 <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
                     <Transition.Child
                         as={Fragment}
@@ -144,7 +152,7 @@ const BridgeModal = () => {
                                         {languages.label_transfer_from}
                                         <img src={curtChain[0]?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full ml-2" />
                                     </div>
-                                    <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-10 relative">
+                                    <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-12 relative">
                                         <InputBox
                                             className='bg-transparent text-2xl'
                                             title=""
@@ -175,7 +183,7 @@ const BridgeModal = () => {
                                     <div className="mt-4 mb-2 text-md flex items-center">
                                         {languages.label_transfer_to}
                                     </div>
-                                    <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-10 relative">
+                                    <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-12 relative">
                                         <div className="text-2xl pt-2 pl-0 cursor-default">
                                             {sendAmount}
                                         </div>
@@ -196,6 +204,7 @@ const BridgeModal = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <br />
                                     <div className="mt-6 flex justify-center gap-4">
                                         <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-white w-1/2">
                                             <div

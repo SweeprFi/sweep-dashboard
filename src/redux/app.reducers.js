@@ -6,11 +6,13 @@ export const initialState = {
   sweepr: {},
   buyPopup: {
     isOpen: false,
-    marketPrice: 0
+    marketPrice: 0,
+    chainId: 0
   },
   bridgePopup: {
     isOpen: false,
-    selectedToken: ''
+    selectedToken: '',
+    chainId: 0
   },
 };
 
@@ -33,10 +35,10 @@ export const slice = createSlice({
     setBridgePopup: (state, action) => {
       state.bridgePopup = action.payload;
     },
-    updateSweepData: (state, action) => {
-      console.log(state, action);
-      // state.sweep = action.payload;
-    },
+    // updateSweepData: (state, action) => {
+    //   console.log(state, action);
+    //   // state.sweep = action.payload;
+    // },
   }
 });
 
@@ -46,7 +48,6 @@ export const {
   setIsLoading,
   setBuyPopup,
   setBridgePopup,
-  updateSweepData,
 } = slice.actions;
 
 export default slice.reducer;

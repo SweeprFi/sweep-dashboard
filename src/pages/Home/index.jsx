@@ -6,18 +6,22 @@ import SweepDescription from "@components/SweepDescription";
 import AssetsBlock from "../../components/AssetsBlock";
 
 const Home = () => {
-  const { chainId } = useWallet();
+  const { chainId, connected, connectHandler } = useWallet();
   const sweepInfo = useSelector((state) => state.sweep)
 
   return (
     <>
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[chainId]} />
-        <SweepDescription marketPrice={sweepInfo[chainId]?.market_price} chainId={chainId} />
+        <SweepDescription
+          marketPrice={sweepInfo[chainId]?.market_price}
+          chainId={chainId}
+          connected={connected}
+          connectHandler={connectHandler}
+        />
       </div>
       <AssetsBlock chainId={chainId} />
     </>
-
   )
 }
 

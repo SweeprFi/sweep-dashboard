@@ -15,28 +15,28 @@ const App = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.isLoading);
 
+  const fetchData = async (fetchFunction) => {
+    try {
+      const allPromises = chainList.map(async (net) => ({
+        [net.chainId]: await fetchFunction(net.chainId)
+      }));
+
+      const results = await Promise.all(allPromises);
+
+      let data = {};
+      results.forEach(response => {
+        const chain = Object.keys(response)[0];
+        data[chain] = { ...response[chain] };
+      });
+
+      return data;
+    } catch (error) {
+      console.error(error);
+      return {};
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async (fetchFunction) => {
-      try {
-        const allPromises = chainList.map(async (net) => ({
-          [net.chainId]: await fetchFunction(net.chainId)
-        }));
-
-        const results = await Promise.all(allPromises);
-
-        let data = {};
-        results.forEach(response => {
-          const chain = Object.keys(response)[0];
-          data[chain] = { ...response[chain] };
-        });
-
-        return data;
-      } catch (error) {
-        console.error(error);
-        return {};
-      }
-    };
-
     const initialHandler = async () => {
       dispatch(setIsLoading(true));
       const sweepData = await fetchData(sweepFetch);
