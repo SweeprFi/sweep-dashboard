@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 
-import Loader from "@components/Loader";
 import AssetPage from "@components/AssetPage";
 import AssetNotFound from "@components/AssetNotFound";
 import { assetFetch } from "@utils/contract";
@@ -30,9 +29,8 @@ const Asset = () => {
 
   return (
     <div className="bg-l2s p-4">
-      {asset.loading && <Loader />}
-      {!asset.loading && asset.found && <AssetPage asset={asset.data} network={network} address={address} />}
-      {!asset.loading && !asset.found && <AssetNotFound />}
+      {asset.found && <AssetPage asset={asset.data} network={network} address={address} />}
+      {!asset.found && <AssetNotFound />}
     </div>
   )
 }

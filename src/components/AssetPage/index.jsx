@@ -35,6 +35,8 @@ const AssetPage = (props) => {
     )
   }
 
+  if(!asset?.name) return;
+
   return (
     <div className="bg-l2s p-4">
       <div className="text-2xl sm:text-4xl lg:text-3xl xl:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-app-red to-app-pink-light">

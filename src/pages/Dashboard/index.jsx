@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from 'react-router-dom';
 
 import { useWallet } from "@utils/walletHelper";
 import { assetListFetch } from "@utils/contract";
+import { setIsLoading } from "@redux/app.reducers";
 
-import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import BuySweepModal from "@components/BuySweepModal";
 
@@ -22,6 +22,7 @@ import SweeprInfo from "@components/SweeprInfo";
 const Dashboard = () => {
   const { network } = useParams();
   const { connected, chainId } = useWallet();
+  const dispatch = useDispatch();
 
   const sweepInfo = useSelector((state) => state.sweep);
   const sweeprInfo = useSelector((state) => state.sweepr);
@@ -30,7 +31,6 @@ const Dashboard = () => {
   const sweeprData = sweeprInfo[chain?.chainId]
 
   const [assetInfo, setAssetInfo] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isBuyOpen, setIsBuyOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState('');
@@ -38,7 +38,7 @@ const Dashboard = () => {
   useEffect(() => {
     const initialHandler = async () => {
       try {
-        setIsLoading(true);
+        dispatch(setIsLoading(true));
         if (sweepData?.assets && sweepData.assets.length > 0) {
           const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
           setAssetInfo(assetsData);
@@ -48,12 +48,12 @@ const Dashboard = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
       }
     };
 
     initialHandler();
-  }, [chain, sweepData]);
+  }, [chain, sweepData, dispatch]);
 
   if (!chainId) return;
 
@@ -135,7 +135,6 @@ const Dashboard = () => {
         />
       </div>
 
-      {isLoading && <Loader />}
       <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} />
       <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} />
     </>

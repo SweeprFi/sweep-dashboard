@@ -1,14 +1,16 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { sweepFetch, sweeprFetch } from "@utils/contract";
-import { setSweepData, setSweeprData } from "@redux/app.reducers";
+import { setSweepData, setSweeprData, setIsLoading } from "@redux/app.reducers";
 import { chainList } from "@config/constants";
 import routes from "@modules/routes";
 import Layout from "@components/Layout";
+import Loader from "@components/Loader";
 
 const App = () => {
   const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.isLoading);
 
   useEffect(() => {
     const fetchData = async (fetchFunction) => {
@@ -33,11 +35,13 @@ const App = () => {
     };
 
     const initialHandler = async () => {
+      dispatch(setIsLoading(true));
       const sweepData = await fetchData(sweepFetch);
       const sweeprData = await fetchData(sweeprFetch);
 
       dispatch(setSweepData(sweepData));
       dispatch(setSweeprData(sweeprData));
+      dispatch(setIsLoading(false));
     };
 
     initialHandler();
@@ -59,6 +63,7 @@ const App = () => {
               ))
             }
           </Routes>
+          { isLoading && <Loader /> }
         </Layout>
       </BrowserRouter>
     </div >

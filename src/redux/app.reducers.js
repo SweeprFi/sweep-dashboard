@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const initialState = {
+  isLoading: false,
   sweep: {},
   sweepr: {},
 };
@@ -15,8 +16,8 @@ export const slice = createSlice({
     setSweeprData: (state, action) => {
       state.sweepr = action.payload;
     },
-    setWallet: (state, action) => {
-      state.wallet = action.payload;
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     },
   }
 });
@@ -24,7 +25,7 @@ export const slice = createSlice({
 export const {
   setSweepData,
   setSweeprData,
-  setWallet,
+  setIsLoading,
 } = slice.actions;
 
 export default slice.reducer;
