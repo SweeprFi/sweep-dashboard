@@ -4,6 +4,14 @@ export const initialState = {
   isLoading: false,
   sweep: {},
   sweepr: {},
+  buyPopup: {
+    isOpen: false,
+    marketPrice: 0
+  },
+  bridgePopup: {
+    isOpen: false,
+    selectedToken: ''
+  },
 };
 
 export const slice = createSlice({
@@ -19,6 +27,16 @@ export const slice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setBuyPopup: (state, action) => {
+      state.buyPopup = action.payload;
+    },
+    setBridgePopup: (state, action) => {
+      state.bridgePopup = action.payload;
+    },
+    updateSweepData: (state, action) => {
+      console.log(state, action);
+      // state.sweep = action.payload;
+    },
   }
 });
 
@@ -26,6 +44,9 @@ export const {
   setSweepData,
   setSweeprData,
   setIsLoading,
+  setBuyPopup,
+  setBridgePopup,
+  updateSweepData,
 } = slice.actions;
 
 export default slice.reducer;

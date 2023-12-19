@@ -4,9 +4,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { sweepFetch, sweeprFetch } from "@utils/contract";
 import { setSweepData, setSweeprData, setIsLoading } from "@redux/app.reducers";
 import { chainList } from "@config/constants";
+
 import routes from "@modules/routes";
 import Layout from "@components/Layout";
 import Loader from "@components/Loader";
+import BridgeModal from "@components/BridgeModal";
+import BuySweepModal from "@components/BuySweepModal";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -64,6 +67,8 @@ const App = () => {
             }
           </Routes>
           { isLoading && <Loader /> }
+          <BridgeModal />
+          <BuySweepModal />
         </Layout>
       </BrowserRouter>
     </div >

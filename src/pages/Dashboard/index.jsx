@@ -4,10 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { useWallet } from "@utils/walletHelper";
 import { assetListFetch } from "@utils/contract";
-import { setIsLoading } from "@redux/app.reducers";
-
-import BridgeModal from "@components/BridgeModal";
-import BuySweepModal from "@components/BuySweepModal";
+import { setIsLoading, setBuyPopup, setBridgePopup } from "@redux/app.reducers";
 
 import { AMMLinks, chainList } from "@config/constants";
 import { languages } from "@config/languages";
@@ -31,9 +28,6 @@ const Dashboard = () => {
   const sweeprData = sweeprInfo[chain?.chainId]
 
   const [assetInfo, setAssetInfo] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState('');
 
   useEffect(() => {
     const initialHandler = async () => {
@@ -85,18 +79,18 @@ const Dashboard = () => {
               <>
                 {
                   // Hide buy button when mint not allowed.
-                  sweepInfo.mint_status === 0 && (
+                  sweepData.mint_status === 0 && (
                     <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
                       <div
                         className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                       >
                         <button
-                          onClick={() => setIsBuyOpen(true)}
+                          onClick={() => dispatch(setBuyPopup({isOpen: true, marketPrice: sweepData?.market_price }))}
                           className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
                         >
                           <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
                           <span>
-                            {languages.btn_buy_sweep_on_market + ' $' + sweepInfo.market_price}
+                            {languages.btn_buy_sweep_on_market + ' $' + sweepData?.market_price}
                           </span>
                         </button>
                       </div>
@@ -108,7 +102,7 @@ const Dashboard = () => {
                     className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                   >
                     <button
-                      onClick={() => { setIsOpen(true); setSelectedToken('sweep'); }}
+                      onClick={() => { dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweep' })); }}
                       className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap"
                     >
                       <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
@@ -130,13 +124,8 @@ const Dashboard = () => {
         <SweeprInfo
           data={sweeprData}
           connected={connected}
-          setIsOpen={setIsOpen}
-          setSelectedToken={setSelectedToken}
         />
       </div>
-
-      <BridgeModal isOpen={isOpen} closeModal={setIsOpen} selectedToken={selectedToken} />
-      <BuySweepModal isOpen={isBuyOpen} closeModal={setIsBuyOpen} marketPrice={sweepInfo.market_price} />
     </>
   )
 }

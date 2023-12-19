@@ -1,8 +1,12 @@
+import { useDispatch } from "react-redux";
+import { setBridgePopup } from "@redux/app.reducers";
 import { languages } from "@config/languages"
 import { convertNumber } from "@utils/helper";
 import SweeprLogo from "@images/icon_sweepr.png"
 
-const SweeprInfo = ({ data, connected, setIsOpen, setSelectedToken }) => {
+const SweeprInfo = ({ data, connected }) => {
+    const dispatch = useDispatch();
+
     return (
         <div className="w-full border border-app-gray-light rounded-3xl p-6 mt-2 sm:mt-6">
             <div className="mb-3">
@@ -42,7 +46,7 @@ const SweeprInfo = ({ data, connected, setIsOpen, setSelectedToken }) => {
                                     className="inline-block w-full rounded-full bg-sweepr p-0.5 group-hover:bg-black group-hover:bg-none"
                                 >
                                     <button
-                                        onClick={() => { setIsOpen(true); setSelectedToken('sweepr'); }}
+                                        onClick={() => { dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweepr' })); }}
                                         className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-16 py-3 bg-black text-white whitespace-nowrap"
                                     >
                                         <img src={SweeprLogo} alt="logo" className="w-6 mr-1" />

@@ -1,4 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setBridgePopup } from "@redux/app.reducers";
 import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import SelectBox from "../SelectBox";
@@ -11,8 +13,10 @@ import { pp } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import icon_wallet from "@images/wallet.svg";
 
-const BridgeModal = (props) => {
+const BridgeModal = () => {
     const { web3, chainId, walletAddress } = useWallet();
+    const dispatch = useDispatch();
+    const bridgeProps = useSelector((state) => state.bridgePopup);
     const [sendAmount, setSendAmount] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
     const [destChain, setDestChain] = useState(chainList[1]);
@@ -25,8 +29,8 @@ const BridgeModal = (props) => {
     })
 
     const token = useMemo(() => {
-        return tokenList.filter((item) => item.name.toLowerCase() === props.selectedToken)[0] || tokenList[0];
-    }, [props])
+        return tokenList.filter((item) => item.name.toLowerCase() === bridgeProps.selectedToken)[0] || tokenList[0];
+    }, [bridgeProps])
 
     const curtChain = useMemo(() => {
         return chainList.filter((item) => item.chainId === chainId)
@@ -38,9 +42,9 @@ const BridgeModal = (props) => {
 
     useEffect(() => {
         const intialHandler = async () => {
-            if (walletAddress === "" || props.selectedToken === "") return;
+            if (walletAddress === "" || bridgeProps.selectedToken === "") return;
             setIsLoading(true)
-            const bal = await getSweepBalance(props.selectedToken, chainId, destChain.chainId, walletAddress);
+            const bal = await getSweepBalance(bridgeProps.selectedToken, chainId, destChain.chainId, walletAddress);
             setBalances(bal)
 
             const _bal = pp(bal.curt, 18, 2);
@@ -49,7 +53,7 @@ const BridgeModal = (props) => {
         }
 
         intialHandler();
-    }, [walletAddress, props, chainId, destChain, setBalances, setSendAmount, sendAmount])
+    }, [walletAddress, bridgeProps, chainId, destChain, setBalances, setSendAmount, sendAmount])
 
     useEffect(() => {
         if (destChainList.indexOf(destChain) < 0)
@@ -67,15 +71,15 @@ const BridgeModal = (props) => {
             });
 
             if (type === 'success') {
-                const bal = await getSweepBalance(props.selectedToken, chainId, destChain.chainId, walletAddress);
+                const bal = await getSweepBalance(bridgeProps.selectedToken, chainId, destChain.chainId, walletAddress);
                 setBalances(bal);
                 setSendAmount(0);
             }
         }
 
         if (web3)
-            await bridgeSweep(web3, props.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
-    }, [web3, props, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending]);
+            await bridgeSweep(web3, bridgeProps.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
+    }, [web3, bridgeProps, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending]);
 
     const setMaxAmount = useCallback(() => {
         const _bal = pp(balances.curt, 18, 2);
@@ -96,10 +100,14 @@ const BridgeModal = (props) => {
         return () => clearInterval(interval);
     }, [alertState, setAlertState])
 
+    const closeModal = () => {
+        dispatch(setBridgePopup({ isOpen: false, selectedToken: '' }));
+    }
+
     return (
         <>
-            <Transition appear show={props.isOpen} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={() => props.closeModal(true)}>
+            <Transition appear show={bridgeProps.isOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -128,8 +136,8 @@ const BridgeModal = (props) => {
                                         as="h3"
                                         className="text-2xl md:text-3xl text-left text-bold text-white capitalize"
                                     >
-                                        {props.selectedToken + ' ' + languages.text_bridge}
-                                        <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
+                                        {bridgeProps.selectedToken + ' ' + languages.text_bridge}
+                                        <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => closeModal()} />
                                     </Dialog.Title>
                                     <Alert data={alertState} />
                                     <div className="mt-6 mb-2 text-md flex items-center">
@@ -195,7 +203,7 @@ const BridgeModal = (props) => {
                                             >
                                                 <button
                                                     type="button"
-                                                    onClick={() => props.closeModal(false)}
+                                                    onClick={() => closeModal()}
                                                     className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-app-gray-light whitespace-nowrap group-hover:bg-white group-hover:text-black`}
                                                 >
                                                     <span>

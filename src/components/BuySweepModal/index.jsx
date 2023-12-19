@@ -1,4 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setBuyPopup } from "@redux/app.reducers";
 import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import InputBox from "../InputBox";
@@ -16,9 +18,11 @@ import { pp, convertNumber } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import WalletIcon from "@images/wallet.svg";
 
-const BuySweepModal = (props) => {
+const BuySweepModal = () => {
+  const dispatch = useDispatch();
+  const buyProps = useSelector((state) => state.buyPopup);
+  const { marketPrice } = buyProps;
   const { web3, chainId, walletAddress } = useWallet();
-  const { marketPrice } = props;
   const sweepToken = tokenList[0];
   const usdcToken = tokenList[2];
 
@@ -131,10 +135,14 @@ const BuySweepModal = (props) => {
   const approveDisabled = (isApproval && usdcAmount >= 0) || (isPendingApprove || isPendingBuy);
   const buyDisabled = !(isApproval && usdcAmount > 0) || (isPendingApprove || isPendingBuy);
 
+  const closeModal = () => {
+    dispatch(setBuyPopup({ isOpen: false, marketPrice: 0 }));
+}
+
   return (
     <>
-      <Transition appear show={props.isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => props.closeModal(true)}>
+      <Transition appear show={buyProps.isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -164,7 +172,7 @@ const BuySweepModal = (props) => {
                     className="text-2xl md:text-3xl text-left text-bold text-white"
                   >
                     {languages.text_buy_sweep}
-                    <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
+                    <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => closeModal()} />
                   </Dialog.Title>
                   <Alert data={alertState} />
                   <div className="mt-6 mb-2 text-md flex items-center">

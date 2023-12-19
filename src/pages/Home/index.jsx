@@ -13,7 +13,7 @@ const Home = () => {
     <>
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[chainId]} />
-        <SweepDescription marketPrice={sweepInfo[chainId]?.market_price} />
+        <SweepDescription marketPrice={sweepInfo[chainId]?.market_price} chainId={chainId} />
       </div>
       <AssetsBlock chainId={chainId} />
     </>

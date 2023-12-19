@@ -8,7 +8,7 @@ const AssetsBlock = ({ chainId }) => {
   const sweepInfo = useSelector((state) => state.sweep)
 
   useEffect(() => {
-    const removed = Object.keys(sweepInfo).filter((chain) => Number(chain) !== chainId);
+    const removed = Object.keys(sweepInfo).filter((chain) => Number(chain) !== Number(chainId));
     if(removed.length > 0) {
       const sorted = [sweepInfo[chainId], ...removed.map(chain => sweepInfo[chain])];
       setSweepSorted(sorted);
