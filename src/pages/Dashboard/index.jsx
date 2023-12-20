@@ -90,7 +90,7 @@ const Dashboard = () => {
           <>
             {
               // Hide buy button when mint not allowed.
-              !!sweepData?.mint_status && sweepData?.mint_status === 0 && (
+              (!!sweepData && sweepData?.mint_status === 0) && (
                 <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
                   <div
                     className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"

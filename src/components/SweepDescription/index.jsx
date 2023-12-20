@@ -28,10 +28,6 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler }) =
 
   return (
     <div className="my-12">
-      <h1 className="font-archivo-regular mb-4 release-title">
-        {languages.text_how_sweep_works}
-      </h1>
-
       <div>
         <table>
           <tbody>
@@ -84,7 +80,10 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler }) =
           </tbody>
         </table>
       </div>
-
+      <br />
+      <h1 className="font-archivo-regular mb-4 release-title">
+        {languages.text_how_sweep_works}
+      </h1>
       <h1 className="font-archivo-regular my-6 release-title">
         {languages.text_asset_distribution}
       </h1>

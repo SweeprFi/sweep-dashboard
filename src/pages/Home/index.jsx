@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="sm:bg-l2s p-4">
+      <div className="sm:bg-l2s px-4">
         <SweepInfo data={sweepInfo[chainId]} />
         <SweepDescription
           marketPrice={sweepInfo[chainId]?.market_price}

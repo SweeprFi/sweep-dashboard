@@ -18,15 +18,15 @@ const AssetsBlock = ({ chainId }) => {
   if(sweepSorted.length === 0) return;
 
   return (
-    <div className="bg-asset sm:pt-6 mt-6 sm:mt-6">
+    <div className="bg-asset sm:pt-4">
       <table id="tableBlock">
         <thead>
           <tr>
             <th scope="col"></th>
             <th scope="col">Network</th>
-            <th scope="col">Local SWEEP supply</th>
+            <th scope="col">Local SWEEP</th>
             <th scope="col">SWEEP minted</th>
-            <th scope="col">Total asset</th>
+            <th scope="col">Stabilizer Assets</th>
           </tr>
         </thead>
         <tbody>
@@ -38,11 +38,11 @@ const AssetsBlock = ({ chainId }) => {
                     <td data-label="img">
                       <img src={data.logo} alt="logo" className="w-6 h-6" />
                     </td>
-                    <td data-label="network">{data.network}</td>
-                    <td data-label="local supply">{data.local_supply}</td>
-                    <td data-label="total borrowed">{data.totalBorrowed}</td>
+                    <td data-label="Network">{data.network}</td>
+                    <td data-label="Local SWEEP">{data.local_supply}</td>
+                    <td data-label="SWEEP minted">{data.totalBorrowed}</td>
                   </Link>
-                    <td data-label="total asset">$ {data.totalValue}</td>
+                    <td data-label="Stabilizer Assets">$ {data.totalValue}</td>
                 </tr>
               )
             })
