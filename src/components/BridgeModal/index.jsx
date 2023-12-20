@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setBridgePopup } from "@redux/app.reducers";
+import { setBridgePopup, updateSweepData, updateSweeprData } from "@redux/app.reducers";
 import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import SelectBox from "../SelectBox";
@@ -40,6 +40,14 @@ const BridgeModal = () => {
     const closeModal = useCallback(() => {
         dispatch(setBridgePopup({ isOpen: false, selectedToken: '', chainId: 0 }));
     }, [dispatch]);
+
+    const updateData = useCallback(() => {
+        if(bridgeProps.selectedToken === 'sweep') {
+            dispatch(updateSweepData());
+        } else {
+            dispatch(updateSweeprData());
+        }
+    }, [dispatch, bridgeProps.selectedToken]);
 
     useEffect(() => {
         const intialHandler = async () => {
@@ -90,8 +98,8 @@ const BridgeModal = () => {
         }
 
         if (web3)
-            await bridgeSweep(web3, bridgeProps.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify)
-    }, [web3, bridgeProps, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending]);
+            await bridgeSweep(web3, bridgeProps.selectedToken, token.abi, chainId, destChain.netId, Number(sendAmount), walletAddress, setIsPending, displayNotify, updateData)
+    }, [web3, bridgeProps, chainId, destChain, token, sendAmount, walletAddress, isPending, setIsPending, updateData]);
 
     const setMaxAmount = useCallback(() => {
         const _bal = pp(balances.curt, 18, 2);

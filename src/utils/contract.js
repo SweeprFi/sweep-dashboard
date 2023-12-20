@@ -209,7 +209,7 @@ export const getBalances = async (chainId, tokenLists, walletAddress) => {
   return balances;
 }
 
-export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify) => {
+export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify, callback) => {
   const key = Object.keys(tokens).filter((key) => key === tokenName);
   const token = tokens[key];
   const tokenAddress = token[curtChainId]
@@ -236,6 +236,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       .on('receipt', () => {
         setIsPending(false);
         displayNotify('success', languages.text_tx_success);
+        callback();
       })
       .on('error', () => {
         setIsPending(false);
@@ -246,7 +247,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   }
 }
 
-export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPending, displayNotify) => {
+export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPending, displayNotify, callback) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
   const value = (usdcAmount / marketPrice) * 99.8 / 100;
@@ -264,6 +265,7 @@ export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPri
       .on('receipt', () => {
         setIsPending(false);
         displayNotify('success', languages.text_tx_success);
+        callback();
       })
       .on('error', () => {
         setIsPending(false);
@@ -274,7 +276,7 @@ export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, marketPri
   }
 }
 
-export const buySweepOnMarketMaker2 = async (web3, chainId, usdcAmount, walletAddress, setIsPending, displayNotify) => {
+export const buySweepOnMarketMaker2 = async (web3, chainId, usdcAmount, walletAddress, setIsPending, displayNotify, callback) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI2, marketMakerAddress);
   const amount = ethers.parseUnits((usdcAmount).toString(), 6).toString();
@@ -289,6 +291,7 @@ export const buySweepOnMarketMaker2 = async (web3, chainId, usdcAmount, walletAd
       .on('receipt', () => {
         setIsPending(false);
         displayNotify('success', languages.text_tx_success);
+        callback();
       })
       .on('error', () => {
         setIsPending(false);

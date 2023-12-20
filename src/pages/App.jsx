@@ -14,6 +14,8 @@ import BuySweepModal from "@components/BuySweepModal";
 const App = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.isLoading);
+  const sweepUpdates = useSelector((state) => state.sweepUpdates);
+  const sweeprUpdates = useSelector((state) => state.sweeprUpdates);
 
   const fetchData = async (fetchFunction) => {
     try {
@@ -49,6 +51,28 @@ const App = () => {
 
     initialHandler();
   }, [dispatch]);
+
+  useEffect(() => {
+    const updateHandler = async () => {
+      if(sweepUpdates > 0) {
+        const sweepData = await fetchData(sweepFetch);
+        dispatch(setSweepData(sweepData));
+      }
+    };
+
+    updateHandler();
+  }, [dispatch, sweepUpdates]);
+
+  useEffect(() => {
+    const updateHandler = async () => {
+      if(sweeprUpdates > 0) {
+        const sweeprData = await fetchData(sweeprFetch);
+        dispatch(setSweeprData(sweeprData));
+      }
+    };
+
+    updateHandler();
+  }, [dispatch, sweeprUpdates]);
 
   return (
     <div className="App">

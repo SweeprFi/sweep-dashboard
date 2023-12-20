@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setBuyPopup } from "@redux/app.reducers";
+import { setBuyPopup, updateSweepData } from "@redux/app.reducers";
 import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import InputBox from "../InputBox";
@@ -48,6 +48,10 @@ const BuySweepModal = () => {
 
   const closeModal = useCallback(() => {
     dispatch(setBuyPopup({ isOpen: false, marketPrice: 0, chainId: 0 }));
+  }, [dispatch]);
+
+  const updateData = useCallback(() => {
+    dispatch(updateSweepData());
   }, [dispatch]);
 
   useEffect(() => {
@@ -109,12 +113,12 @@ const BuySweepModal = () => {
 
     if (web3) {
       if (Number(chainId) === 42161) {
-        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify)
+        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
       } else {
-        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify)
+        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
       }
     }
-  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice]);
+  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice, updateData]);
 
   const approveHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingApprove) return;
