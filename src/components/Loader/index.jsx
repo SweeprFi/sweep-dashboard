@@ -1,9 +1,16 @@
 import "@styles/Loader.css";
+import imgLogo from "@images/logo.png";
 
 const Loader = () => {
   return (
-    <div className="w-full h-full absolute left-0 top-0 flex justify-center items-center loader">
-      <div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div className="loader-bg">
+      <div className="loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <img src={imgLogo} alt="img" className="img-loader" />
     </div>
   );
 }

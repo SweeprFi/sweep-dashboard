@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
+import { useWallet } from "@utils/walletHelper";
 import { Link } from "react-router-dom"
 import { Disclosure } from "@headlessui/react"
 import SelectBox from "@components/SelectBox";
+import Disconnect from "@components/Layout/Disconnect";
 import { socialLinks, chainList } from "@config/constants";
 import { languages } from "@config/languages";
-import { shortAddress } from "@utils/helper";
+
 import imgLogo from "@images/logo.svg"
 import SweepLogo from "@images/icon_sweep.svg"
 import { ReactComponent as BlockieIcon } from "@images/icon_blockies.svg"
 import BlockieImage from "@images/icon_blockies.svg"
 
-const Navbar = ({ walletProps: { connected, connectHandler, walletAddress, chainId, setChain } }) => {
+const Navbar = () => {
+  const { connected, connectHandler, chainId, setChain } = useWallet();
   const [curtChain, setCurtChain] = useState(chainList[0]);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const Navbar = ({ walletProps: { connected, connectHandler, walletAddress, chain
                         </div>
                         <div className="flex justify-center items-center text-white gap-2">
                           <BlockieIcon className="w-6 h-6" />
-                          {shortAddress(walletAddress)}
+                          <Disconnect/>
                         </div>
                       </>
                     ) : (
@@ -102,7 +105,7 @@ const Navbar = ({ walletProps: { connected, connectHandler, walletAddress, chain
                           </div>
                           <div className="flex justify-center px-2 py-2 rounded-xl items-center text-white gap-2">
                             <img src={BlockieImage} className="w-6 h-6" alt="blockie" />
-                            {shortAddress(walletAddress)}
+                            <Disconnect/>
                           </div>
                         </>
                       ) : (

@@ -1,4 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setBuyPopup, updateSweepData } from "@redux/app.reducers";
+import { useWallet } from "@utils/walletHelper";
 import { Dialog, Transition } from '@headlessui/react'
 import InputBox from "../InputBox";
 import Alert from "@components/Alert"
@@ -15,9 +18,11 @@ import { pp, convertNumber } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import WalletIcon from "@images/wallet.svg";
 
-const BuySweepModal = (props) => {
-  const { web3, chainId, walletAddress } = props.walletProps;
-  const { marketPrice } = props;
+const BuySweepModal = () => {
+  const dispatch = useDispatch();
+  const buyProps = useSelector((state) => state.buyPopup);
+  const { marketPrice } = buyProps;
+  const { web3, chainId, walletAddress, setChain } = useWallet();
   const sweepToken = tokenList[0];
   const usdcToken = tokenList[2];
 
@@ -29,12 +34,9 @@ const BuySweepModal = (props) => {
   const [isPendingApprove, setIsPendingApprove] = useState(false);
   const [isPendingBuy, setIsPendingBuy] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  const [alertState, setAlertState] = useState({
-    open: false,
-    message: "",
-    severity: undefined,
-  });
+  const [alertState, setAlertState] = useState({ open: false, message: "", severity: undefined });
 
   const sweepMaxAmount = useMemo(() => {
     return Number((pp(balances.usdc, 6, 0) / marketPrice).toFixed(2));
@@ -43,6 +45,14 @@ const BuySweepModal = (props) => {
   const isApproval = useMemo(() => {
     return (allowance >= usdcAmount * 1e6);
   }, [allowance, usdcAmount])
+
+  const closeModal = useCallback(() => {
+    dispatch(setBuyPopup({ isOpen: false, marketPrice: 0, chainId: 0 }));
+  }, [dispatch]);
+
+  const updateData = useCallback(() => {
+    dispatch(updateSweepData());
+  }, [dispatch]);
 
   useEffect(() => {
     const intialHandler = async () => {
@@ -73,15 +83,26 @@ const BuySweepModal = (props) => {
     setUsdcAmount(isNaN(_usdcAmount) ? 0 : _usdcAmount)
   }, [sweepAmount, marketPrice])
 
+  useEffect(() => {
+    const networkHandler = async () => {
+      if (
+        buyProps?.chainId > 0 &&
+        Number(buyProps.chainId) !== Number(chainId)
+      ) {
+        setIsConnecting(true);
+        await setChain({ chainId: buyProps.chainId });
+      }
+
+      setIsConnecting(false);
+    }
+    networkHandler();
+  }, [buyProps.chainId, chainId, setChain])
+
   const buySweepHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingBuy) return;
 
     const displayNotify = async (type, content) => {
-      setAlertState({
-        open: true,
-        message: content,
-        severity: type,
-      });
+      setAlertState({ open: true, message: content, severity: type });
 
       if (type === 'success') {
         const result = await getBalances(chainId, [usdcToken, sweepToken], walletAddress);
@@ -91,13 +112,13 @@ const BuySweepModal = (props) => {
     }
 
     if (web3) {
-      if(chainId === 42161 || chainId === "42161") {
-        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify)
+      if (Number(chainId) === 42161) {
+        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
       } else {
-        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify)
+        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
       }
     }
-  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice]);
+  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice, updateData]);
 
   const approveHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingApprove) return;
@@ -132,8 +153,8 @@ const BuySweepModal = (props) => {
 
   return (
     <>
-      <Transition appear show={props.isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => props.closeModal(true)}>
+      <Transition appear show={(buyProps.isOpen && !isConnecting)} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -163,7 +184,7 @@ const BuySweepModal = (props) => {
                     className="text-2xl md:text-3xl text-left text-bold text-white"
                   >
                     {languages.text_buy_sweep}
-                    <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => props.closeModal(false)} />
+                    <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => closeModal()} />
                   </Dialog.Title>
                   <Alert data={alertState} />
                   <div className="mt-6 mb-2 text-md flex items-center">
@@ -185,7 +206,7 @@ const BuySweepModal = (props) => {
                         <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
                       </div>
                     </div>
-                    <br/>
+                    <br />
 
                     {
                       !(chainId === 42161 || chainId === "42161") &&

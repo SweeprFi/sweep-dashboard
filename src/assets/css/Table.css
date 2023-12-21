@@ -1,0 +1,78 @@
+#tableBlock {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+
+#tableBlock tr {
+    background-color: transparent;
+    padding: .35em;
+}
+
+#tableBlock tbody tr:hover {
+    background-color: #8484843d;
+}
+
+#tableBlock th,
+#tableBlock td {
+    padding: .625em;
+    text-align: center;
+}
+
+#tableBlock th {
+    font-size: .85em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+#tableBlock tr a td:first-child,
+#tableBlock thead th:first-child {
+    width: 50px;
+    vertical-align: top;
+}
+
+#tableBlock tr a {
+    display: contents;
+}
+
+@media screen and (max-width: 600px) {
+    #tableBlock thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    #tableBlock tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+    }
+
+    #tableBlock td {
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+
+    #tableBlock td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    #tableBlock td:last-child {
+        border-bottom: 0;
+    }
+
+    #tableBlock td:first-child {
+        display: none;
+    }
+}
