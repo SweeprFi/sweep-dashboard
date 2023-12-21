@@ -18,6 +18,7 @@ const Home = () => {
           chainId={chainId}
           connected={connected}
           connectHandler={connectHandler}
+          network={sweepInfo[chainId]?.network}
         />
       </div>
       <AssetsBlock chainId={chainId} />

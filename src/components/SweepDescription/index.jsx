@@ -1,29 +1,45 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { languages } from "@config/languages";
-import { AMMLinks } from "@config/constants";
-import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
-import SweepLogo from "@images/icon_sweep.svg"
 import { setBuyPopup, setBridgePopup } from "@redux/app.reducers";
+import { languages } from "@config/languages";
+import { AMMLinks, tokens } from "@config/constants";
 
-const SweepDescription = ({ marketPrice, chainId, connected, connectHandler }) => {
+import ExternalLink from "@components/ExternalLink";
+import { scanLink } from "@utils/helper";
+
+import SweepLogo from "@images/icon_sweep.svg"
+import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
+import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
+
+const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, network }) => {
+  const [copiedText, setCopiedText] = useState(false);
+  const sweepAddress = tokens.sweep[chainId];
   const dispatch = useDispatch();
   const classButton = "flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap";
   const classContainer = "group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-11/12";
 
   const handleBuyPopup = async () => {
-    if(connected) {
-      dispatch(setBuyPopup({isOpen: true, marketPrice: marketPrice, chainId }));
+    if (connected) {
+      dispatch(setBuyPopup({ isOpen: true, marketPrice: marketPrice, chainId }));
     } else {
       await connectHandler();
     }
   }
 
   const handleBridgePopup = async () => {
-    if(connected) {
+    if (connected) {
       dispatch(setBridgePopup({ isOpen: true, selectedToken: 'sweep', chainId }));
     } else {
       await connectHandler();
     }
+  }
+
+  const clickHandler = () => {
+    navigator.clipboard.writeText(sweepAddress);
+    setCopiedText(true)
+    setTimeout(() => {
+      setCopiedText(false);
+    }, 2000);
   }
 
   return (
@@ -81,10 +97,25 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler }) =
         </table>
       </div>
       <br />
+      <div className="mb-4 flex">
+        <h1 className="release-title mr-2">Sweep token:</h1>
+        <ExternalLink
+          title={sweepAddress}
+          link={scanLink(network, sweepAddress)}
+        />
+        {
+          copiedText ?
+            <h1 className="ml-2">Copied!</h1> :
+            <DocumentDuplicateIcon
+              className="h-6 w-6 text-white cursor-pointer ml-2"
+              onClick={clickHandler}
+            />
+        }
+      </div>
       <h1 className="font-archivo-regular mb-4 release-title">
         {languages.text_how_sweep_works}
       </h1>
-      <h1 className="font-archivo-regular my-6 release-title">
+      <h1 className="font-archivo-regular mb-6 release-title">
         {languages.text_asset_distribution}
       </h1>
     </div>
