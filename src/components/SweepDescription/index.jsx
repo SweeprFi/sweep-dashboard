@@ -97,7 +97,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
         </table>
       </div>
       <br />
-      <div className="mb-4 flex">
+      <div className="mb-4 md:flex sm:grid text-sm md:text-lg">
         <h1 className="release-title mr-2">Sweep token:</h1>
         <ExternalLink
           title={sweepAddress}

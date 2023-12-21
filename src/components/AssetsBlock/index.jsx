@@ -2,6 +2,7 @@ import "@styles/Table.css";
 import { Link } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { convertNumber } from "@utils/helper";
 
 const AssetsBlock = ({ chainId }) => {
   const [sweepSorted, setSweepSorted] = useState([])
@@ -39,10 +40,10 @@ const AssetsBlock = ({ chainId }) => {
                       <img src={data.logo} alt="logo" className="w-6 h-6" />
                     </td>
                     <td data-label="Network">{data.network}</td>
-                    <td data-label="Local SWEEP">{data.local_supply}</td>
-                    <td data-label="SWEEP minted">{data.totalBorrowed}</td>
+                    <td data-label="Local SWEEP">{convertNumber(Number(data.local_supply).toFixed(0))}</td>
+                    <td data-label="SWEEP minted">{convertNumber(Number(data.totalBorrowed).toFixed(0))}</td>
                   </Link>
-                    <td data-label="Stabilizer Assets">$ {data.totalValue}</td>
+                    <td data-label="Stabilizer Assets">$ {convertNumber(Number(data.totalValue).toFixed(0))}</td>
                 </tr>
               )
             })

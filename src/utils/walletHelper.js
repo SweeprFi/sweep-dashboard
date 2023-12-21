@@ -6,9 +6,11 @@ import React, {
   useState,
 } from 'react';
 import Web3 from 'web3';
+
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
+
 import { useConnectWallet, init, useSetChain } from '@web3-onboard/react'
 import { networks, rpcLinks, chainList } from '@config/constants'
 import walletMobileLogo from '@images/logo_mobile.svg'
@@ -21,8 +23,7 @@ const RPC_URL = rpcLinks[CHAIN_ID]
 
 const injected = injectedModule()
 const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
-const initOptions = { projectId: 'cd4a577bcbeff487bba452a9deeaeace' }
-const walletConnect = walletConnectModule(initOptions)
+const walletConnect = walletConnectModule({ projectId: 'cd4a577bcbeff487bba452a9deeaeace' })
 
 const walletInfo = {
   wallets: [
