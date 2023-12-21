@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useWallet } from "@utils/walletHelper";
 import SweepInfo from "@components/SweepInfo";
 import SweepDescription from "@components/SweepDescription";
-import AssetsBlock from "../../components/AssetsBlock";
+import AssetsBlock from "@components/AssetsBlock";
 
 const Home = () => {
   const { chainId, connected, connectHandler } = useWallet();
