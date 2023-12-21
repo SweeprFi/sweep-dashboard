@@ -86,7 +86,7 @@ export const languages = {
     text_call_amount: 'Call Amount',
 
     // landing / home
-    text_how_sweep_works: 'SWEEP target price in USD increases with interest. The interest rate crawls once per week',
+    text_how_sweep_works: 'SWEEP target price in USD increases daily with interest. The interest rate adjusts once per week',
     text_swap_sweep: 'Buy or sell SWEEP from a local AMM',
     text_buy_at: 'You can always buy SWEEP at a price that is slightly above the target price. This grows the SWEEP supply and gives borrowers a reliable way to repay',
     text_bridge_sweep: 'Bridge your SWEEP other blockchains',

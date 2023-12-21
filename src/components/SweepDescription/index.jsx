@@ -48,7 +48,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
         <table>
           <tbody>
             <tr>
-              <td className="flex justify-center">
+              <td className="flex justify-left">
                 <div className={classContainer}>
                   <a
                     href={AMMLinks[chainId].link}
@@ -68,7 +68,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
               </td>
             </tr>
             <tr>
-              <td className="flex justify-center">
+              <td className="flex justify-left">
                 <div className={classContainer}>
                   <button onClick={handleBuyPopup} className={classButton}>
                     <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
@@ -81,7 +81,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
               </td>
             </tr>
             <tr>
-              <td className="flex justify-center">
+              <td className="flex justify-left">
                 <div className={classContainer}>
                   <button onClick={handleBridgePopup} className={classButton}>
                     <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
