@@ -112,7 +112,7 @@ const BuySweepModal = () => {
     }
 
     if (web3) {
-      if (Number(chainId) === 42161) {
+      if (Number(chainId) !== 1) {
         await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
       } else {
         await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
