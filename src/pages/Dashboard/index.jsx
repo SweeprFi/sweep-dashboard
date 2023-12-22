@@ -73,7 +73,7 @@ const Dashboard = () => {
         <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6 mb-10">
           <div className="group inline-block rounded-full bg-white/20 p-1 hover:bg-rainbow w-full sm:w-auto">
             <a
-              href={AMMLinks[chainId].link}
+              href={AMMLinks[chain.chainId].link}
               target="_blank"
               rel="noreferrer"
               className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
@@ -81,7 +81,7 @@ const Dashboard = () => {
               <button className="flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 bg-white text-black whitespace-nowrap">
                 <BalancerIcon className="w-6 h-6" />
                 <span>
-                  {AMMLinks[chainId].title}
+                  {AMMLinks[chain.chainId].title}
                 </span>
                 <ArrowRightIcon className="-rotate-45 w-6 h-6" />
               </button>
