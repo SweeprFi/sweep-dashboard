@@ -250,12 +250,17 @@ export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, walletAdd
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
   const amount = (usdcAmount * 1e6).toFixed();
-  // const gasAmount = await contract.methods.buySweep(amount).estimateGas({ from: walletAddress });
+
+  var estimatedGas;
+  try {
+    estimatedGas = await contract.methods.buySweep(amount).estimateGas({ from: walletAddress });
+  } catch (error) {
+    estimatedGas = 0;
+  }
 
   try {
-
     await contract.methods.buySweep(amount)
-      .send({ from: walletAddress })
+      .send({ from: walletAddress, gas: estimatedGas })
       .on('transactionHash', () => {
         setIsPending(true);
         displayNotify('info', languages.text_tx_process);
@@ -290,10 +295,17 @@ export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddres
   const amount = (usdcAmount * 1e6).toFixed();
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
 
+  var estimatedGas;
+  try {
+    estimatedGas = await contract.methods.approve(marketMakerAddress, amount).estimateGas({ from: walletAddress });
+  } catch (error) {
+    estimatedGas = 0;
+  }
+
   try {
     await contract.methods.approve(
       marketMakerAddress, amount
-    ).send({ from: walletAddress })
+    ).send({ from: walletAddress, gas: estimatedGas })
       .on('transactionHash', () => {
         setIsPending(true);
       })

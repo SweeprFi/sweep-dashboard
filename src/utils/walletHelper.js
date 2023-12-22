@@ -26,11 +26,7 @@ const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 const walletConnect = walletConnectModule({ projectId: 'cd4a577bcbeff487bba452a9deeaeace' })
 
 const walletInfo = {
-  wallets: [
-    injected,
-    coinbaseWalletSdk,
-    walletConnect
-  ],
+  wallets: [injected, coinbaseWalletSdk, walletConnect],
   theme: 'dark',
   chains: [
     {
