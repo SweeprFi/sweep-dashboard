@@ -29,7 +29,7 @@ const Disconnect = () => {
               <Menu.Item className="bg-app-black">
                 <button
                   onClick={() => navigator.clipboard.writeText(walletAddress)}
-                  className={`bg-violet-500 text-white group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  className={`bg-app-black text-white group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   <DocumentDuplicateIcon className="h-6 w-6 text-white cursor-pointer mr-2" />
                   Copy Address
@@ -38,7 +38,7 @@ const Disconnect = () => {
               <Menu.Item className="mt-2 bg-app-black">
                 <button
                   onClick={disconnectHandler}
-                  className={`bg-violet-500 text-white group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  className={`bg-app-black text-white group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
                   <ArrowRightOnRectangleIcon className="h-6 w-6 text-white cursor-pointer mr-2" />
                   Disconnect
