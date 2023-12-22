@@ -146,7 +146,7 @@ const tokens = {
 
 const contracts = {
   marketMaker: {
-    1: '0x8adea764cabd2c61e51ceb6937fd026fa39d8e64',
+    1: '0x0FbA85De62C85c3cB444ec828b42BbF0a9208318',
     5: '0x1655D8EC4d34BAE3E93a0864166676B86B0287d3',
     10: '0x78326Ce3be64977658726EEdAd9A35de460E310A',
     420: '',

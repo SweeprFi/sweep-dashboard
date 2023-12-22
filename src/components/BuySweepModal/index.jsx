@@ -11,7 +11,6 @@ import {
   getBalances,
   getMarketMakerAllowance,
   buySweepOnMarketMaker,
-  buySweepOnMarketMaker2,
   approveMarketMaker
 } from "@utils/contract";
 import { pp, convertNumber } from "@utils/helper";
@@ -28,7 +27,6 @@ const BuySweepModal = () => {
 
   const [usdcAmount, setUsdcAmount] = useState(0);
   const [sweepAmount, setSweepAmount] = useState(0);
-  const [slippageAmount, setSlippageAmount] = useState(1);
   const [allowance, setAllowance] = useState(0);
   const [balances, setBalances] = useState({ usdc: 0, sweep: 0 });
   const [isPendingApprove, setIsPendingApprove] = useState(false);
@@ -111,14 +109,9 @@ const BuySweepModal = () => {
       }
     }
 
-    if (web3) {
-      if (Number(chainId) !== 1) {
-        await buySweepOnMarketMaker2(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
-      } else {
-        await buySweepOnMarketMaker(web3, chainId, usdcAmount, marketPrice, slippageAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
-      }
-    }
-  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, slippageAmount, marketPrice, updateData]);
+    if (web3)
+      await buySweepOnMarketMaker(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
+  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, updateData]);
 
   const approveHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingApprove) return;
@@ -207,23 +200,6 @@ const BuySweepModal = () => {
                       </div>
                     </div>
                     <br />
-
-                    {
-                      (Number(chainId) === 1) &&
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <InputBox
-                            className='bg-transparent text-xl cursor-text'
-                            value={slippageAmount}
-                            minValue={0}
-                            maxValue={100}
-                            setValue={setSlippageAmount}
-                          />
-                        </div>
-                        <div>Slippage (%)</div>
-                      </div>
-                    }
-
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                       <div className="">
                         <span className="flex items-center">

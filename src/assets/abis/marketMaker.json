@@ -720,12 +720,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "sweepAmount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slippage",
+                "name": "usdxAmount",
                 "type": "uint256"
             }
         ],
