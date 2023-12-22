@@ -209,7 +209,7 @@ const BuySweepModal = () => {
                     <br />
 
                     {
-                      !(chainId === 42161 || chainId === "42161") &&
+                      (Number(chainId) === 1) &&
                       <div className="flex justify-between items-center">
                         <div>
                           <InputBox
