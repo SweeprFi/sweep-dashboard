@@ -58,7 +58,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
                   >
                     <button className={classButton}>
                       <BalancerIcon className="w-6 h-6" />
-                      <span>{languages.btn_swap_balancer}</span>
+                      <span>{AMMLinks[chainId].title}</span>
                     </button>
                   </a>
                 </div>
