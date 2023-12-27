@@ -9,6 +9,7 @@ import arbIcon from "@images/chains/arbitrum.svg"
 import optIcon from "@images/chains/optimism.svg"
 import baseIcon from "@images/chains/base.svg"
 import avaxIcon from "@images/chains/avalanche.svg"
+import polygonIcon from "@images/chains/polygon.svg"
 
 import SweepLogo from "@images/logo.png"
 import SweeprLogo from "@images/icon_sweepr.png"
@@ -29,6 +30,7 @@ const networks = {
   42161: 'arbitrum',
   421613: 'arbiturm goerli',
   43114: 'avalanche',
+  137: 'polygon',
 }
 
 const rpcLinks = {
@@ -38,6 +40,7 @@ const rpcLinks = {
   42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
   8453: `https://base-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
   43114: `https://api.avax.network/ext/bc/C/rpc`,
+  137: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_POLYGON_KEY}`,
   // testnet
   5: `https://eth-goerli.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
   420: `https://opt-goerli.g.alchemy.com/v2/${process.env.REACT_APP_OPTIMISTIC_API_KEY}`,
@@ -50,6 +53,7 @@ const scans = {
   42161: 'https://arbiscan.io/address/',
   8453: 'https://basescan.org/address/',
   43114: 'https://snowtrace.io/address/',
+  137: 'https://polygonscan.com/',
  
   5: 'https://goerli.etherscan.io/address/',
   420: 'https://goerli-optimism.etherscan.io/address/',
@@ -116,6 +120,7 @@ const tokens = {
     1: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     5: '0x6C68a114c406dA77c3Ce1Ad1Cf09B420E37087b8',// '0x760389840E5B30919D881feb747C12054CBE671f'
     10: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
+    137: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     420: '',
     8453: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
     42161: '0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
@@ -126,6 +131,7 @@ const tokens = {
     1: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     5: '0x504C094E10DC89100803b1A69b619c69751Dc9Ae',
     10: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
+    137: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     420: '',
     8453: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
     42161: '0x89B1e7068bF8E3232dD8f16c35cAc45bDA584f4E',
@@ -136,6 +142,7 @@ const tokens = {
     1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     5: '0x07865c6E87B9F70255377e024ace6630C1Eaa37F',
     10: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+    137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
     420: '',
     8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
     42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
@@ -149,6 +156,7 @@ const contracts = {
     1: '0x0FbA85De62C85c3cB444ec828b42BbF0a9208318',
     5: '0x1655D8EC4d34BAE3E93a0864166676B86B0287d3',
     10: '0x78326Ce3be64977658726EEdAd9A35de460E310A',
+    137: '0x7685fc882c91936BF94974916cC410028F73C957',
     420: '',
     8453: '0x47a393e60DfCF12CA3892dBC2C2E66BCE083BB26',
     42161: '0x30F5623c58bc93dB78FCa53D968B871A129Dfa31', // '0xA014cCE13ECB3d92BB6D253b74Bb6E7Ed2418276',
@@ -169,6 +177,10 @@ const AMMLinks = {
   10: {
     title: 'Swap on Optimism',
     link: `https://app.balancer.fi/#/optimism/swap/0x0b2c639c533813f4aa9d7837caf62653d097ff85/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+  },
+  137: {
+    title: 'Swap on Polygon',
+    link: `https://app.balancer.fi/#/polygon/swap/0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
   },
   420: {
     title: 'Swap on Optimism',
@@ -264,6 +276,12 @@ const mainChainList = [
     netId: 106,
     name: 'Avalanche',
     logo: avaxIcon
+  },
+  {
+    chainId: 137,
+    netId: 109,
+    name: 'Polygon',
+    logo: polygonIcon
   },
 ]
 

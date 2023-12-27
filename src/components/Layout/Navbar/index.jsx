@@ -10,7 +10,6 @@ import { languages } from "@config/languages";
 import imgLogo from "@images/logo.svg"
 import SweepLogo from "@images/icon_sweep.svg"
 import { ReactComponent as BlockieIcon } from "@images/icon_blockies.svg"
-import BlockieImage from "@images/icon_blockies.svg"
 
 const Navbar = () => {
   const { connected, connectHandler, chainId, setChain } = useWallet();
@@ -40,12 +39,7 @@ const Navbar = () => {
                 <div className="md:flex justify-end items-center gap-2 hidden">
                   {
                     socialLinks.map(item => (
-                      <a
-                        key={item.link}
-                        href={item.link}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
+                      <a key={item.link} href={item.link} target="_blank" rel="noreferrer">
                         <item.icon className="h-10 w-10 hover:drop-shadow-textShadow" />
                       </a>
                     ))
@@ -104,7 +98,7 @@ const Navbar = () => {
                             />
                           </div>
                           <div className="flex justify-center px-2 py-2 rounded-xl items-center text-white gap-2">
-                            <img src={BlockieImage} className="w-6 h-6" alt="blockie" />
+                            <BlockieIcon className="w-6 h-6" />
                             <Disconnect/>
                           </div>
                         </>

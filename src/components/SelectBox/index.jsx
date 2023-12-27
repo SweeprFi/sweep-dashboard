@@ -46,8 +46,8 @@ const SelectBox = (props) => {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <Listbox.Options className={`absolute right-0 z-10 mt-1 max-h-56 ${props.onlyIcon ? isDevMode ? 'w-52' : 'w-40' : 'w-full'} overflow-auto rounded-xl bg-app-gray-semidark border-app-gray-light border-4 text-base shadow-lg ring-1 ring-white ring-opacity-5 focus:outline-none sm:text-sm`}>
-                                <div className="border-2 border-black rounded-xl py-1 w-full h-full relative">
+                            <Listbox.Options className={`absolute right-0 z-10 mt-1 h-40 ${props.onlyIcon ? isDevMode ? 'w-52' : 'w-40' : 'w-full'} overflow-scroll rounded-xl bg-app-gray-semidark border-app-gray-light border-4 text-base shadow-lg ring-1 ring-white ring-opacity-5 focus:outline-none sm:text-sm`}>
+                                <div className="border-2 border-black rounded-xl py-1 w-full">
                                     {props.data.map((item, index) => (
                                         <Listbox.Option
                                             key={index}
