@@ -79,7 +79,13 @@ const walletInfo = {
       id: '0xA86A',
       token: 'AVAX',
       label: 'Avalanche',
-      rpcUrl: ` https://api.avax.network/ext/bc/C/rpc`
+      rpcUrl: `https://api.avax.network/ext/bc/C/rpc`
+    },
+    {
+      id: '0x89',
+      token: 'MATIC',
+      label: 'Polygon PoS',
+      rpcUrl: `https://polygon-rpc.com`
     },
   ],
   connect: {
