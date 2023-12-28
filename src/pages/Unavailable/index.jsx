@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { languages } from "@config/languages";
 
 const PageUnavailable = () => {
@@ -8,11 +7,6 @@ const PageUnavailable = () => {
         <h1 className="text-white text-4xl sm:text-5xl lg:text-6xl font-bold uppercase font-nidus_sans__reguar tracking-widest">
           {languages.text_page_unavailable}
         </h1>
-        <div className="mt-6">
-          <Link to="/" className="text-green text-xl sm:text-2xl underline uppercase font-nidus_sans__reguar tracking-widest cursor-pointer">
-            {languages.link_go_home}
-          </Link>
-        </div>
       </div>
     </div>
   )
