@@ -5,11 +5,14 @@ import SweepInfo from "@components/SweepInfo";
 import SweepDescription from "@components/SweepDescription";
 import AssetsBlock from "@components/AssetsBlock";
 
+import Layout from "@components/Layout";
+
 const Home = () => {
   const { chainId, connected, connectHandler } = useWallet();
   const sweepInfo = useSelector((state) => state.sweep)
 
   return (
+    <Layout>
     <>
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[chainId]} />
@@ -23,7 +26,7 @@ const Home = () => {
       </div>
       <AssetsBlock chainId={chainId} />
     </>
-  )
+  </Layout>)
 }
 
 export default Home;

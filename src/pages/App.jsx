@@ -6,7 +6,6 @@ import { setSweepData, setSweeprData, setIsLoading } from "@redux/app.reducers";
 import { chainList } from "@config/constants";
 
 import routes from "@modules/routes";
-import Layout from "@components/Layout";
 import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import BuySweepModal from "@components/BuySweepModal";
@@ -77,7 +76,6 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Layout>
           <Routes>
             {
               routes.map(route => (
@@ -93,7 +91,6 @@ const App = () => {
           { isLoading && <Loader /> }
           <BridgeModal />
           <BuySweepModal />
-        </Layout>
       </BrowserRouter>
     </div >
   );

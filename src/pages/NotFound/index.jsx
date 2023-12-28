@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import { languages } from "@config/languages";
 
+import Layout from "@components/Layout";
+
 const PageNotFound = () => {
   return (
+    <Layout>
     <div className="flex justify-center items-center w-full h-full top-0 left-0">
       <div className="flex flex-col items-center">
         <h1 className="text-white text-4xl sm:text-5xl lg:text-6xl font-bold uppercase font-nidus_sans__reguar tracking-widest">
@@ -15,6 +18,7 @@ const PageNotFound = () => {
         </div>
       </div>
     </div>
+  </Layout>
   )
 }
 

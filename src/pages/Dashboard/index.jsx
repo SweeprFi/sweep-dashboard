@@ -16,6 +16,8 @@ import SweepInfo from "@components/SweepInfo";
 import AssetInfo from "@components/AssetInfo";
 import SweeprInfo from "@components/SweeprInfo";
 
+import Layout from "@components/Layout";
+
 const Dashboard = () => {
   const { network } = useParams();
   const { connected, chainId, connectHandler } = useWallet();
@@ -68,6 +70,7 @@ const Dashboard = () => {
   }
 
   return (
+    <Layout>
     <>
       <div className="sm:bg-l2s p-4">
         <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-start sm:items-center my-6 gap-3 sm:gap-6 mb-10">
@@ -134,6 +137,7 @@ const Dashboard = () => {
         />
       </div>
     </>
+    </Layout>
   )
 }
 
