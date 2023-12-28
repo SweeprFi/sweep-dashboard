@@ -4,7 +4,7 @@ export const languages = {
     text_sweepr_title: 'SWEEPR Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
-    text_page_unavailable: 'The Sweep App is not available in your location.',
+    text_page_unavailable: 'The Sweep App is not available in your location',
     text_bridge: 'Bridge',
     text_change_network: 'You should change the network to the ',
     text_tx_process: 'Transaction is in progress.',
