@@ -1,4 +1,5 @@
 import { languages } from "@config/languages";
+import { socialLinks } from "@config/constants";
 
 const PageUnavailable = () => {
   return (
