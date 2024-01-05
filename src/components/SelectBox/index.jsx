@@ -7,8 +7,6 @@ const SelectBox = (props) => {
         return classes.filter(Boolean).join(' ')
     }
 
-    const isDevMode = Number(process.env.REACT_APP_MODE) === 0;
-
     return (
         <Listbox value={props.val} onChange={props.setVal}>
             {({ open }) => (
@@ -46,7 +44,7 @@ const SelectBox = (props) => {
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <Listbox.Options className={`absolute right-0 z-10 mt-1 h-40 ${props.onlyIcon ? isDevMode ? 'w-52' : 'w-40' : 'w-full'} overflow-scroll rounded-xl bg-app-gray-semidark border-app-gray-light border-4 text-base shadow-lg ring-1 ring-white ring-opacity-5 focus:outline-none sm:text-sm`}>
+                            <Listbox.Options className={`scroll-hiden absolute right-0 z-10 mt-1 h-40 w-52 overflow-scroll rounded-xl bg-app-gray-semidark border-app-gray-light border-4 shadow-lg focus:outline-none sm:text-sm`}>
                                 <div className="border-2 border-black rounded-xl py-1 w-full">
                                     {props.data.map((item, index) => (
                                         <Listbox.Option

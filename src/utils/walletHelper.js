@@ -87,6 +87,12 @@ const walletInfo = {
       label: 'Polygon PoS',
       rpcUrl: `https://polygon-rpc.com`
     },
+    {
+      id: '0x38',
+      token: 'BNB',
+      label: 'BNB Chain',
+      rpcUrl: `https://bsc-dataseed.binance.org/`
+    },
   ],
   connect: {
     showSidebar: true,

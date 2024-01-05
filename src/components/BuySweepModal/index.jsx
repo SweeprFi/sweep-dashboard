@@ -23,7 +23,7 @@ const BuySweepModal = () => {
   const { marketPrice } = buyProps;
   const { web3, chainId, walletAddress, setChain } = useWallet();
   const sweepToken = tokenList[0];
-  const usdcToken = tokenList[2];
+  const token = Number(chainId) === 56 ? tokenList[3] : tokenList[2];
 
   const [usdcAmount, setUsdcAmount] = useState(0);
   const [sweepAmount, setSweepAmount] = useState(0);
@@ -57,10 +57,10 @@ const BuySweepModal = () => {
       if (walletAddress === "") return;
       setIsLoading(true);
       try {
-        const result = await getBalances(chainId, [usdcToken, sweepToken], walletAddress);
+        const result = await getBalances(chainId, [token, sweepToken], walletAddress);
         setBalances({ usdc: result[0].bal, sweep: result[1].bal });
 
-        const _allowance = await getMarketMakerAllowance(chainId, walletAddress);
+        const _allowance = await getMarketMakerAllowance(chainId, token?.name.toLowerCase(), walletAddress);
         setAllowance(_allowance);
       } catch (error) {
         console.log(error)
@@ -69,7 +69,7 @@ const BuySweepModal = () => {
     }
 
     intialHandler();
-  }, [walletAddress, chainId, usdcToken, sweepToken, isPendingBuy])
+  }, [walletAddress, chainId, token, sweepToken, isPendingBuy])
 
   useEffect(() => {
     const _sweepAmount = Number((usdcAmount / marketPrice).toFixed(2));
@@ -103,15 +103,15 @@ const BuySweepModal = () => {
       setAlertState({ open: true, message: content, severity: type });
 
       if (type === 'success') {
-        const result = await getBalances(chainId, [usdcToken, sweepToken], walletAddress);
+        const result = await getBalances(chainId, [token, sweepToken], walletAddress);
         setBalances({ usdc: result[0].bal, sweep: result[1].bal });
         setUsdcAmount(0);
       }
     }
 
     if (web3)
-      await buySweepOnMarketMaker(web3, chainId, usdcAmount, walletAddress, setIsPendingBuy, displayNotify, updateData)
-  }, [web3, chainId, walletAddress, isPendingBuy, usdcToken, sweepToken, usdcAmount, updateData]);
+      await buySweepOnMarketMaker(web3, chainId, usdcAmount, token?.decimal, walletAddress, setIsPendingBuy, displayNotify, updateData)
+  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, usdcAmount, updateData]);
 
   const approveHandler = useCallback(async () => {
     if (Number(usdcAmount) === 0 || isPendingApprove) return;
@@ -189,12 +189,12 @@ const BuySweepModal = () => {
                       title=""
                       value={usdcAmount}
                       minValue={0}
-                      maxValue={pp(balances.usdc, 6, 2)}
+                      maxValue={pp(balances.usdc, token?.decimal, 2)}
                       setValue={setUsdcAmount}
                       pending={isPendingApprove || isPendingBuy}
                     />
                     <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
-                      {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.usdc, 6, 2))}
+                      {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.usdc, token?.decimal, 2))}
                       <div className="ml-2 cursor-pointer flex justify-center items-center bg-app-gray-light px-2 py-0.5 rounded-2xl -mt-0.5" onClick={setMaxAmount}>
                         <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
                       </div>
@@ -203,8 +203,8 @@ const BuySweepModal = () => {
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                       <div className="">
                         <span className="flex items-center">
-                          <img src={usdcToken?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
-                          <span className="ml-2 block truncate">{usdcToken?.name}</span>
+                          <img src={token?.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
+                          <span className="ml-2 block truncate">{token?.name}</span>
                         </span>
                       </div>
                     </div>
