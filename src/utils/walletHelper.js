@@ -91,7 +91,7 @@ const walletInfo = {
       id: '0x38',
       token: 'BNB',
       label: 'BNB Chain',
-      rpcUrl: `https://bsc-dataseed.binance.org/`
+      rpcUrl: `https://bscrpc.com`
     },
   ],
   connect: {

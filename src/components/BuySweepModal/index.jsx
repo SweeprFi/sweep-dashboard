@@ -25,7 +25,7 @@ const BuySweepModal = () => {
   const sweepToken = tokenList[0];
   const token = Number(chainId) === 56 ? tokenList[3] : tokenList[2];
 
-  const [usdcAmount, setUsdcAmount] = useState(0);
+  const [amount, setAmount] = useState(0);
   const [sweepAmount, setSweepAmount] = useState(0);
   const [allowance, setAllowance] = useState(0);
   const [balances, setBalances] = useState({ usdc: 0, sweep: 0 });
@@ -41,8 +41,8 @@ const BuySweepModal = () => {
   }, [balances.usdc, marketPrice])
 
   const isApproval = useMemo(() => {
-    return (allowance >= usdcAmount * 1e6);
-  }, [allowance, usdcAmount])
+    return (allowance >= amount * (10 ** token.decimal));
+  }, [allowance, token.decimal, amount])
 
   const closeModal = useCallback(() => {
     dispatch(setBuyPopup({ isOpen: false, marketPrice: 0, chainId: 0 }));
@@ -72,13 +72,13 @@ const BuySweepModal = () => {
   }, [walletAddress, chainId, token, sweepToken, isPendingBuy])
 
   useEffect(() => {
-    const _sweepAmount = Number((usdcAmount / marketPrice).toFixed(2));
+    const _sweepAmount = Number((amount / marketPrice).toFixed(2));
     setSweepAmount(isNaN(_sweepAmount) ? 0 : _sweepAmount);
-  }, [usdcAmount, marketPrice])
+  }, [amount, marketPrice])
 
   useEffect(() => {
-    const _usdcAmount = Number((sweepAmount * marketPrice).toFixed(2));
-    setUsdcAmount(isNaN(_usdcAmount) ? 0 : _usdcAmount)
+    const _amount = Number((sweepAmount * marketPrice).toFixed(2));
+    setAmount(isNaN(_amount) ? 0 : _amount)
   }, [sweepAmount, marketPrice])
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const BuySweepModal = () => {
   }, [buyProps.chainId, chainId, setChain])
 
   const buySweepHandler = useCallback(async () => {
-    if (Number(usdcAmount) === 0 || isPendingBuy) return;
+    if (Number(amount) === 0 || isPendingBuy) return;
 
     const displayNotify = async (type, content) => {
       setAlertState({ open: true, message: content, severity: type });
@@ -105,25 +105,25 @@ const BuySweepModal = () => {
       if (type === 'success') {
         const result = await getBalances(chainId, [token, sweepToken], walletAddress);
         setBalances({ usdc: result[0].bal, sweep: result[1].bal });
-        setUsdcAmount(0);
+        setAmount(0);
       }
     }
 
     if (web3)
-      await buySweepOnMarketMaker(web3, chainId, usdcAmount, token?.decimal, walletAddress, setIsPendingBuy, displayNotify, updateData)
-  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, usdcAmount, updateData]);
+      await buySweepOnMarketMaker(web3, chainId, amount, token?.decimal, walletAddress, setIsPendingBuy, displayNotify, updateData)
+  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, amount, updateData]);
 
   const approveHandler = useCallback(async () => {
-    if (Number(usdcAmount) === 0 || isPendingApprove) return;
+    if (Number(amount) === 0 || isPendingApprove) return;
 
     if (web3)
-      await approveMarketMaker(web3, chainId, usdcAmount, walletAddress, setIsPendingApprove, setAllowance);
-  }, [web3, chainId, usdcAmount, walletAddress, isPendingApprove])
+      await approveMarketMaker(web3, chainId, amount, token, walletAddress, setIsPendingApprove, setAllowance);
+  }, [web3, chainId, amount, token, walletAddress, isPendingApprove])
 
   const setMaxAmount = useCallback(() => {
     const _bal = pp(balances.usdc, 6, 2);
-    setUsdcAmount(_bal)
-  }, [balances, setUsdcAmount])
+    setAmount(_bal)
+  }, [balances, setAmount])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -141,8 +141,8 @@ const BuySweepModal = () => {
 
   const enabledClass = "text-black bg-white";
   const disabledClass = "cursor-not-allowed text-white bg-app-gray";
-  const approveDisabled = (isApproval && usdcAmount >= 0) || (isPendingApprove || isPendingBuy);
-  const buyDisabled = !(isApproval && usdcAmount > 0) || (isPendingApprove || isPendingBuy);
+  const approveDisabled = (isApproval && amount >= 0) || (isPendingApprove || isPendingBuy);
+  const buyDisabled = !(isApproval && amount > 0) || (isPendingApprove || isPendingBuy);
 
   return (
     <>
@@ -187,10 +187,10 @@ const BuySweepModal = () => {
                     <InputBox
                       className='bg-transparent text-2xl cursor-text'
                       title=""
-                      value={usdcAmount}
+                      value={amount}
                       minValue={0}
                       maxValue={pp(balances.usdc, token?.decimal, 2)}
-                      setValue={setUsdcAmount}
+                      setValue={setAmount}
                       pending={isPendingApprove || isPendingBuy}
                     />
                     <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">

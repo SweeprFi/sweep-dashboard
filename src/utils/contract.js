@@ -283,10 +283,10 @@ export const getMarketMakerAllowance = async (chainId, token, walletAddress) => 
   return await contract.methods.allowance(walletAddress, marketMakerAddress).call();
 }
 
-export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddress, setIsPending, setAllowance) => {
-  const tokenAddress = getAddress(tokens, 'usdc', chainId);
+export const approveMarketMaker = async (web3, chainId, tokenAmount, token, walletAddress, setIsPending, setAllowance) => {
+  const tokenAddress = getAddress(tokens, token.name.toLowerCase(), chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
-  const amount = (usdcAmount * 1e6).toFixed();
+  const amount = ethers.parseUnits(tokenAmount.toString(), token.decimal).toString();
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
 
   try {
