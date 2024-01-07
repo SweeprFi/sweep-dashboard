@@ -22,8 +22,8 @@ export const languages = {
     label_target_price: 'Target Price',
     label_amm_price: 'AMM Price',
     label_balance: 'Balance: ',
-    label_transfer_from: 'Transfer From ',
-    label_transfer_to: 'Transfer To ',
+    label_transfer_from: 'Send From ',
+    label_transfer_to: 'Send To ',
     label_buy_from: 'Spend',
     label_buy_to: 'Get',
 
@@ -45,7 +45,7 @@ export const languages = {
 
     btn_link_uniswap: 'Sweep on Uniswap for',
     btn_buy_sweep_on_market: 'Buy at',
-    btn_sweep_bridge: 'Sweep Bridge',
+    btn_sweep_bridge: 'Move Sweep',
     btn_sweepr_bridge: 'Sweepr Bridge',
     btn_send: 'Send',
     btn_buy: 'Buy',
@@ -89,6 +89,6 @@ export const languages = {
     text_how_sweep_works: 'SWEEP target price in USD increases daily with interest. The interest rate adjusts once per week',
     text_swap_sweep: 'Buy or sell SWEEP from a local AMM',
     text_buy_at: 'You can always buy SWEEP at a price that is slightly above the target price. This grows the SWEEP supply and gives borrowers a reliable way to repay',
-    text_bridge_sweep: 'Bridge your SWEEP other blockchains',
+    text_bridge_sweep: 'Send your SWEEP to other blockchains',
     text_asset_distribution: 'Sweep grows the DeFi and RWA economy with collateralized lending to wholesale borrowers. Select the panels below to see the assets on each chain'
 }

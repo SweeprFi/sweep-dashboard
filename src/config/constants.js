@@ -17,6 +17,9 @@ import SweeprLogo from "@images/icon_sweepr.png"
 import UsdcLogo from "@images/icon_usdc.webp"
 import UsdtLogo from "@images/icon_usdt.png"
 
+import BalancerIcon from "@images/icons/balancer.svg";
+import PancakeIcon from "@images/icons/pancake.svg";
+
 import sweepABI from "@abis/sweep.json";
 import sweeprABI from "@abis/sweepr.json";
 import erc20ABI from "@abis/erc20.json";
@@ -180,43 +183,53 @@ const contracts = {
 const AMMLinks = {
   1: {
     title: 'Swap on Ethereum',
-    link: `https://app.balancer.fi/#/ethereum/swap/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://app.balancer.fi/#/ethereum/swap/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: BalancerIcon,
   },
   5: {
     title: 'Swap on Ethereum',
-    link: `https://app.balancer.fi/#/ethereum/swap`
+    link: `https://app.balancer.fi/#/ethereum/swap`,
+    icon: BalancerIcon,
   },
   10: {
     title: 'Swap on Optimism',
-    link: `https://app.balancer.fi/#/optimism/swap/0x0b2c639c533813f4aa9d7837caf62653d097ff85/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://app.balancer.fi/#/optimism/swap/0x0b2c639c533813f4aa9d7837caf62653d097ff85/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: BalancerIcon,
   },
   137: {
     title: 'Swap on Polygon',
-    link: `https://app.balancer.fi/#/polygon/swap/0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://app.balancer.fi/#/polygon/swap/0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: BalancerIcon,
   },
   420: {
     title: 'Swap on Optimism',
-    link: 'https://app.balancer.fi/#/optimism/swap'
+    link: 'https://app.balancer.fi/#/optimism/swap',
+    icon: BalancerIcon,
   },
   8453: {
     title: 'Swap on Base',
-    link: 'https://app.balancer.fi/#/base/swap/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574'
+    link: 'https://app.balancer.fi/#/base/swap/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574',
+    icon: BalancerIcon,
   },
   42161: {
     title: 'Swap on Arbitrum',
-    link: `https://app.balancer.fi/#/arbitrum/swap/0xaf88d065e77c8cC2239327C5EDb3A432268e5831/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://app.balancer.fi/#/arbitrum/swap/0xaf88d065e77c8cC2239327C5EDb3A432268e5831/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: BalancerIcon,
   },
   421613: {
     title: 'Swap on Arbitrum',
-    link: `https://app.balancer.fi/#/arbitrum/swap`
+    link: `https://app.balancer.fi/#/arbitrum/swap`,
+    icon: BalancerIcon,
   },
   43114: {
     title: 'Swap on Avalanche',
-    link: `https://app.balancer.fi/#/avalanche/swap/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://app.balancer.fi/#/avalanche/swap/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E/0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: BalancerIcon,
   },
   56: {
     title: 'Swap on BNB Chain',
-    link: `https://pancakeswap.finance/swap?inputCurrency=0x55d398326f99059fF775485246999027B3197955&outputCurrency=0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`
+    link: `https://pancakeswap.finance/swap?inputCurrency=0x55d398326f99059fF775485246999027B3197955&outputCurrency=0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574`,
+    icon: PancakeIcon,
   },
 }
 

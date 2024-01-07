@@ -50,7 +50,7 @@ const SweepInfo = ({ data }) => {
                     className="sm:col-span-4 lg:col-span-3"
                 />
                 <SweepItem
-                    label={languages.label_amm_price + ` - ${sweepStatus[data?.mint_status]}`}
+                    label={languages.label_amm_price + ` - ${sweepStatus[data?.mint_status || 0]}`}
                     value={data?.amm_price}
                     symbolLeft="$"
                     className="sm:col-span-4 lg:col-span-3"

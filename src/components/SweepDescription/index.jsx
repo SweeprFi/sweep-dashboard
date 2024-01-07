@@ -9,7 +9,6 @@ import { scanLink } from "@utils/helper";
 
 import SweepLogo from "@images/icon_sweep.svg"
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
-import { ReactComponent as BalancerIcon } from "@images/icons/balancer.svg";
 
 const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, network }) => {
   const [copiedText, setCopiedText] = useState(false);
@@ -54,10 +53,9 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
                     href={AMMLinks[chainId].link}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-block w-full rounded-full bg-rainbow p-0.5 group-hover:bg-black group-hover:bg-none"
                   >
                     <button className={classButton}>
-                      <BalancerIcon className="w-6 h-6" />
+                      <img src={AMMLinks[chainId].icon} alt="logo" className="w-6 h-6" />
                       <span>{AMMLinks[chainId].title}</span>
                     </button>
                   </a>
