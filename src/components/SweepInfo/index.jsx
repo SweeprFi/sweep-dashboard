@@ -10,7 +10,7 @@ const SweepInfo = ({ data }) => {
         <>
             <div className="mb-3">
                 <span className="bg-app-sweepMetrics py-1 px-2 rounded-lg">
-                    {`${languages.text_sweep_title} for `} <strong className="uppercase text-app-red">{data?.network || ''}</strong>
+                    {`${languages.text_sweep_title} for `} <strong className="uppercase text-app-green-light">{data?.network || ''}</strong>
                 </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-8 lg:grid-cols-14 xl:grid-cols-15 2xl:grid-cols-14 gap-4">
