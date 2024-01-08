@@ -110,7 +110,7 @@ const BridgeModal = () => {
                 <div className="flex min-h-full items-center justify-center p-4 text-center font-archivo-regular">
                     <div className="w-full max-w-md md:max-w-md transform overflow-visible rounded-3xl bg-app-black-dark text-white px-10 py-8 text-left align-middle shadow-xl transition-all">
                         <h3 className="text-2xl md:text-3xl text-left text-bold text-white capitalize">
-                            {bridgeProps.selectedToken + ' ' + languages.text_bridge}
+                            {languages.text_bridge} {bridgeProps.selectedToken}
                             <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => closeModal()} />
                         </h3>
                         <div className="mt-6 mb-2 text-md flex items-center">
