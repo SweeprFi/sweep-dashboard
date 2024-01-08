@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { ethers } from "ethers";
 import { Multicall } from 'ethereum-multicall';
 import { languages } from "@config/languages";
-import { assetStatus, rpcLinks, tokens, contracts, chainList } from "@config/constants";
+import { assetStatus, rpcLinks, tokens, contracts, chainList, networks } from "@config/constants";
 import {
   toInt, pp, toDate, toTime, annualRate,
   otherChainRpcs, getMaxBorrow, getMaxWithdraw
@@ -216,7 +216,7 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
   const amount = ethers.parseEther(sendAmount.toString()).toString();
   const adapterParam = ethers.solidityPacked(["uint16", "uint256"], [1, 200000]);
   const fees = await contract.methods.estimateSendFee(destNetId, walletAddress, amount, false, adapterParam).call();
-  const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));  
+  const gasFee = Number((fees.nativeFee * 1.01).toFixed(0));
 
   try {
     await contract.methods.sendFrom(
@@ -228,80 +228,84 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
       '0x0000000000000000000000000000000000000000',
       []
     ).send({ from: walletAddress, value: gasFee })
-      .on('transactionHash', () => {
+      .on('transactionHash', (hash) => {
         setIsPending(true);
-        displayNotify('info', languages.text_tx_process);
+        displayNotify({ type: 'info', msg: "Track your token delivery on LayerZeroScan:", value: hash, network: 'lz' });
       })
       .on('receipt', () => {
         setIsPending(false);
-        displayNotify('success', languages.text_tx_success);
+        displayNotify({ type: 'success', msg: languages.text_tx_success, network: '' });
         callback();
       })
-      .on('error', () => {
+      .on('error', (error) => {
         setIsPending(false);
-        displayNotify('error', languages.text_tx_error);
+        displayNotify({ type: 'error', msg: error.message, network: '' });
       });
   } catch (error) {
     console.log(error)
   }
 }
 
-export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, walletAddress, setIsPending, displayNotify, callback) => {
+export const buySweepOnMarketMaker = async (web3, chainId, usdcAmount, decimals, walletAddress, setIsPending, displayNotify, callback) => {
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
-  const amount = (usdcAmount * 1e6).toFixed();
+  const amount = ethers.parseUnits(usdcAmount.toString(), decimals).toString();
+  const network = networks[chainId];
   // const gasAmount = await contract.methods.buySweep(amount).estimateGas({ from: walletAddress });
 
   try {
-
     await contract.methods.buySweep(amount)
       .send({ from: walletAddress })
-      .on('transactionHash', () => {
+      .on('transactionHash', (hash) => {
         setIsPending(true);
-        displayNotify('info', languages.text_tx_process);
+        displayNotify({ type: 'info', msg: "Tx Hash:", value: hash, network: network });
       })
       .on('receipt', () => {
         setIsPending(false);
-        displayNotify('success', languages.text_tx_success);
+        displayNotify({ type: 'success', msg: languages.text_tx_success, network: '' });
         callback();
       })
-      .on('error', () => {
+      .on('error', (error) => {
         setIsPending(false);
-        displayNotify('error', languages.text_tx_error);
+        displayNotify({ type: 'error', msg: error.message, network: '' });
       });
   } catch (error) {
     console.log(error)
   }
 }
 
-export const getMarketMakerAllowance = async (chainId, walletAddress) => {
+export const getMarketMakerAllowance = async (chainId, token, walletAddress) => {
   const rpc = rpcLinks[chainId];
   const web3 = new Web3(rpc);
-  const tokenAddress = getAddress(tokens, 'usdc', chainId);
+  const tokenAddress = getAddress(tokens, token, chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
 
   return await contract.methods.allowance(walletAddress, marketMakerAddress).call();
 }
 
-export const approveMarketMaker = async (web3, chainId, usdcAmount, walletAddress, setIsPending, setAllowance) => {
-  const tokenAddress = getAddress(tokens, 'usdc', chainId);
+export const approveMarketMaker = async (web3, chainId, tokenAmount, token, walletAddress, setIsPending, setAllowance, displayNotify) => {
+  const tokenAddress = getAddress(tokens, token.name.toLowerCase(), chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
-  const amount = (usdcAmount * 1e6).toFixed();
+  const amount = ethers.parseUnits(tokenAmount.toString(), token.decimal).toString();
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+  const network = networks[chainId];
 
   try {
     await contract.methods.approve(
       marketMakerAddress, amount
     ).send({ from: walletAddress })
-      .on('transactionHash', () => {
+      .on('transactionHash', (hash) => {
         setIsPending(true);
+        displayNotify({ type: 'info', msg: "Tx Hash:", value: hash, network: network });
       })
       .on('receipt', () => {
         setIsPending(false);
         setAllowance(Number(amount));
+        displayNotify({ type: 'success', msg: languages.text_tx_success, network: '' });
       })
-      .on('error', () => {
+      .on('error', (error) => {
+        displayNotify({ type: 'error', msg: error.message, network: '' });
         setIsPending(false);
       });
   } catch (error) {

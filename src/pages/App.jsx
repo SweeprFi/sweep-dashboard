@@ -11,11 +11,16 @@ import Loader from "@components/Loader";
 import BridgeModal from "@components/BridgeModal";
 import BuySweepModal from "@components/BuySweepModal";
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { notifyMsg, notifyMsgWithLink } from "@components/Message";
+
 const App = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.isLoading);
   const sweepUpdates = useSelector((state) => state.sweepUpdates);
   const sweeprUpdates = useSelector((state) => state.sweeprUpdates);
+  const notification = useSelector((state) => state.notification);
 
   const fetchData = async (fetchFunction) => {
     try {
@@ -74,6 +79,16 @@ const App = () => {
     updateHandler();
   }, [dispatch, sweeprUpdates]);
 
+  useEffect(() => {
+    if(notification?.type) {
+      if(notification.type === 'info') {
+        notifyMsgWithLink(notification.msg, notification.network, notification.value)
+      } else {
+        notifyMsg(notification.msg, notification.type)
+      }
+    }
+  }, [notification]);
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -91,6 +106,7 @@ const App = () => {
             }
           </Routes>
           { isLoading && <Loader /> }
+          <ToastContainer className='z-20' toastClassName="z-20" />
           <BridgeModal />
           <BuySweepModal />
         </Layout>

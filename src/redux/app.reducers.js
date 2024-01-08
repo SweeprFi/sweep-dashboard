@@ -16,6 +16,7 @@ export const initialState = {
   },
   sweepUpdates: 0,
   sweeprUpdates: 0,
+  notification: {},
 };
 
 export const slice = createSlice({
@@ -43,6 +44,9 @@ export const slice = createSlice({
     updateSweeprData: (state, _action) => {
       state.sweeprUpdates += 1;
     },
+    sendNotification: (state, action) => {
+      state.notification = action.payload;
+    }
   }
 });
 
@@ -54,6 +58,7 @@ export const {
   setBridgePopup,
   updateSweepData,
   updateSweeprData,
+  sendNotification
 } = slice.actions;
 
 export default slice.reducer;

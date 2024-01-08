@@ -6,6 +6,8 @@ export const shortAddress = (address) => {
 }
 
 export const scanLink = (network, address) => {
+  if(network === 'lz') return `https://layerzeroscan.com/${address}`
+
   const chain = chainList.find(_chain => _chain.name.toLowerCase() === network?.toLowerCase());
   return scans[chain?.chainId] + address;
 }
