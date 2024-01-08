@@ -99,7 +99,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
         <h1 className="release-title mr-2">Sweep token:</h1>
         <ExternalLink
           title={sweepAddress}
-          link={scanLink(network, sweepAddress)}
+          link={scanLink(network, `address/${sweepAddress}`)}
         />
         {
           copiedText ?

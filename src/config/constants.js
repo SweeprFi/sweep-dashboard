@@ -56,17 +56,17 @@ const rpcLinks = {
 }
 
 const scans = {
-  1: 'https://etherscan.io/address/',
-  10: 'https://optimistic.etherscan.io/address/',
-  42161: 'https://arbiscan.io/address/',
-  8453: 'https://basescan.org/address/',
-  43114: 'https://snowtrace.io/address/',
-  137: 'https://polygonscan.com/address/',
-  56: 'https://bscscan.com/address/',
+  1: 'https://etherscan.io/',
+  10: 'https://optimistic.etherscan.io/',
+  42161: 'https://arbiscan.io/',
+  8453: 'https://basescan.org/',
+  43114: 'https://snowtrace.io/',
+  137: 'https://polygonscan.com/',
+  56: 'https://bscscan.com/',
  
-  5: 'https://goerli.etherscan.io/address/',
-  420: 'https://goerli-optimism.etherscan.io/address/',
-  421613: 'https://goerli.arbiscan.io/address/'
+  5: 'https://goerli.etherscan.io/',
+  420: 'https://goerli-optimism.etherscan.io/',
+  421613: 'https://goerli.arbiscan.io/'
 }
 
 const socialLinks = [

@@ -1,10 +1,9 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setBuyPopup, updateSweepData } from "@redux/app.reducers";
+import { setBuyPopup, updateSweepData, sendNotification } from "@redux/app.reducers";
 import { useWallet } from "@utils/walletHelper";
-import { Dialog, Transition } from '@headlessui/react'
+import Modal from "@components/Modal";
 import InputBox from "../InputBox";
-import Alert from "@components/Alert"
 import { tokenList } from "@config/constants";
 import { languages } from "@config/languages";
 import {
@@ -33,8 +32,6 @@ const BuySweepModal = () => {
   const [isPendingBuy, setIsPendingBuy] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-
-  const [alertState, setAlertState] = useState({ open: false, message: "", severity: undefined });
 
   const sweepMaxAmount = useMemo(() => {
     return Number((pp(balances.usdc, 6, 0) / marketPrice).toFixed(2));
@@ -99,10 +96,10 @@ const BuySweepModal = () => {
   const buySweepHandler = useCallback(async () => {
     if (Number(amount) === 0 || isPendingBuy) return;
 
-    const displayNotify = async (type, content) => {
-      setAlertState({ open: true, message: content, severity: type });
+    const displayNotify = async (data) => {
+      dispatch(sendNotification(data));
 
-      if (type === 'success') {
+      if (data.type === 'success') {
         const result = await getBalances(chainId, [token, sweepToken], walletAddress);
         setBalances({ usdc: result[0].bal, sweep: result[1].bal });
         setAmount(0);
@@ -111,33 +108,23 @@ const BuySweepModal = () => {
 
     if (web3)
       await buySweepOnMarketMaker(web3, chainId, amount, token?.decimal, walletAddress, setIsPendingBuy, displayNotify, updateData)
-  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, amount, updateData]);
+  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, amount, updateData, dispatch]);
 
   const approveHandler = useCallback(async () => {
     if (Number(amount) === 0 || isPendingApprove) return;
 
+    const displayNotify = async (data) => {
+      dispatch(sendNotification(data));
+    }
+
     if (web3)
-      await approveMarketMaker(web3, chainId, amount, token, walletAddress, setIsPendingApprove, setAllowance);
-  }, [web3, chainId, amount, token, walletAddress, isPendingApprove])
+      await approveMarketMaker(web3, chainId, amount, token, walletAddress, setIsPendingApprove, setAllowance, displayNotify);
+  }, [web3, chainId, amount, token, walletAddress, isPendingApprove, dispatch])
 
   const setMaxAmount = useCallback(() => {
     const _bal = pp(balances.usdc, 6, 2);
     setAmount(_bal)
   }, [balances, setAmount])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (alertState.open) {
-        setAlertState({
-          open: false,
-          message: "",
-          severity: undefined,
-        })
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [alertState, setAlertState])
 
   const enabledClass = "text-black bg-white";
   const disabledClass = "cursor-not-allowed text-white bg-app-gray";
@@ -145,41 +132,14 @@ const BuySweepModal = () => {
   const buyDisabled = !(isApproval && amount > 0) || (isPendingApprove || isPendingBuy);
 
   return (
-    <>
-      <Transition appear show={(buyProps.isOpen && !isConnecting)} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm" />
-          </Transition.Child>
-
+    <Modal isOpen={(buyProps.isOpen && !isConnecting)} onClose={() => closeModal()}>
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center font-archivo-regular">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md md:max-w-md transform overflow-hidden rounded-3xl bg-app-black-dark text-white px-10 py-8 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-2xl md:text-3xl text-left text-bold text-white"
-                  >
+                <div className="w-full max-w-md md:max-w-md transform overflow-hidden rounded-3xl bg-app-black-dark text-white px-10 py-8 text-left align-middle shadow-xl transition-all">
+                  <h3 className="text-2xl md:text-3xl text-left text-bold text-white">
                     {languages.text_buy_sweep}
                     <XMarkIcon className="h-7 w-7 text-white opacity-60 absolute right-5 top-4 cursor-pointer" aria-hidden="true" onClick={() => closeModal()} />
-                  </Dialog.Title>
-                  <Alert data={alertState} />
+                  </h3>
                   <div className="mt-6 mb-2 text-md flex items-center">
                     {languages.label_buy_from}
                   </div>
@@ -272,13 +232,10 @@ const BuySweepModal = () => {
 
                     </div>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </div>
             </div>
           </div>
-        </Dialog>
-      </Transition>
-    </>
+    </Modal>
   )
 }
 

@@ -48,7 +48,7 @@ const AssetPage = (props) => {
           <div>
             <ExternalLink
               title={languages.link_stabilizer}
-              link={scanLink(network, address + "#writeContract")}
+              link={scanLink(network, `address/${address}#writeContract`)}
               icon={true}
             />
             <ExternalLink title={languages.link_deal} link={asset.link} icon={true} />
@@ -58,7 +58,7 @@ const AssetPage = (props) => {
                 <tr>
                   <td>{languages.text_borrower}</td>
                   <td>
-                    <ExternalLink title={shortAddress(asset.borrower)} link={scanLink(network, asset.borrower)} icon={true} />
+                    <ExternalLink title={shortAddress(asset.borrower)} link={scanLink(network, `address/${asset.borrower}`)} icon={true} />
                   </td>
                 </tr>
                 <Row label={languages.text_loan_limit} value={asset.loanLimit} />
