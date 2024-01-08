@@ -33,7 +33,7 @@ const networks = {
   42161: 'arbitrum',
   43114: 'avalanche',
   137: 'polygon',
-  56: 'bsc',
+  56: 'bnb chain',
 
   5: 'goerli',
   // 420: 'optimism goerli',
@@ -321,7 +321,7 @@ const mainChainList = [
   {
     chainId: 56,
     netId: 102,
-    name: 'BSC',
+    name: 'BNB Chain',
     logo: bscIcon
   },
 ]
