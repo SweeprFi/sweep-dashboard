@@ -19,7 +19,7 @@ import WalletIcon from "@images/wallet.svg";
 const BuySweepModal = () => {
   const dispatch = useDispatch();
   const buyProps = useSelector((state) => state.buyPopup);
-  const { marketPrice } = buyProps;
+  const { marketPrice, maxToBuy } = buyProps;
   const { web3, chainId, walletAddress, setChain } = useWallet();
   const sweepToken = tokenList[0];
   const token = Number(chainId) === 56 ? tokenList[3] : tokenList[2];
@@ -32,6 +32,7 @@ const BuySweepModal = () => {
   const [isPendingBuy, setIsPendingBuy] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [max, setMax] = useState(0);
 
   const sweepMaxAmount = useMemo(() => {
     return Number((pp(balances.usdc, 6, 0) / marketPrice).toFixed(2));
@@ -42,7 +43,7 @@ const BuySweepModal = () => {
   }, [allowance, token.decimal, amount])
 
   const closeModal = useCallback(() => {
-    dispatch(setBuyPopup({ isOpen: false, marketPrice: 0, chainId: 0 }));
+    dispatch(setBuyPopup({ isOpen: false, marketPrice: 0, chainId: 0, maxToBuy: 0 }));
   }, [dispatch]);
 
   const updateData = useCallback(() => {
@@ -56,6 +57,9 @@ const BuySweepModal = () => {
       try {
         const result = await getBalances(chainId, [token, sweepToken], walletAddress);
         setBalances({ usdc: result[0].bal, sweep: result[1].bal });
+        var _bal = pp(result[0].bal, token.decimal, 2);
+        if(_bal > maxToBuy) _bal = maxToBuy;
+        setMax(_bal);
 
         const _allowance = await getMarketMakerAllowance(chainId, token?.name.toLowerCase(), walletAddress);
         setAllowance(_allowance);
@@ -66,7 +70,7 @@ const BuySweepModal = () => {
     }
 
     intialHandler();
-  }, [walletAddress, chainId, token, sweepToken, isPendingBuy])
+  }, [walletAddress, chainId, token, sweepToken, isPendingBuy, setMax, maxToBuy])
 
   useEffect(() => {
     const _sweepAmount = Number((amount / marketPrice).toFixed(2));
@@ -122,9 +126,8 @@ const BuySweepModal = () => {
   }, [web3, chainId, amount, token, walletAddress, isPendingApprove, dispatch])
 
   const setMaxAmount = useCallback(() => {
-    const _bal = pp(balances.usdc, 6, 2);
-    setAmount(_bal)
-  }, [balances, setAmount])
+    setAmount(max)
+  }, [setAmount, max])
 
   const enabledClass = "text-black bg-white";
   const disabledClass = "cursor-not-allowed text-white bg-app-gray";
@@ -149,15 +152,32 @@ const BuySweepModal = () => {
                       title=""
                       value={amount}
                       minValue={0}
-                      maxValue={pp(balances.usdc, token?.decimal, 2)}
+                      maxValue={max}
                       setValue={setAmount}
                       pending={isPendingApprove || isPendingBuy}
                     />
-                    <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
-                      {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.usdc, token?.decimal, 2))}
-                      <div className="ml-2 cursor-pointer flex justify-center items-center bg-app-gray-light px-2 py-0.5 rounded-2xl -mt-0.5" onClick={setMaxAmount}>
-                        <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
-                      </div>
+                    <div>
+                      {
+                        isLoading ?
+                          <div className="justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
+                            Loading ...
+                          </div> :
+                          <>
+                            <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
+                              {languages.label_balance} {convertNumber(pp(balances.usdc, token?.decimal, 2))}
+                              <div className="ml-1 flex justify-center items-center px-2 py-0.5">
+                                <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
+                              </div>
+                            </div>
+                            <br />
+                            <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
+                              Max Sweep to Buy: {maxToBuy}
+                              <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 text-xs rounded-2xl" onClick={setMaxAmount}>
+                                MAX
+                              </div>
+                            </div>
+                          </>
+                      }
                     </div>
                     <br />
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
@@ -186,7 +206,12 @@ const BuySweepModal = () => {
                       pending={isPendingApprove || isPendingBuy}
                     />
                     <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
-                      {languages.label_balance} {isLoading ? 'Loading ...' : convertNumber(pp(balances.sweep, 18, 2))}
+                      {
+                        isLoading ? <div>Loading ...</div> :
+                        <>
+                          {languages.label_balance} {convertNumber(pp(balances.sweep, 18, 2))}
+                        </>
+                      }
                     </div>
                     <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                       <div className="">

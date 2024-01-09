@@ -128,10 +128,15 @@ const BridgeModal = () => {
                                 pending={isPending}
                             />
                             <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
-                                {languages.label_balance} {isLoading ? 'Loading ...' : pp(balances.curt, 18, 2)}
-                                <div className="ml-2 cursor-pointer flex justify-center items-center bg-app-gray-light px-2 py-0.5 rounded-2xl -mt-0.5" onClick={setMaxAmount}>
-                                    <img src={icon_wallet} alt="wallet icon" className="h-4 w-4" />
-                                </div>
+                                {
+                                    isLoading ? <div>Loading ...</div> :
+                                        <>
+                                            {languages.label_balance} {pp(balances.curt, 18, 2)}
+                                            <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 rounded-2xl" onClick={setMaxAmount}>
+                                                <img src={icon_wallet} alt="wallet icon" className="h-4 w-4" />
+                                            </div>
+                                        </>
+                                }
                             </div>
                             <div className="absolute right-4 top-6 flex justify-center items-center gap-4">
                                 <div className="">
@@ -153,7 +158,10 @@ const BridgeModal = () => {
                                 {sendAmount}
                             </div>
                             <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
-                                {languages.label_balance} {isLoading ? 'Loading ...' : pp(balances.dest, 18, 2)}
+                                {
+                                    isLoading ? <div>Loading ...</div> :
+                                    <>{languages.label_balance} {pp(balances.dest, 18, 2)}</>
+                                }
                             </div>
                             <div className="absolute right-4 top-4 flex justify-center items-center gap-4">
                                 <div>

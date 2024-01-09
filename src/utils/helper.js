@@ -75,9 +75,9 @@ export const zeroToNum = (val) => {
   return ('00' + val).slice(-2);
 }
 
-export const getMaxBorrow = (equity, ratio) => {
-  if(ratio === 0) return 0;
-  return ((equity * (1/(ratio/100))-1)).toFixed(2);  
+export const getMaxBorrow = (junior, ratio) => {
+  if(ratio === 0) ratio = 0.01;
+  return ((junior * (1/(ratio/100))-1)).toFixed(2);  
 }
 
 export const getMaxWithdraw = (total, ratio, junior) => {

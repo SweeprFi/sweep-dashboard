@@ -10,7 +10,7 @@ import { scanLink } from "@utils/helper";
 import SweepLogo from "@images/icon_sweep.svg"
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
 
-const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, network, status }) => {
+const SweepDescription = ({ marketPrice, maxToBuy, chainId, connected, connectHandler, network, status }) => {
   const [copiedText, setCopiedText] = useState(false);
   const sweepAddress = tokens.sweep[chainId];
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
 
   const handleBuyPopup = async () => {
     if (connected) {
-      dispatch(setBuyPopup({ isOpen: true, marketPrice: marketPrice, chainId }));
+      dispatch(setBuyPopup({ isOpen: true, marketPrice: marketPrice, chainId, maxToBuy: maxToBuy }));
     } else {
       await connectHandler();
     }

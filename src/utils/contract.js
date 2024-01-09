@@ -21,6 +21,8 @@ export const sweepFetch = async (chainId) => {
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
   const network = chainList.find((network) => network.chainId === chainId);
+  const MMAddress = getAddress(contracts, 'marketMaker', chainId);
+  const maxToBuy = await getMaxBuy(multicall, MMAddress);
 
   const callInfo = {
     reference: 'sweep',
@@ -65,7 +67,8 @@ export const sweepFetch = async (chainId) => {
     totalValue,
     network: network.name,
     chain: network.chainId,
-    logo: network.logo
+    logo: network.logo,
+    maxToBuy: Number(maxToBuy.toFixed(2))
   }
 }
 
@@ -455,6 +458,33 @@ const assetsBlock = async (chainId, assets) => {
 }
 
 // *******************
+const getMaxBuy = async(multicall, address) => {
+  const callInfo = {
+    reference: 'mm',
+    contractAddress: address,
+    abi: marketMakerABI,
+    calls: [
+      { reference: 'getBuyPriceC', methodName: 'getBuyPrice' },
+      { reference: 'sweepBorrowedC', methodName: 'sweepBorrowed' },
+      { reference: 'minEquityRatioC', methodName: 'minEquityRatio' },
+      { reference: 'juniorTranchC', methodName: 'getJuniorTrancheValue' },
+    ]
+  }
+  
+  let callResults = await multicall.call(callInfo);
+  const data = callResults.results['mm']['callsReturnContext'];
+
+  const buyPrice = pp(toInt(data[0]), 6, 2);
+  const sweepBorrowed = pp(toInt(data[1]), 18, 2);
+  const minEquityRatio = pp(toInt(data[2]), 4, 2);
+  const juniorTranche = pp(toInt(data[3]), 6, 2);
+
+  const maxBorrow = getMaxBorrow(juniorTranche, minEquityRatio);
+  let remainingBorrow = (maxBorrow - sweepBorrowed).toFixed(2);
+
+  return (remainingBorrow / (2 * buyPrice));
+}
+
 const checkAsset = async (web3, sweepAddress, addr) => {
   const contract = new web3.eth.Contract(sweepABI, sweepAddress);
   return await contract.methods.minters(addr).call();
