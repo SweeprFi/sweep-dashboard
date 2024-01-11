@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   // const handleBuyPopup = async () => {
   //   if (connected) {
-  //     dispatch(setBuyPopup({ isOpen: true, marketPrice: sweepData?.market_price, chainId: chain?.chainId }));
+  //     dispatch(setBuyPopup({ isOpen: true, marketPrice: sweepData?.market_price, chainId: chain?.chainId, maxToBuy: sweepData?.maxToBuy }));
   //   } else {
   //     await connectHandler();
   //   }

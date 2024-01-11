@@ -18,6 +18,7 @@ const Home = () => {
           chainId={chainId}
           connected={connected}
           connectHandler={connectHandler}
+          maxToBuy={sweepInfo[chainId]?.maxToBuy}
           network={sweepInfo[chainId]?.network}
           status={sweepInfo[chainId]?.mint_status}
         />
