@@ -105,10 +105,11 @@ export const assetListFetch = async (chainId, assets) => {
   const web3 = new Web3(RPC);
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
-  const callInfo = await Promise.all(
-    assets.map(async (asset) => {
-      const info = {
-        reference: asset,
+  const assetList = [];
+  const calls = assets.map(async (asset) => {
+    const callInfo = [
+      {
+        reference: "asset",
         contractAddress: asset,
         abi: stabilizerABI,
         calls: [
@@ -125,42 +126,52 @@ export const assetListFetch = async (chainId, assets) => {
           { reference: 'callDelayCall', methodName: 'callDelay' },
           { reference: 'pauseCall', methodName: 'paused' },
           { reference: 'nameCall', methodName: 'name' },
-        ]
-      }
+        ],
+      },
+      {
+        reference: "sw",
+        contractAddress: tokens.sweep[chainId],
+        abi: sweepABI,
+        calls: [{ reference: 'minterC', methodName: 'minters', methodParameters: [asset] }],
+      },
+    ];
 
-      return info;
-    })
-  )
+    const result = await multicall.call(callInfo);
+    assetList.push(result);
+  });
 
-  const assetList = [];
-  let callResults = await multicall.call(callInfo);
-  callResults = callResults.results;
+  await Promise.all(calls);
 
-  Object.keys(callResults).map(async (key) => {
-    const data = callResults[key]['callsReturnContext'];
+  const assetData = assetList.map(asset => {
+    const aData = asset.results.asset.callsReturnContext;
+    const address = asset.results.asset.originalContractCallContext.contractAddress;
+    const sData = asset.results.sw.callsReturnContext;
+    const max = sData[0].returnValues[0];
+    
     const info = {
-      borrower: data[0].returnValues[0],
-      link: data[1].returnValues[0],
-      borrowed_amount: pp(toInt(data[2]), 18, 2),
-      loan_limit: pp(toInt(data[3]), 18, 2),
-      current_value: pp(toInt(data[4]), 6, 2),
-      equity_ratio: pp(toInt(data[5]), 4, 2),
-      min_equity_ratio: pp(toInt(data[6]), 4, 2),
-      isDefaulted: data[7].returnValues[0],
-      call_time: toDate(toInt(data[8])),
-      call_amount: pp(toInt(data[9]), 18, 2),
-      call_delay: toTime(toInt(data[10])),
-      isPaused: data[11].returnValues[0],
-      name: data[12].returnValues[0],
-      address: key,
+      borrower: aData[0].returnValues[0],
+      link: aData[1].returnValues[0],
+      borrowed_amount: pp(toInt(aData[2]), 18, 2),
+      loan_limit: pp(toInt(aData[3]), 18, 2),
+      current_value: pp(toInt(aData[4]), 6, 2),
+      equity_ratio: pp(toInt(aData[5]), 4, 2),
+      min_equity_ratio: pp(toInt(aData[6]), 4, 2),
+      isDefaulted: aData[7].returnValues[0],
+      call_time: toDate(toInt(aData[8])),
+      call_amount: pp(toInt(aData[9]), 18, 2),
+      call_delay: toTime(toInt(aData[10])),
+      isPaused: aData[11].returnValues[0],
+      name: aData[12].returnValues[0],
+      address,
+      maxAmount: pp(parseInt(max.hex, 16), 18, 2)
     };
     const status = getStatus(info);
     info.status = status;
 
-    assetList.push(info);
+    return info;
   })
 
-  return assetList;
+  return assetData;
 }
 
 export const getSweepBalance = async (tokenName, curtChainId, destChainId, walletAddress) => {
@@ -319,9 +330,9 @@ export const assetFetch = async (network, addr) => {
   const RPC = rpcLinks[chainId];
   const web3 = new Web3(RPC);
   const sweepAddress = tokens.sweep[chainId];
-  const isValidMinter = await checkAsset(web3, sweepAddress, addr);
+  const asset = await checkAsset(web3, sweepAddress, addr); 
 
-  if (!isValidMinter) return { loading: false, found: false, data: {} };
+  if (!asset.isListed || asset.maxAmount <= 0) return { loading: false, found: false, data: {} };
 
   const info = {
     reference: addr,
@@ -398,7 +409,8 @@ export const assetFetch = async (network, addr) => {
       remainingBorrow: (maxBorrow - sweepBorrowed).toFixed(2),
       maxWithdraw: getMaxWithdraw(currentValue, minEquityRatio, juniorTranche),
       deposited: (currentValue - assetValue + pp(feeInUSD, 6, 2)).toFixed(2),
-      link: data[25].returnValues[0]
+      link: data[25].returnValues[0],
+      maxAmount: pp(asset.maxAmount, 18, 2)
     }
   }
 }
@@ -445,7 +457,7 @@ const assetsBlock = async (chainId, assets) => {
 // *******************
 const checkAsset = async (web3, sweepAddress, addr) => {
   const contract = new web3.eth.Contract(sweepABI, sweepAddress);
-  return await contract.methods.isValidMinter(addr).call();
+  return await contract.methods.minters(addr).call();
 }
 
 const convertToUSD = async (web3, sweepAddress, amount) => {

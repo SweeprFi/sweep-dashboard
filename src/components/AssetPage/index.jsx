@@ -37,6 +37,8 @@ const AssetPage = (props) => {
 
   if(!asset?.name) return;
 
+  const limit = (asset.loan_limit < asset.maxAmount) ? asset.loan_limit : asset.maxAmount;
+
   return (
     <div className="bg-l2s p-4">
       <div className="text-2xl sm:text-4xl lg:text-3xl xl:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-app-red to-app-pink-light">
@@ -61,7 +63,7 @@ const AssetPage = (props) => {
                     <ExternalLink title={shortAddress(asset.borrower)} link={scanLink(network, `address/${asset.borrower}`)} icon={true} />
                   </td>
                 </tr>
-                <Row label={languages.text_loan_limit} value={asset.loanLimit} />
+                <Row label={languages.text_loan_limit} value={limit} />
                 <Row label={languages.text_call_delay} value={asset.callDelay} />
                 <Row label={languages.text_spread_fee} value={asset.spreadFee + " %"} />
                 <Row label={languages.text_min_equity_ratio} value={asset.minEquityRatio + " %"} />

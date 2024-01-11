@@ -15,6 +15,8 @@ const AssetItem = ({ data, chainId }) => {
     )
   }
 
+  const limit = (data.loan_limit < data.maxAmount) ? data.loan_limit : data.maxAmount;
+
   return (
     <div className="bg-app-black-light rounded-2xl lg:col-span-12">
       <Link to={assetLink(data.address, chainId)}>
@@ -31,7 +33,7 @@ const AssetItem = ({ data, chainId }) => {
                   {convertNumber(data.borrowed_amount)}
                 </span><br />
                 <span className="whitespace-nowrap">
-                  / {convertNumber(data.loan_limit)}
+                  / {convertNumber(limit)}
                 </span>
               </div>
             </div>
