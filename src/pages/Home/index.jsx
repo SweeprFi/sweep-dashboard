@@ -19,6 +19,7 @@ const Home = () => {
           connected={connected}
           connectHandler={connectHandler}
           network={sweepInfo[chainId]?.network}
+          status={sweepInfo[chainId]?.mint_status}
         />
       </div>
       <AssetsBlock chainId={chainId} />

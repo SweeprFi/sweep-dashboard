@@ -10,7 +10,7 @@ import { scanLink } from "@utils/helper";
 import SweepLogo from "@images/icon_sweep.svg"
 import { DocumentDuplicateIcon } from '@heroicons/react/20/solid'
 
-const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, network }) => {
+const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, network, status }) => {
   const [copiedText, setCopiedText] = useState(false);
   const sweepAddress = tokens.sweep[chainId];
   const dispatch = useDispatch();
@@ -65,19 +65,22 @@ const SweepDescription = ({ marketPrice, chainId, connected, connectHandler, net
                 <h1>{languages.text_swap_sweep}</h1>
               </td>
             </tr>
-            <tr>
-              <td className="flex justify-left">
-                <div className={classContainer}>
-                  <button onClick={handleBuyPopup} className={classButton}>
-                    <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
-                    <span>{`${languages.btn_buy_sweep_on_market} $ ${marketPrice || 1}`}</span>
-                  </button>
-                </div>
-              </td>
-              <td>
-                <h1>{languages.text_buy_at}</h1>
-              </td>
-            </tr>
+            {
+              (status === 0) &&
+              <tr>
+                <td className="flex justify-left">
+                  <div className={classContainer}>
+                    <button onClick={handleBuyPopup} className={classButton}>
+                      <img src={SweepLogo} alt="logo" className="w-6 mr-1" />
+                      <span>{`${languages.btn_buy_sweep_on_market} $ ${marketPrice || 1}`}</span>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <h1>{languages.text_buy_at}</h1>
+                </td>
+              </tr>
+            }
             <tr>
               <td className="flex justify-left">
                 <div className={classContainer}>
