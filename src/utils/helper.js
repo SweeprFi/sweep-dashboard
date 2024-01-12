@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { chainList, rpcLinks, scans, month } from "../config/constants";
 
 export const shortAddress = (address) => {
@@ -47,6 +48,10 @@ export const toInt = (val) => {
   }
 
   return 0;
+}
+
+export const format = (v, d) => {
+  return ethers.parseUnits(v.toString(), d).toString();
 }
 
 export const convertNumber = (val) => {

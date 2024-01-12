@@ -12,7 +12,7 @@ import {
   buySweepOnMarketMaker,
   approveMarketMaker
 } from "@utils/contract";
-import { pp, convertNumber } from "@utils/helper";
+import { pp, convertNumber, format } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
 import WalletIcon from "@images/wallet.svg";
 
@@ -110,9 +110,12 @@ const BuySweepModal = () => {
       }
     }
 
-    if (web3)
-      await buySweepOnMarketMaker(web3, chainId, amount, token?.decimal, walletAddress, setIsPendingBuy, displayNotify, updateData)
-  }, [web3, chainId, walletAddress, isPendingBuy, token, sweepToken, amount, updateData, dispatch]);
+    if (web3) {
+      var _amount = format(amount, token.decimal);
+      if(_amount > balances.usdc) _amount = balances.usdc;
+      await buySweepOnMarketMaker(web3, chainId, _amount, walletAddress, setIsPendingBuy, displayNotify, updateData);
+    }
+  }, [web3, chainId, walletAddress, isPendingBuy, token, balances.usdc, sweepToken, amount, updateData, dispatch]);
 
   const approveHandler = useCallback(async () => {
     if (Number(amount) === 0 || isPendingApprove) return;
@@ -121,9 +124,12 @@ const BuySweepModal = () => {
       dispatch(sendNotification(data));
     }
 
-    if (web3)
-      await approveMarketMaker(web3, chainId, amount, token, walletAddress, setIsPendingApprove, setAllowance, displayNotify);
-  }, [web3, chainId, amount, token, walletAddress, isPendingApprove, dispatch])
+    if (web3) {
+      var _amount = format(amount, token.decimal);
+      if(_amount > balances.usdc) _amount = balances.usdc;
+      await approveMarketMaker(web3, chainId, _amount, token, walletAddress, setIsPendingApprove, setAllowance, displayNotify);
+    }
+  }, [web3, chainId, amount, token, walletAddress, isPendingApprove, dispatch, balances.usdc])
 
   const setMaxAmount = useCallback(() => {
     setAmount(max)
