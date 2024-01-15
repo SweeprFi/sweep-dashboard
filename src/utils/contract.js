@@ -14,6 +14,8 @@ import sweeprABI from "@abis/sweepr.json";
 import stabilizerABI from "@abis/stabilizer.json";
 import marketMakerABI from "@abis/marketMaker.json";
 
+import { simulateApprove, simulateBuySweep } from './simulation';
+
 export const sweepFetch = async (chainId) => {
   if(!chainId) return {};
 
@@ -261,16 +263,22 @@ export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNe
 }
 
 export const buySweepOnMarketMaker = async (web3, chainId, amount, walletAddress, setIsPending, displayNotify, callback) => {
+  setIsPending(true);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(marketMakerABI, marketMakerAddress);
   const network = networks[chainId];
-  // const gasAmount = await contract.methods.buySweep(amount).estimateGas({ from: walletAddress });
+  const simulation = await simulateBuySweep(web3, chainId, walletAddress, marketMakerAddress, amount);
+
+  if(simulation?.error_message) {
+    setIsPending(false);
+    displayNotify({ type: 'error', msg: simulation.error_message, network: '' });
+    return;
+  }
 
   try {
     await contract.methods.buySweep(amount)
       .send({ from: walletAddress })
       .on('transactionHash', (hash) => {
-        setIsPending(true);
         displayNotify({ type: 'info', msg: "Tx Hash:", value: hash, network: network });
       })
       .on('receipt', () => {
@@ -298,17 +306,24 @@ export const getMarketMakerAllowance = async (chainId, token, walletAddress) => 
 }
 
 export const approveMarketMaker = async (web3, chainId, tokenAmount, token, walletAddress, setIsPending, setAllowance, displayNotify) => {
+  setIsPending(true);
   const tokenAddress = getAddress(tokens, token.name.toLowerCase(), chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
   const network = networks[chainId];
+  const simulation = await simulateApprove(web3, chainId, walletAddress, tokenAddress, marketMakerAddress, tokenAmount)
+
+  if(simulation?.error_message) {
+    setIsPending(false);
+    displayNotify({ type: 'error', msg: simulation.error_message, network: '' });
+    return;
+  }
 
   try {
     await contract.methods.approve(
       marketMakerAddress, tokenAmount
     ).send({ from: walletAddress })
       .on('transactionHash', (hash) => {
-        setIsPending(true);
         displayNotify({ type: 'info', msg: "Tx Hash:", value: hash, network: network });
       })
       .on('receipt', () => {
@@ -317,8 +332,8 @@ export const approveMarketMaker = async (web3, chainId, tokenAmount, token, wall
         displayNotify({ type: 'success', msg: languages.text_tx_success, network: '' });
       })
       .on('error', (error) => {
-        displayNotify({ type: 'error', msg: error.message, network: '' });
         setIsPending(false);
+        displayNotify({ type: 'error', msg: error.message, network: '' });
       });
   } catch (error) {
     console.log(error)
