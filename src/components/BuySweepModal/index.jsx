@@ -34,9 +34,9 @@ const BuySweepModal = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [max, setMax] = useState(0);
 
-  const sweepMaxAmount = useMemo(() => {
-    return Number((pp(balances.usdc, 6, 0) / marketPrice).toFixed(2));
-  }, [balances.usdc, marketPrice])
+  // const sweepMaxAmount = useMemo(() => {
+  //   return Number((pp(balances.usdc, 6, 0) / marketPrice).toFixed(2));
+  // }, [balances.usdc, marketPrice])
 
   const isApproval = useMemo(() => {
     return (allowance >= amount * (10 ** token.decimal));
@@ -195,14 +195,14 @@ const BuySweepModal = () => {
                       </div>
                     </div>
                     <div className="flex justify-center items-center absolute left-1/2 -translate-x-1/2 -bottom-10 opacity-60">
-                      <ArrowDownIcon className="h-8 w-8 text-white cursor-pointer" aria-hidden="true" />
+                      <ArrowDownIcon className="h-8 w-8 text-white" aria-hidden="true" />
                     </div>
                   </div>
                   <div className="mt-4 mb-2 text-md flex items-center">
                     {languages.label_buy_to}
                   </div>
                   <div className="rounded-xl border border-app-gray-light px-4 pt-1 pb-10 relative">
-                    <InputBox
+                    {/*<InputBox
                       className='bg-transparent text-2xl cursor-text'
                       title=""
                       value={sweepAmount}
@@ -210,7 +210,10 @@ const BuySweepModal = () => {
                       maxValue={sweepMaxAmount}
                       setValue={setSweepAmount}
                       pending={isPendingApprove || isPendingBuy}
-                    />
+                    />*/}
+                    <div className="text-2xl pt-2 pl-0 cursor-default">
+                      {sweepAmount}
+                    </div>
                     <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4 bottom-4">
                       {
                         isLoading ? <div>Loading ...</div> :
