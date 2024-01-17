@@ -147,7 +147,7 @@ const BridgeModal = () => {
                                 </div>
                             </div>
                             <div className="flex justify-center items-center absolute left-1/2 -translate-x-1/2 -bottom-10 opacity-60">
-                                <ArrowDownIcon className="h-8 w-8 text-white cursor-pointer" aria-hidden="true" />
+                                <ArrowDownIcon className="h-8 w-8 text-white" aria-hidden="true" />
                             </div>
                         </div>
                         <div className="mt-4 mb-2 text-md flex items-center">

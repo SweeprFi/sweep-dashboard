@@ -5,7 +5,7 @@ import ExternalLink from "@components/ExternalLink";
 export const notifyMsg = (msg, type) => {
   toast[type](<DisplayMsg />, {
     position: "bottom-right",
-    autoClose: 5000,
+    autoClose: 7000,
     hideProgressBar: false,
     closeOnClick: false,
     pauseOnHover: true,
@@ -19,7 +19,7 @@ export const notifyMsg = (msg, type) => {
 export const notifyMsgWithLink = (msg, network, value) => {
   toast.info(<DisplayLink />, {
     position: "bottom-right",
-    autoClose: 5000,
+    autoClose: 7000,
     hideProgressBar: false,
     closeOnClick: false,
     pauseOnHover: true,
