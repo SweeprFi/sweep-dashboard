@@ -92,7 +92,7 @@ const socialLinks = [
   },
   {
     name: 'Medium',
-    link: 'https://medium.com/@SweeprFi',
+    link: 'https://medium.com/Sweepr',
     icon: MediumIcon
   }
 ]
