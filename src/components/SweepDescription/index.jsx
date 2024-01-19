@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Link } from 'react-router-dom';
 import { setBuyPopup, setBridgePopup } from "@redux/app.reducers";
 import { languages } from "@config/languages";
 import { AMMLinks, tokens } from "@config/constants";
@@ -59,6 +60,20 @@ const SweepDescription = ({ marketPrice, maxToBuy, chainId, connected, connectHa
                       <span>{AMMLinks[chainId].title}</span>
                     </button>
                   </a>
+                </div>
+              </td>
+              <td>
+                <h1>{languages.text_swap_sweep_amm}</h1>
+              </td>
+            </tr>
+            <tr>
+              <td className="flex justify-left">
+                <div className={classContainer}>
+                  <Link to="/swap/">
+                    <button className={classButton}>
+                      <span>{languages.btn_swap_sweep}</span>
+                    </button>
+                  </Link>
                 </div>
               </td>
               <td>

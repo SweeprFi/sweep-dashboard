@@ -6,6 +6,7 @@
     "@craco/craco": "^7.0.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@lifi/widget": "^2.10.0",
     "@netlify/functions": "^2.5.1",
     "@reduxjs/toolkit": "^2.0.1",
     "@types/express": "^4.17.21",
