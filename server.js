@@ -9,15 +9,6 @@ function geoblocker(req, res, next) {
 
   const country = req.geo.country;
 
-  const pathname = req.path;
-
-  if (pathname === "/unavailable") {
-    if (country === BLOCKED_COUNTRY) {
-      return next();
-    }
-    return res.redirect(GEOBLOCKER_REDIRECT_TARGET);
-  }
-
   if (country === BLOCKED_COUNTRY) {
     return res.redirect(GEOBLOCKER_REDIRECT_TARGET);
   }
