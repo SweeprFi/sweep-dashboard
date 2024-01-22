@@ -112,7 +112,7 @@ const BuySweepModal = () => {
 
     if (web3) {
       var _amount = format(amount, token.decimal);
-      if(_amount > balances.usdc) _amount = balances.usdc;
+      if(Number(_amount) > Number(balances.usdc)) _amount = balances.usdc;
       await buySweepOnMarketMaker(web3, chainId, _amount, walletAddress, setIsPendingBuy, displayNotify, updateData);
     }
   }, [web3, chainId, walletAddress, isPendingBuy, token, balances.usdc, sweepToken, amount, updateData, dispatch]);
@@ -126,7 +126,7 @@ const BuySweepModal = () => {
 
     if (web3) {
       var _amount = format(amount, token.decimal);
-      if(_amount > balances.usdc) _amount = balances.usdc;
+      if(Number(_amount) > Number(balances.usdc)) _amount = balances.usdc;
       await approveMarketMaker(web3, chainId, _amount, token, walletAddress, setIsPendingApprove, setAllowance, displayNotify);
     }
   }, [web3, chainId, amount, token, walletAddress, isPendingApprove, dispatch, balances.usdc])
