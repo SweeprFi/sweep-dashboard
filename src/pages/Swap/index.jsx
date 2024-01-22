@@ -1,14 +1,17 @@
 import React, { useMemo } from "react";
 import { LiFiWidget } from '@lifi/widget';
 import { useWallet } from "@utils/walletHelper";
+import { tokens } from "@config/constants";
 
 const Swap = () => {
   const { chainId } = useWallet();
 
   const widgetConfig = useMemo(() => ({
     integrator: "Sweep Protocol",
-    fromToken: "0xB88a5Ac00917a02d82c7cd6CEBd73E2852d43574",
+    fromToken: tokens.usdc[chainId],
     fromChain: Number(chainId),
+    toToken: tokens.sweep[chainId],
+    toChain: Number(chainId),
 
     appearance: 'dark',
     hiddenUI: ['poweredBy'],
