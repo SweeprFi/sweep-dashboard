@@ -5,9 +5,9 @@ const BLOCKED_COUNTRY = "US";
 const GEOBLOCKER_REDIRECT_TARGET = "https://www.sweepr.finance/unavailable";
 
 function geoblocker(req, res, next) {
-  if (!req.geo || !req.geo.country) return next();
+  if (!req.geo || !req.geo.country || !req.geo.country.code) return next();
 
-  const country = req.geo.country;
+  const country = req.geo.country.code;
 
   if (country === BLOCKED_COUNTRY) {
     return res.redirect(GEOBLOCKER_REDIRECT_TARGET);
