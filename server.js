@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 
 const BLOCKED_COUNTRY = "US";
+const GEOBLOCKER_REDIRECT_TARGET = "https://www.sweepr.finance/unavailable";
 
 function geoblocker(req, res, next) {
   if (!req.geo || !req.geo.country) return next();
@@ -14,11 +15,11 @@ function geoblocker(req, res, next) {
     if (country === BLOCKED_COUNTRY) {
       return next();
     }
-    return res.redirect("/");
+    return res.redirect(GEOBLOCKER_REDIRECT_TARGET);
   }
 
   if (country === BLOCKED_COUNTRY) {
-    return res.redirect("/unavailable");
+    return res.redirect(GEOBLOCKER_REDIRECT_TARGET);
   }
 }
 
@@ -33,7 +34,7 @@ app.use(express.static("build"));
    res.sendFile(__dirname + '/build/index.html');
   });
 
-const PORT = 3000; //TODOX
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
