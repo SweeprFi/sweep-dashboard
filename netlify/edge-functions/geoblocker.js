@@ -1,4 +1,4 @@
-const ENABLED = true;
+const ENABLED = false;
 export const config = { path: "*" };
 
 export default async (_req, { geo }) => {
