@@ -1,9 +1,9 @@
+const ENABLED = true;
 export const config = { path: "*" };
-export default async (req, { geo }) => {
- if (geo.country.code == "US") {
-     const url = new URL('https://www.sweepr.finance/unavailable');
-     return Response.redirect(url);
- }
+
+export default async (_req, { geo }) => {
+    if (ENABLED && geo.country.code == "US") {
+        const url = new URL('https://www.sweepr.finance/unavailable');
+        return Response.redirect(url);
+    }
 };
-
-
