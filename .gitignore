@@ -10,3 +10,6 @@ package-lock.json
 
 coverage.json
 coverage
+
+# Local Netlify folder
+.netlify
