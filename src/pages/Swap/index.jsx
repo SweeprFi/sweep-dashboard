@@ -4,7 +4,7 @@ import { useWallet } from "@utils/walletHelper";
 import { tokens } from "@config/constants";
 
 const Swap = () => {
-  const { chainId } = useWallet();
+  const { chainId, signer, connectHandler, disconnectHandler, setChain } = useWallet();
 
   const widgetConfig = useMemo(() => ({
     integrator: "Sweep Protocol",
@@ -18,12 +18,20 @@ const Swap = () => {
     chains: { allow: [1, 10, 56, 137, 8453, 42161, 43114] },
     disableLanguageDetector: true,
 
-    // walletManagement: {
-    //   signer: walletAddress,
-    //   connect: connectHandler,
-    //   disconnect: disconnectHandler,
-    //   switchChain: setChain
-    // },
+    walletManagement: {
+      signer: signer,
+      connect: async() => {
+        const signer = await connectHandler();
+        return signer;
+      },
+      disconnect: async() => {
+        await disconnectHandler();
+      },
+      switchChain: async(id) => {
+        await setChain({ chainId: id })
+        return signer;
+      }
+    },
       
     containerStyle: {
       border: '1px solid rgb(234, 234, 234)',
@@ -45,7 +53,7 @@ const Swap = () => {
         borderRadiusSecondary: 30,
       },
     }
-  }), [chainId]);
+  }), [chainId, connectHandler, disconnectHandler, setChain, signer]);
 
   return (
     <div className="bg-l2s">

@@ -51,7 +51,7 @@ export const toInt = (val) => {
 }
 
 export const format = (v, d) => {
-  return ethers.parseUnits(v.toString(), d).toString();
+  return ethers.utils.parseUnits(v.toString(), d).toString();
 }
 
 export const convertNumber = (val) => {
