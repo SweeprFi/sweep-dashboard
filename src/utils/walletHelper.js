@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import Web3 from 'web3';
+import { ethers } from 'ethers';
 
 import injectedModule from '@web3-onboard/injected-wallets'
 import walletConnectModule from '@web3-onboard/walletconnect'
@@ -143,12 +144,20 @@ const UseWalletProvider = (props) => {
   const [connected, setConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [chainId, setChainId] = useState(props.chainId);
+  const [signer, setSigner] = useState(undefined);
 
   useEffect(() => {
     const httpProvider = new Web3.providers.HttpProvider(RPC_URL, { timeout: 10000 })
     const _web3 = new Web3(wallet?.provider || httpProvider)
     setWeb3(_web3)
   }, [wallet, setWeb3])
+
+  const extractAccount = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const _signer = provider.getSigner();
+    setSigner(_signer);
+    return _signer;
+  };
 
   const walletInitialize = useCallback(async () => {
     const _address = wallet?.accounts[0]?.address
@@ -159,11 +168,13 @@ const UseWalletProvider = (props) => {
       setConnected(true)
       setWalletAddress(_address)
       setChainId(_chainId)
+      await extractAccount();
     }
   }, [wallet, chainId, setChain, setConnected, setWalletAddress]);
 
   const connectHandler = useCallback(async () => {
-    await connect()
+    await connect();
+    return await extractAccount();
   }, [connect])
 
   const disconnectHandler = useCallback(async () => {
@@ -172,6 +183,7 @@ const UseWalletProvider = (props) => {
     }
     setConnected(false)
     setWalletAddress('')
+    setSigner(undefined)
     window.localStorage.removeItem('connectedWallets')
   }, [wallet, disconnect, setConnected, setWalletAddress])
 
@@ -203,8 +215,8 @@ const UseWalletProvider = (props) => {
   }, [handleNetworkChange, walletInitialize, disconnectHandler])
 
   const walletData = useMemo(
-    () => ({web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler}),
-    [web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler]
+    () => ({web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler, signer}),
+    [web3, chainId, connected, connecting, walletAddress, connectHandler, setChain, disconnectHandler, signer]
   )
 
   return (

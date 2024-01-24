@@ -9,7 +9,6 @@ import { languages } from "@config/languages";
 import { getSweepBalance, bridgeSweep } from "@utils/contract";
 import { pp } from "@utils/helper";
 import { XMarkIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
-import icon_wallet from "@images/wallet.svg";
 import Modal from "@components/Modal";
 
 const BridgeModal = () => {
@@ -132,8 +131,8 @@ const BridgeModal = () => {
                                     isLoading ? <div>Loading ...</div> :
                                         <>
                                             {languages.label_balance} {pp(balances.curt, 18, 2)}
-                                            <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 rounded-2xl" onClick={setMaxAmount}>
-                                                <img src={icon_wallet} alt="wallet icon" className="h-4 w-4" />
+                                            <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 text-xs rounded-2xl" onClick={setMaxAmount}>
+                                                MAX
                                             </div>
                                         </>
                                 }
