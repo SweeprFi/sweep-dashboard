@@ -27,26 +27,28 @@ const AssetsBlock = ({ chainId }) => {
             <th scope="col"></th>
             <th scope="col">Network</th>
             <th scope="col">Local SWEEP</th>
-            <th scope="col">SWEEP minted</th>
             <th scope="col">Stabilizer Assets</th>
+            <th scope="col">SWEEP LIABILITIES</th>
           </tr>
         </thead>
         <tbody>
           {
             sweepSorted.map(data => {
+              const { chain, network, logo, local_supply, totalValue, totalBorrowed, target_price } = data;
+              const liabilities = (Number(totalBorrowed) * Number(target_price)).toFixed(0);
               return (
                 <tr
-                  key={data.chain}
+                  key={chain}
                   className="cursor-pointer"
-                  onClick={() => navigate(`/dashboard/${data.network.toLowerCase()}`)}
+                  onClick={() => navigate(`/dashboard/${network.toLowerCase()}`)}
                 >
                   <td data-label="img">
-                    <img src={data.logo} alt="logo" className="w-6 h-6" />
+                    <img src={logo} alt="logo" className="w-6 h-6" />
                   </td>
-                  <td data-label="Network">{data.network}</td>
-                  <td data-label="Local SWEEP">{convertNumber(Number(data.local_supply).toFixed(0))}</td>
-                  <td data-label="SWEEP minted">{convertNumber(Number(data.totalBorrowed).toFixed(0))}</td>
-                  <td data-label="Stabilizer Assets">$ {convertNumber(Number(data.totalValue).toFixed(0))}</td>
+                  <td data-label="Network">{network}</td>
+                  <td data-label="Local SWEEP">{convertNumber(Number(local_supply).toFixed(0))}</td>
+                  <td data-label="Stabilizer Assets">$ {convertNumber(Number(totalValue).toFixed(0))}</td>
+                  <td data-label="SWEEP LIABILITIES">{`${convertNumber(Number(totalBorrowed))} ($${convertNumber(liabilities)})`}</td>
                 </tr>
               )
             })

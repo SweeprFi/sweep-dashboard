@@ -45,7 +45,7 @@ const SweepInfo = ({ data }) => {
                 />
                 <SweepItem
                     label={languages.label_target_price}
-                    value={data?.targe_price}
+                    value={data?.target_price}
                     symbolLeft="$"
                     className="sm:col-span-4 lg:col-span-3"
                 />

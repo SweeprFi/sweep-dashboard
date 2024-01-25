@@ -60,7 +60,7 @@ export const sweepFetch = async (chainId) => {
     total_supply: pp(totalSupply, 18, 2),
     local_supply: pp(toInt(data[0]), 18, 2),
     interest_rate: annualRate(toInt(data[1])),
-    targe_price: pp(toInt(data[2]), 6, 5),
+    target_price: pp(toInt(data[2]), 6, 5),
     amm_price: pp(toInt(data[3]), 6, 5),
     market_price: pp(market_price, 6, 5),
     mint_status: data[5].returnValues[0] ? 0 : 1,
