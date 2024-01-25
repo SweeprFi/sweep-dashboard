@@ -89,7 +89,7 @@ export const languages = {
     // landing / home
     text_how_sweep_works: 'SWEEP target price in USD increases daily with interest. The interest rate adjusts once per week',
     text_swap_sweep_amm: 'Buy or sell SWEEP from a local AMM',
-    text_swap_sweep: 'Swap on Li.Fi',
+    text_swap_sweep: 'Swap with Li.Fi',
     text_buy_at: 'You can buy newly-minted SWEEP at a price that is slightly above the target price',
     text_bridge_sweep: 'Send your SWEEP to other blockchains',
     text_asset_distribution: 'Sweep grows the DeFi and RWA economy with collateralized lending to wholesale borrowers. Select the panels below to see the assets on each chain'
