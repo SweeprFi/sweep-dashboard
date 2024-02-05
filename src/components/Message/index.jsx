@@ -19,7 +19,7 @@ export const notifyMsg = (msg, type) => {
 export const notifyMsgWithLink = (msg, network, value) => {
   toast.info(<DisplayLink />, {
     position: "bottom-right",
-    autoClose: 7000,
+    autoClose: false,
     hideProgressBar: false,
     closeOnClick: false,
     pauseOnHover: true,
