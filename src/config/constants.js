@@ -307,12 +307,12 @@ const mainChainList = [
     name: 'Base',
     logo: baseIcon
   },
-  {
-    chainId: 43114,
-    netId: 106,
-    name: 'Avalanche',
-    logo: avaxIcon
-  },
+  // {
+  //   chainId: 43114,
+  //   netId: 106,
+  //   name: 'Avalanche',
+  //   logo: avaxIcon
+  // },
   {
     chainId: 137,
     netId: 109,
