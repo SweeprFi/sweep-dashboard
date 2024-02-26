@@ -12,7 +12,8 @@ const AssetsBlock = ({ chainId }) => {
   useEffect(() => {
     const removed = Object.keys(sweepInfo).filter((chain) => Number(chain) !== Number(chainId));
     if(removed.length > 0) {
-      const sorted = [sweepInfo[chainId], ...removed.map(chain => sweepInfo[chain])];
+      let sorted = [sweepInfo[chainId], ...removed.map(chain => sweepInfo[chain])];
+      sorted = sorted.filter(item => item);
       setSweepSorted(sorted);
     }
   }, [sweepInfo, chainId])

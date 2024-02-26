@@ -8,11 +8,13 @@ import AssetsBlock from "@components/AssetsBlock";
 const Home = () => {
   const { chainId, connected, connectHandler } = useWallet();
   const sweepInfo = useSelector((state) => state.sweep)
+  const chains = Object.keys(sweepInfo);
+  const _id = chains.includes(chainId.toString()) ? chainId : chains[0]
 
   return (
     <>
       <div className="sm:bg-l2s p-4">
-        <SweepInfo data={sweepInfo[chainId]} />
+        <SweepInfo data={sweepInfo[_id]} />
         <SweepDescription
           marketPrice={sweepInfo[chainId]?.market_price}
           chainId={chainId}

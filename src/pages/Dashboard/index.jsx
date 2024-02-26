@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { useWallet } from "@utils/walletHelper";
 import { assetListFetch } from "@utils/contract";
@@ -19,6 +19,7 @@ import SweeprInfo from "@components/SweeprInfo";
 
 const Dashboard = () => {
   const { network } = useParams();
+  const navigate = useNavigate();
   const { connected, chainId, connectHandler } = useWallet();
   const dispatch = useDispatch();
 
@@ -34,11 +35,16 @@ const Dashboard = () => {
     const initialHandler = async () => {
       try {
         dispatch(setIsLoading(true));
-        if (sweepData?.assets && sweepData.assets.length > 0) {
-          const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
-          setAssetInfo(assetsData);
+        if(sweepData?.assets) {
+          if (sweepData.assets.length > 0) {
+            const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
+            setAssetInfo(assetsData);
+          } else {
+            setAssetInfo([]);
+          }
         } else {
-          setAssetInfo([]);
+          // chain not found
+          navigate("/not-found");
         }
       } catch (error) {
         console.log(error);
@@ -48,7 +54,7 @@ const Dashboard = () => {
     };
 
     initialHandler();
-  }, [chain, sweepData, dispatch]);
+  }, [chain, sweepData, dispatch, navigate]);
 
   if (!chainId) return;
 

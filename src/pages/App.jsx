@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { sweepFetch, sweeprFetch } from "@utils/contract";
@@ -21,6 +21,7 @@ const App = () => {
   const sweepUpdates = useSelector((state) => state.sweepUpdates);
   const sweeprUpdates = useSelector((state) => state.sweeprUpdates);
   const notification = useSelector((state) => state.notification);
+  const init = useRef(1);
 
   const fetchData = async (fetchFunction) => {
     try {
@@ -33,7 +34,8 @@ const App = () => {
       let data = {};
       results.forEach(response => {
         const chain = Object.keys(response)[0];
-        data[chain] = { ...response[chain] };
+        if(response[chain]?.chain)
+          data[chain] = { ...response[chain] };
       });
 
       return data;
@@ -54,7 +56,10 @@ const App = () => {
       dispatch(setIsLoading(false));
     };
 
-    initialHandler();
+    if(init.current === 1) {
+      initialHandler();
+      init.current = 0;
+    }
   }, [dispatch]);
 
   useEffect(() => {
