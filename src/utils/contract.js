@@ -5,7 +5,7 @@ import { languages } from "@config/languages";
 import { assetStatus, rpcLinks, tokens, contracts, chainList, networks } from "@config/constants";
 import {
   toInt, pp, toDate, toTime, annualRate,
-  otherChainRpcs, getMaxBorrow, getMaxWithdraw
+  otherChainIds, getMaxBorrow, getMaxWithdraw
 } from './helper';
 
 import erc20ABI from "@abis/erc20.json";
@@ -17,15 +17,10 @@ import marketMakerABI from "@abis/marketMaker.json";
 import { simulateApprove, simulateBuySweep } from './simulation';
 
 export const sweepFetch = async (chainId) => {
-  if(!chainId) return {};
+  if(!chainId) return null;
 
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
-  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
   const network = chainList.find((network) => network.chainId === chainId);
   const MMAddress = getAddress(contracts, 'marketMaker', chainId);
-  const maxToBuy = await getMaxBuy(multicall, MMAddress);
-
   const callInfo = {
     reference: 'sweep',
     contractAddress: tokens.sweep[chainId],
@@ -41,12 +36,18 @@ export const sweepFetch = async (chainId) => {
     ]
   }
 
+  const web3 = await getWeb3(chainId);
+  if(!web3) return null;
+
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  const maxToBuy = await getMaxBuy(multicall, MMAddress);
+
   let callResults = await multicall.call(callInfo);
   const data = callResults.results['sweep']['callsReturnContext']
 
-  const { rpcs, ids } = otherChainRpcs(chainId);
-  const otherTotalSupplys = await Promise.all(rpcs.map(async (rpc, index) => {
-    return await getTotalSupply(rpc, tokens.sweep[ids[index]]);
+  const ids = otherChainIds(chainId);
+  const otherTotalSupplys = await Promise.all(ids.map(async (id) => {
+    return await getTotalSupply(id, tokens.sweep[id]);
   }));
 
   let totalSupply = toInt(data[0]);
@@ -54,7 +55,7 @@ export const sweepFetch = async (chainId) => {
 
   const market_price = toInt(data[2]) * (1 + toInt(data[4]) / 1e6);
   const assets = data[6].returnValues;
-  const { totalBorrowed, totalValue } = await assetsBlock(chainId, assets);
+  const { totalBorrowed, totalValue } = await assetsBlock(multicall, assets);
 
   return {
     total_supply: pp(totalSupply, 18, 2),
@@ -75,11 +76,11 @@ export const sweepFetch = async (chainId) => {
 }
 
 export const sweeprFetch = async (chainId) => {
-  if(!chainId) return {};
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
-  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+  if(!chainId) return null;
+  const web3 = await getWeb3(chainId);
+  if(!web3) return null;
 
+  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
   const callInfo = {
     reference: 'sweepr',
     contractAddress: tokens.sweepr[chainId],
@@ -91,9 +92,9 @@ export const sweeprFetch = async (chainId) => {
 
   let callResults = await multicall.call(callInfo);
   const data = callResults.results['sweepr']['callsReturnContext']
-  const { rpcs, ids} = otherChainRpcs(chainId);
-  const otherTotalSupplys = await Promise.all(rpcs.map(async (rpc, index) => {
-    return await getTotalSupply(rpc, tokens.sweepr[ids[index]]);
+  const ids = otherChainIds(chainId);
+  const otherTotalSupplys = await Promise.all(ids.map(async (id) => {
+    return await getTotalSupply(id, tokens.sweepr[id]);
   }));
 
   let totalSupply = toInt(data[0]);
@@ -106,8 +107,8 @@ export const sweeprFetch = async (chainId) => {
 }
 
 export const assetListFetch = async (chainId, assets) => {
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
+  const web3 = await getWeb3(chainId);
+  if(!web3) return [];
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
 
   const assetList = [];
@@ -180,44 +181,46 @@ export const assetListFetch = async (chainId, assets) => {
 }
 
 export const getSweepBalance = async (tokenName, curtChainId, destChainId, walletAddress) => {
-  const curtRPC = rpcLinks[curtChainId];
-  const destRPC = rpcLinks[destChainId];
   const key = Object.keys(tokens).filter((key) => key === tokenName);
   const token = tokens[key];
+  let curtAmount = 0;
+  let destAmount = 0;
+  let contract;
 
   // Get token balance of the source chain 
   let tokenAddress = token[curtChainId];
-  let web3 = new Web3(curtRPC);
-  let contract = new web3.eth.Contract(erc20ABI, tokenAddress);
-  const curtAmount = await contract.methods.balanceOf(walletAddress).call();
+  let web3 = await getWeb3(curtChainId);
+  if(web3) {
+    contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+    curtAmount = await contract.methods.balanceOf(walletAddress).call();
+  }
 
   // Get token balance of the destination chain 
   tokenAddress = token[destChainId];
-  web3 = new Web3(destRPC);
-  contract = new web3.eth.Contract(erc20ABI, tokenAddress);
-  const destAmount = await contract.methods.balanceOf(walletAddress).call();
-
-  return {
-    curt: curtAmount,
-    dest: destAmount
+  web3 = await getWeb3(destChainId);
+  if(web3) {
+    contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+    destAmount = await contract.methods.balanceOf(walletAddress).call();
   }
+
+  return { curt: curtAmount, dest: destAmount }
 }
 
 export const getBalances = async (chainId, tokenLists, walletAddress) => {
-  const rpc = rpcLinks[chainId];
-  const web3 = new Web3(rpc);
+  const web3 = await getWeb3(chainId);
   const balances = await Promise.all(
     tokenLists.map(async (token) => {
       const symbol = token.name.toLowerCase();
       const address = tokens[symbol][chainId];
       const abi = token.abi;
-      const contract = new web3.eth.Contract(abi, address);
-      const bal = await contract.methods.balanceOf(walletAddress).call();
+      let bal = 0;
 
-      return {
-        name: symbol,
-        bal: bal
+      if(web3) {
+        const contract = new web3.eth.Contract(abi, address);
+        bal = await contract.methods.balanceOf(walletAddress).call();
       }
+
+      return { name: symbol, bal: bal }
     })
   )
 
@@ -296,8 +299,9 @@ export const buySweepOnMarketMaker = async (web3, chainId, amount, walletAddress
 }
 
 export const getMarketMakerAllowance = async (chainId, token, walletAddress) => {
-  const rpc = rpcLinks[chainId];
-  const web3 = new Web3(rpc);
+  const web3 = await getWeb3(chainId);
+  if(!web3) return 0;
+
   const tokenAddress = getAddress(tokens, token, chainId);
   const marketMakerAddress = getAddress(contracts, 'marketMaker', chainId);
   const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
@@ -341,14 +345,16 @@ export const approveMarketMaker = async (web3, chainId, tokenAmount, token, wall
 }
 
 export const assetFetch = async (network, addr) => {
+  const defaultAsset = { loading: false, found: false, data: {} };
   const chain = chainList.filter(_chain => _chain.name.toLowerCase() === network);
   const chainId = chain[0]?.chainId;
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
+  const web3 = await getWeb3(chainId);
+  if(!web3) return defaultAsset;
+
   const sweepAddress = tokens.sweep[chainId];
   const asset = await checkAsset(web3, sweepAddress, addr); 
 
-  if (!asset.isListed || asset.maxAmount <= 0) return { loading: false, found: false, data: {} };
+  if (!asset.isListed || asset.maxAmount <= 0) return defaultAsset;
 
   const info = {
     reference: addr,
@@ -431,10 +437,8 @@ export const assetFetch = async (network, addr) => {
   }
 }
 
-const assetsBlock = async (chainId, assets) => {
-  const RPC = rpcLinks[chainId];
-  const web3 = new Web3(RPC);
-  const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
+// ******************* INTERNALS *******************
+const assetsBlock = async (multicall, assets) => {
   const callInfo = await Promise.all(
     assets.map(async (asset) => {
       const info = {
@@ -470,7 +474,20 @@ const assetsBlock = async (chainId, assets) => {
   };
 }
 
-// *******************
+const getWeb3 = async (chainId) => {
+  let web3;
+
+  try {
+    const RPC = rpcLinks[chainId];
+    web3 = new Web3(RPC);
+    await web3.eth.getBlockNumber(); // test if the network is working
+  } catch (error) {
+    web3 = null;
+  }
+
+  return web3;
+}
+
 const getMaxBuy = async(multicall, address) => {
   const callInfo = {
     reference: 'mm',
@@ -508,8 +525,10 @@ const convertToUSD = async (web3, sweepAddress, amount) => {
   return await contract.methods.convertToUSD(amount).call();
 }
 
-const getTotalSupply = async (rpc, address) => {
-  const web3 = new Web3(rpc);
+const getTotalSupply = async (chainId, address) => {
+  const web3 = await getWeb3(chainId);
+  if(!web3) return 0;
+
   const contract = new web3.eth.Contract(erc20ABI, address);
   return await contract.methods.totalSupply().call();
 }

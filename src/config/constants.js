@@ -49,6 +49,7 @@ const rpcLinks = {
   43114: `https://avalanche-mainnet.core.chainstack.com/ext/bc/C/rpc/${process.env.REACT_APP_AVAX_KEY}`,
   137: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_POLYGON_KEY}`,
   56: `https://bsc-mainnet.core.chainstack.com/${process.env.REACT_APP_BSC_KEY}`,
+
   // testnet
   5: `https://eth-goerli.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
   420: `https://opt-goerli.g.alchemy.com/v2/${process.env.REACT_APP_OPTIMISTIC_API_KEY}`,

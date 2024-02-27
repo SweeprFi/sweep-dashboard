@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { chainList, rpcLinks, scans, month } from "../config/constants";
+import { chainList, scans, month } from "../config/constants";
 
 export const shortAddress = (address) => {
   if(!address) return
@@ -69,11 +69,8 @@ export const annualRate = (dayRate = 0) => {
   return Number(((dayRate / PRECISION * 365) * 100).toFixed(2));
 }
 
-export const otherChainRpcs = (chainId) => {
-  const ids = chainList.filter((item) => Number(item.chainId) !== Number(chainId)).map((item) => item.chainId);
-  const rpcs = ids.map((id) => { return rpcLinks[id] });
-
-  return {rpcs, ids};
+export const otherChainIds = (chainId) => {
+  return chainList.filter((item) => Number(item.chainId) !== Number(chainId)).map((item) => item.chainId);
 }
 
 export const zeroToNum = (val) => {
