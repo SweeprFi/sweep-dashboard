@@ -44,8 +44,7 @@ const rpcLinks = {
   // mainnet
   1: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
   10: `https://opt-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_OPTIMISTIC_API_KEY}`,
-  // 42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
-  42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM}`,
+  42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
   8453: `https://base-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ARBITRUM_MAIN_KEY}`,
   43114: `https://avalanche-mainnet.core.chainstack.com/ext/bc/C/rpc/${process.env.REACT_APP_AVAX_KEY}`,
   137: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_POLYGON_KEY}`,
