@@ -387,6 +387,7 @@ export const assetFetch = async (network, addr) => {
       { reference: 'minLiquidationRatioCall', methodName: 'minLiquidationRatio' },
       { reference: 'auctionAllowedCall', methodName: 'auctionAllowed' },
       { reference: 'linkCall', methodName: 'link' },
+      { reference: 'protocolFeeCall', methodName: 'protocolFee' },
     ]
   }
 
@@ -403,6 +404,9 @@ export const assetFetch = async (network, addr) => {
   let accruedFee = data[9].returnValues[0].hex;
   let feeInUSD = await convertToUSD(web3, sweepAddress, accruedFee);
 
+  let spread = pp(toInt(data[14]), 4, 2);
+  let protocol = pp(toInt(data[26]), 4, 2);
+
   return {
     loading: false,
     found: true,
@@ -416,7 +420,7 @@ export const assetFetch = async (network, addr) => {
       callDelay: toTime(toInt(data[11])),
       callAmount:pp(toInt(data[12]), 18, 2),
       callTime: toDate(toInt(data[13])),
-      spreadFee: pp(toInt(data[14]), 4, 2),
+      spreadFee: protocol ? protocol : spread,
       spreadDate: toInt(data[15]),
       autoInvestMinRatio: pp(toInt(data[16]), 4, 2),
       autoInvestMinAmount: pp(toInt(data[17]), 18, 2),
