@@ -35,19 +35,15 @@ const Dashboard = () => {
     const initialHandler = async () => {
       try {
         dispatch(setIsLoading(true));
-        if(sweepData?.assets) {
-          if (sweepData.assets.length > 0) {
-            const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
-            setAssetInfo(assetsData);
-          } else {
-            setAssetInfo([]);
-          }
+        if (sweepData?.assets && sweepData.assets.length > 0) {
+          const assetsData = await assetListFetch(chain?.chainId, sweepData.assets);
+          setAssetInfo(assetsData);
         } else {
-          // chain not found
-          navigate("/not-found");
+          setAssetInfo([]);
         }
       } catch (error) {
         console.log(error);
+        navigate("/not-found");
       } finally {
         dispatch(setIsLoading(false));
       }
