@@ -11,7 +11,7 @@ export const languages = {
     text_tx_error: 'Transaction cancelled by user.',
     text_empty_asset: 'No SWEEP assets on selected chain.',
     text_buy_sweep: 'Buy from MarketMaker',
-    text_copyright: 'Copyright © 2023 Sweep Protocol',
+    text_copyright: 'Copyright © 2024 Sweep Protocol',
 
     label_current_supply: 'Local/Total Supply',
     label_sweep_total: 'SWEEP Total',
