@@ -135,6 +135,7 @@
 }
 
 .popover {
+  width: max-content;
   position: absolute;
   transform: translateX(-50%);
   background-color: #333;

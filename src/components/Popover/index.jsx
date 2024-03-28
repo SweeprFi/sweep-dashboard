@@ -13,8 +13,8 @@ const Popover = ({ message }) => {
   };
 
   return (
-    <div className="popover-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <QuestionMarkCircleIcon className='w-4 h-4 cursor-pointer' />
+    <div className="popover-container my-auto mx-0.5" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <QuestionMarkCircleIcon className='w-4 h-4 cursor-pointer text-app-gray-dark' />
       {isPopoverVisible && <div className="popover">{message}</div>}
     </div>
   );

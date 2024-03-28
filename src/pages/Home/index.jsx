@@ -19,7 +19,7 @@ const Home = () => {
       </h1>
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[_id]} />
-        <SweepDescription
+        {/* <SweepDescription
           marketPrice={sweepInfo[chainId]?.market_price}
           chainId={chainId}
           connected={connected}
@@ -27,7 +27,7 @@ const Home = () => {
           maxToBuy={sweepInfo[chainId]?.maxToBuy}
           network={sweepInfo[chainId]?.network}
           status={sweepInfo[chainId]?.mint_status}
-        />
+        /> */}
       </div>
       <AssetsBlock chainId={chainId} />
     </>
