@@ -127,3 +127,21 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+/*  */
+.popover-container {
+  position: relative;
+  display: inline-block;
+}
+
+.popover {
+  position: absolute;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 50px;
+  font-size: 14px;
+  margin: 2px;
+  z-index: 99;
+}

@@ -42,12 +42,14 @@ const SweepInfo = ({ data }) => {
                     value={data?.interest_rate}
                     symbolRight="%"
                     className="sm:col-span-2 lg:col-span-2"
+                    message={languages.text_how_sweep_works2}
                 />
                 <SweepItem
                     label={languages.label_target_price}
                     value={data?.target_price}
                     symbolLeft="$"
                     className="sm:col-span-4 lg:col-span-3"
+                    message={languages.text_how_sweep_works1}
                 />
                 <SweepItem
                     label={languages.label_amm_price + ` - ${sweepStatus[data?.mint_status || 0]}`}

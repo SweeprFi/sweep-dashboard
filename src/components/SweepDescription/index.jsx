@@ -128,9 +128,6 @@ const SweepDescription = ({ marketPrice, maxToBuy, chainId, connected, connectHa
             />
         }
       </div>
-      <h1 className="font-archivo-regular mb-4 release-title">
-        {languages.text_how_sweep_works}
-      </h1>
       <h1 className="font-archivo-regular mb-6 release-title">
         {languages.text_asset_distribution}
       </h1>

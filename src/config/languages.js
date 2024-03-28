@@ -87,7 +87,8 @@ export const languages = {
     text_call_amount: 'Call Amount',
 
     // landing / home
-    text_how_sweep_works: 'SWEEP target price in USD increases daily with interest. The interest rate adjusts once per week',
+    text_how_sweep_works1: 'SWEEP target price in USD increases daily with interest', 
+    text_how_sweep_works2: 'The interest rate adjusts once per week',
     text_swap_sweep_amm: 'Buy or sell SWEEP from a local AMM',
     text_swap_sweep: 'Swap with Li.Fi',
     text_buy_at: 'You can buy newly-minted SWEEP at a price that is slightly above the target price',
