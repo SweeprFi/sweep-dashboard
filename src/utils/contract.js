@@ -184,7 +184,7 @@ export const assetListFetch = async (chainId, assets) => {
 }
 
 export const getSweepBalance = async (tokenName, curtChainId, destChainId, walletAddress) => {
-  const key = Object.keys(tokens).filter((key) => key === tokenName);
+  const key = Object.keys(tokens).filter((key) => key === tokenName.toLowerCase());
   const token = tokens[key];
   let curtAmount = 0;
   let destAmount = 0;
@@ -231,9 +231,8 @@ export const getBalances = async (chainId, tokenLists, walletAddress) => {
 }
 
 export const bridgeSweep = async (web3, tokenName, tokenABI, curtChainId, destNetId, sendAmount, walletAddress, setIsPending, displayNotify, callback) => {
-  const key = Object.keys(tokens).filter((key) => key === tokenName);
-  const token = tokens[key];
-  const tokenAddress = token[curtChainId]
+  const key = Object.keys(tokens).filter((key) => key === tokenName.toLowerCase());
+  const tokenAddress = tokens[key][curtChainId];
   const contract = new web3.eth.Contract(tokenABI, tokenAddress);
   const amount = ethers.utils.parseEther(sendAmount.toString()).toString();
   const adapterParam = ethers.utils.solidityPack(["uint16", "uint256"], [1, 200000]);

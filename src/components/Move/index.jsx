@@ -11,7 +11,7 @@ import { pp } from "@utils/helper";
 import { ArrowDownIcon } from '@heroicons/react/20/solid'
 
 const Move = () => {
-  const { web3, chainId, walletAddress } = useWallet();
+  const { web3, chainId, walletAddress, connected } = useWallet();
   const dispatch = useDispatch();
 
   const [sendAmount, setSendAmount] = useState(0);
@@ -79,19 +79,25 @@ const Move = () => {
     setSendAmount(_bal)
   }, [balances, setSendAmount])
 
-  const clickHandler = () => { console.log("-->>") }
+  const sweepIsSelected = selectedToken.name === "Sweep";
 
   return (
     <div className="flex min-h-full items-center justify-center p-4 text-center font-archivo-regular">
       <div className="w-full max-w-md rounded-3xl bg-app-black text-white p-8 text-left align-middle border-2 border-white">
         <div className="flex justify-around">
-          <div className="rounded-xl border border-app-white p-3 rounded-3xl cursor-pointer w-5/12 grid justify-center">
-            <img src={tokenList[0].logo} className="h-10 w-10 ml-1" alt="logo" />
-            <h1 className="">{tokenList[0].name}</h1>
+          <div
+            onClick={() => setSelectedToken(tokenList[0])}
+            className={`rounded-xl border border-app-white p-3 rounded-3xl cursor-pointer w-5/12 grid justify-center ${sweepIsSelected ? 'bg-app-gray-semidark' : ''}`}
+          >
+            <img src={tokenList[0].logo} className="h-10 w-10 ml-2" alt="logo" />
+            <h1>{tokenList[0].name}</h1>
           </div>
-          <div className="rounded-xl border border-app-white p-3 rounded-3xl cursor-pointer w-5/12 grid justify-center">
-            <img src={tokenList[1].logo} className="h-10 w-10 ml-1" alt="logo" />
-            <h1 className="">{tokenList[1].name}</h1>
+          <div
+            onClick={() => setSelectedToken(tokenList[1])}
+            className={`rounded-xl border border-app-white p-3 rounded-3xl cursor-pointer w-5/12 grid justify-center ${!sweepIsSelected ? 'bg-app-gray-semidark' : ''}`}
+          >
+            <img src={tokenList[1].logo} className="h-10 w-10 ml-2" alt="logo" />
+            <h1>{tokenList[1].name}</h1>
           </div>
         </div>
         <div className="mt-6 mb-2 text-md flex items-center">
@@ -165,7 +171,7 @@ const Move = () => {
               <button
                 type="button"
                 onClick={() => sweepBridgeHandler()}
-                className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 text-black whitespace-nowrap ${isPending || Number(sendAmount) === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'}`}
+                className={`flex w-full items-center justify-center gap-1 space-x-1 rounded-full px-6 py-2 whitespace-nowrap ${isPending || Number(sendAmount) === 0 || !connected ? 'bg-black cursor-not-allowed text-white' : 'bg-white text-black'}`}
               >
                 <span>
                   {isPending ? languages.btn_pending : languages.btn_send}

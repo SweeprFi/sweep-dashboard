@@ -12,8 +12,7 @@ import {
   approveMarketMaker
 } from "@utils/contract";
 import { pp, convertNumber, format } from "@utils/helper";
-import { ArrowDownIcon } from '@heroicons/react/20/solid'
-import WalletIcon from "@images/wallet.svg";
+import { ArrowDownIcon } from '@heroicons/react/20/solid';
 
 const Buy = () => {
   const dispatch = useDispatch();
@@ -126,7 +125,7 @@ const Buy = () => {
   const buyDisabled = !(isApproval && amount > 0) || (isPendingApprove || isPendingBuy);
 
   return (
-    <div>
+    <div className="mb-2">
       <div className="flex min-h-full items-center justify-center mt-10">
         <div className="w-full max-w-md rounded-3xl bg-app-black text-white p-8 text-left align-middle border-2 border-white">
           <div className="mt-6 mb-2 text-md flex items-center">
@@ -148,21 +147,12 @@ const Buy = () => {
                   <div className="justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
                     Loading ...
                   </div> :
-                  <>
-                    <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
-                      {languages.label_balance} {convertNumber(pp(balances.usdc, token?.decimal, 2))}
-                      <div className="ml-1 flex justify-center items-center px-2 py-0.5">
-                        <img src={WalletIcon} alt="wallet icon" className="h-4 w-4" />
-                      </div>
+                  <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
+                    {languages.label_balance} {convertNumber(pp(balances.usdc, token?.decimal, 2))}
+                    <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 text-xs rounded-2xl" onClick={setMaxAmount}>
+                      MAX
                     </div>
-                    <br />
-                    <div className="flex justify-center items-center text-gray-300 text-right text-sm mt-1 absolute left-4">
-                      Max Sweep to Buy: {maxToBuy}
-                      <div className="ml-2 cursor-pointer flex justify-center items-center border border-app-gray-light px-2 text-xs rounded-2xl" onClick={setMaxAmount}>
-                        MAX
-                      </div>
-                    </div>
-                  </>
+                  </div>
               }
             </div>
             <br />

@@ -20,6 +20,7 @@ const Home = () => {
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[_id]} />
         <Buy />
+        <br />
       </div>
       <AssetsBlock chainId={chainId} />
     </>

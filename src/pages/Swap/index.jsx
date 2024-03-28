@@ -14,7 +14,7 @@ const Swap = () => {
     toChain: Number(chainId),
 
     appearance: 'dark',
-    hiddenUI: ['poweredBy'],
+    // hiddenUI: ['poweredBy'],
     chains: { allow: [1, 10, 56, 137, 8453, 42161, 43114] },
     disableLanguageDetector: true,
 
