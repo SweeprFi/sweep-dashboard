@@ -8,8 +8,6 @@ import { chainList } from "@config/constants";
 import routes from "@modules/routes";
 import Layout from "@components/Layout";
 import Loader from "@components/Loader";
-import BridgeModal from "@components/BridgeModal";
-import BuySweepModal from "@components/BuySweepModal";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -112,8 +110,6 @@ const App = () => {
           </Routes>
           { isLoading && <Loader /> }
           <ToastContainer className='z-20' toastClassName="z-20" />
-          <BridgeModal />
-          <BuySweepModal />
         </Layout>
       </BrowserRouter>
     </div >
