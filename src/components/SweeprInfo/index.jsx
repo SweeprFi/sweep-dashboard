@@ -6,11 +6,6 @@ const SweeprInfo = ({ data, handleClick }) => {
 
     return (
         <div className="w-full border border-app-gray-light rounded-3xl p-6 mt-2 sm:mt-6">
-            <div className="mb-3">
-                <span className="uppercase bg-app-sweepMetrics py-1 px-2 rounded-lg">
-                    {languages.text_sweepr_title}
-                </span>
-            </div>
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="bg-app-sweepMetrics rounded-3xl p-8 flex justify-start items-center gap-6 relative overflow-hidden">
                     <div className="growing absolute top-0 left-0 w-full h-full p-[2px] rounded-3xl">
@@ -27,7 +22,7 @@ const SweeprInfo = ({ data, handleClick }) => {
                         <div className="flex w-1 h-14 bg-app-gray-light rotate-12"></div>
                         <div className="ml-2">
                             <h3 className="font-archivo-regular mt-2 text-app-gray-dark text-xs sm:text-base lg:text-sm xl:text-base whitespace-nowrap">
-                                {languages.label_sweepr_local}
+                                {`${languages.label_sweepr_local} ${data?.network || ''}`}
                             </h3>
                             <div className="text-2xl sm:text-4xl lg:text-3xl xl:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-200">
                                 {convertNumber(data?.local_supply)}

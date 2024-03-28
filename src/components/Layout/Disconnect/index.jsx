@@ -32,15 +32,15 @@ const Disconnect = () => {
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => (
         <>
-          <div className="mx-2 py-2 px-3 bg-app-black-light rounded-3xl">
+          <div className="mx-2 py-2 px-3 bg-app-black rounded-3xl border-2 border-app-black-light">
             <Menu.Button className="align-middle">
               <div className="flex justify-center items-center text-white gap-2">
                 <img src={currentChain.logo} alt="" className="h-6 w-6" />
                 {shortAddress(walletAddress)}
                 {
-                  open ? 
-                  <ChevronUpIcon className="h-6 w-6 m-auto" /> :
-                  <ChevronDownIcon className="h-6 w-6 m-auto" />
+                  open ?
+                    <ChevronUpIcon className="h-6 w-6 m-auto" /> :
+                    <ChevronDownIcon className="h-6 w-6 m-auto" />
                 }
               </div>
             </Menu.Button>
@@ -54,8 +54,8 @@ const Disconnect = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute z-10 right-0 mt-2 w-64 origin-top-right border-2 border-app-black-light rounded-md bg-app-black">
-              <div className="px-1 py-1 ">
+            <Menu.Items className="absolute z-10 right-0 mt-2 w-72 origin-top-right border-2 border-app-black-light rounded-3xl bg-app-black">
+              <div className="px-2 py-1">
                 <Menu.Item>
                   <div>
                     {chainList.map(chain => {
@@ -64,7 +64,7 @@ const Disconnect = () => {
                         <div
                           key={chain.chainId}
                           onClick={() => swapChain(chain.chainId)}
-                          className="bg-app-black-light flex items-center my-2 py-1 px-2 rounded-md cursor-pointer hover:bg-app-blue-dark"
+                          className="h-8 bg-app-black-light flex items-center my-2 py-1 px-2 rounded-3xl cursor-pointer hover:bg-app-blue-dark"
                         >
                           <img src={chain.logo} alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
                           <span className='font-normal mx-3 block truncate'>
@@ -73,7 +73,7 @@ const Disconnect = () => {
                           {
                             selected &&
                             <span className='text-white ml-auto mr-0'>
-                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                              <CheckIcon className="h-5 w-5 text-app-blue-light" aria-hidden="true" />
                             </span>
                           }
                         </div>
@@ -84,14 +84,14 @@ const Disconnect = () => {
                 <div className="flex flex-row">
                   <button
                     onClick={clickHandler}
-                    className={`cursor-pointer bg-app-black-light text-white group inline-block w-full items-center rounded-md p-2 mb-1 mr-1 hover:bg-app-blue-dark`}
+                    className={`cursor-pointer bg-app-black-light text-white group inline-block w-full items-center rounded-2xl p-2 mb-1 mr-1 hover:bg-app-blue-dark`}
                   >
                     <DocumentDuplicateIcon className="h-6 w-6 m-auto" />
                     {copiedText ? "Copied!" : "Copy"}
                   </button>
                   <button
                     onClick={disconnectHandler}
-                    className={`cursor-pointer bg-app-black-light text-white group inline-block w-full items-center rounded-md p-2 mb-1 ml-1 hover:bg-app-blue-dark`}
+                    className={`cursor-pointer bg-app-black-light text-white group inline-block w-full items-center rounded-2xl p-2 mb-1 ml-1 hover:bg-app-blue-dark`}
                   >
                     <ArrowRightOnRectangleIcon className="h-6 w-6 m-auto" />
                     Disconnect

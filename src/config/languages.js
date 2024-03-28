@@ -1,7 +1,5 @@
 export const languages = {
     text_title1: 'Now in roadmap phase 1 (distribution) and 2 (yield aggregation)',
-    text_sweep_title: 'SWEEP Metrics',
-    text_sweepr_title: 'SWEEPR Metrics',
     text_assets_title: 'Assets',
     text_page_not_found: 'Page Not Found',
     text_bridge: 'Move',
@@ -14,10 +12,10 @@ export const languages = {
     text_copyright: 'Copyright © 2024 Sweep Protocol',
 
     label_current_supply: 'Local/Total Supply',
-    label_sweep_total: 'SWEEP Total',
-    label_sweepr_total: 'SWEEPR Total',
-    label_sweep_local: 'SWEEP Local',
-    label_sweepr_local: 'SWEEPR Local',
+    label_sweep_total: 'SWEEP Global',
+    label_sweepr_total: 'SWEEPR Global',
+    label_sweep_local: 'SWEEP in',
+    label_sweepr_local: 'SWEEPR in',
     label_interest_rate: 'Interest Rate',
     label_target_price: 'Target Price',
     label_amm_price: 'AMM Price',

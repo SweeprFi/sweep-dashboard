@@ -4,6 +4,7 @@ import { useWallet } from "@utils/walletHelper";
 import SweepInfo from "@components/SweepInfo";
 import SweepDescription from "@components/SweepDescription";
 import AssetsBlock from "@components/AssetsBlock";
+import { languages } from "@config/languages";
 
 const Home = () => {
   const { chainId, connected, connectHandler } = useWallet();
@@ -13,6 +14,9 @@ const Home = () => {
 
   return (
     <>
+      <h1 className="font-archivo-regular mb-6 mx-1 mt-1 release-title">
+        {languages.text_asset_distribution}
+      </h1>
       <div className="sm:bg-l2s p-4">
         <SweepInfo data={sweepInfo[_id]} />
         <SweepDescription

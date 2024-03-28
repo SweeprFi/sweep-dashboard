@@ -78,6 +78,7 @@ export const sweepFetch = async (chainId) => {
 export const sweeprFetch = async (chainId) => {
   if(!chainId) return null;
   const web3 = await getWeb3(chainId);
+  const network = chainList.find((network) => network.chainId === chainId);
   if(!web3) return null;
 
   const multicall = new Multicall({ web3Instance: web3, tryAggregate: true });
@@ -102,7 +103,9 @@ export const sweeprFetch = async (chainId) => {
 
   return {
     total_supply: pp(totalSupply, 18, 2),
-    local_supply: pp(toInt(data[0]), 18, 2)
+    local_supply: pp(toInt(data[0]), 18, 2),
+    chain: network.chainId,
+    network: network.name
   }
 }
 

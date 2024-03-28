@@ -6,7 +6,6 @@ import { useWallet } from "@utils/walletHelper";
 import { assetListFetch } from "@utils/contract";
 import {
   setIsLoading,
-  // setBuyPopup,
   setBridgePopup
 } from "@redux/app.reducers";
 
@@ -15,7 +14,6 @@ import { chainList } from "@config/constants";
 import SweepInfo from "@components/SweepInfo";
 import AssetInfo from "@components/AssetInfo";
 import SweeprInfo from "@components/SweeprInfo";
-// import DashboardButtons from "@components/DashboardButtons";
 
 const Dashboard = () => {
   const { network } = useParams();
@@ -54,14 +52,6 @@ const Dashboard = () => {
 
   if (!chainId) return;
 
-  // const handleBuyPopup = async () => {
-  //   if (connected) {
-  //     dispatch(setBuyPopup({ isOpen: true, marketPrice: sweepData?.market_price, chainId: chain?.chainId, maxToBuy: sweepData?.maxToBuy }));
-  //   } else {
-  //     await connectHandler();
-  //   }
-  // }
-
   const handleBridgePopup = async (selected) => {
     if (connected) {
       dispatch(setBridgePopup({ isOpen: true, selectedToken: selected, chainId: chain?.chainId }));
@@ -73,12 +63,6 @@ const Dashboard = () => {
   return (
     <>
       <div className="sm:bg-l2s p-4">
-        {/* <DashboardButtons
-          chain={chain}
-          sweepData={sweepData}
-          handleBuyPopup={handleBuyPopup}
-          handleBridgePopup={handleBridgePopup}
-        /> */}
         <SweepInfo data={sweepData} />
       </div>
 
